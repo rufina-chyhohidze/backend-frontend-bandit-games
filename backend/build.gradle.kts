@@ -35,8 +35,8 @@ dependencies {
     
     implementation("org.springframework.modulith:spring-modulith-starter-core:${springModulithVersion}")
     //uncomment for event-driven architecture
-//    implementation("org.springframework.modulith:spring-modulith-events-api:${springModulithVersion}")
-//    implementation("org.springframework.modulith:spring-modulith-events-amqp:${springModulithVersion}")
+    implementation("org.springframework.modulith:spring-modulith-events-api:${springModulithVersion}")
+    implementation("org.springframework.modulith:spring-modulith-events-amqp:${springModulithVersion}")
     
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
