@@ -27,6 +27,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     
+    //mong database
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     //uncomment for database use
 //    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //    runtimeOnly("org.postgresql:postgresql")

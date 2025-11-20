@@ -1,4 +1,4 @@
-package kdg.be.banditgames.backend;
+package kdg.be.banditgames;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
