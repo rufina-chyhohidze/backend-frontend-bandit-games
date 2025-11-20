@@ -1,6 +1,5 @@
 package be.kdg.banditgames.gameplay.adapter.out.recommendedMove;
 
-import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
 import be.kdg.banditgames.gameplay.port.out.recommendedMove.RecommendedMovePort;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,13 @@ public class RecommendedMoveAdaptor implements RecommendedMovePort {
     private final String aiApiUrl = "http://localhost:8081/ai";
 
     @Override
-    public RecommendedMove getRecommendedMove(GameState gameState) {
+    public RecommendedMove getRecommendedMove(AiRequest aiRequest) {
         String url = aiApiUrl + "/recommend";
+
 
         RecommendedMove recommendedMove = restTemplate.postForObject(
             url,
-            gameState,
+                aiRequest,
             RecommendedMove.class
         );
 

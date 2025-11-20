@@ -1,4 +1,6 @@
 package be.kdg.banditgames.gameplay.domain;
 
-public class RecommendedMove {
+public record RecommendedMove(
+        String gameState
+) {
 }

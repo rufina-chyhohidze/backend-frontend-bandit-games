@@ -1,12 +1,10 @@
 package be.kdg.banditgames.common.events.gameplay;
 
 import be.kdg.banditgames.common.events.DomainEvent;
-import org.springframework.modulith.events.Externalized;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Externalized
 public record MoveMadeEvent(
         UUID eventId,
         LocalDateTime occurredAt,

@@ -18,31 +18,35 @@ repositories {
     mavenCentral()
 }
 
-val springModulithVersion = "1.4.1"
 
 dependencies {
-    // Core Spring Boot starters
+    // WEB, SECURITY & OAUTH2
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
-    
-    //mong database
+
+    // DATA (MongoDB)
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    //uncomment for database use
-//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//    runtimeOnly("org.postgresql:postgresql")
-    
-    implementation("org.springframework.modulith:spring-modulith-starter-core:${springModulithVersion}")
-    //uncomment for event-driven architecture
-    implementation("org.springframework.modulith:spring-modulith-events-api:${springModulithVersion}")
-    implementation("org.springframework.modulith:spring-modulith-events-amqp:${springModulithVersion}")
-    
-    // Testing
+    // NOTE: spring-boot-starter-data-jpa is commented out, which is correct since you are using MongoDB.
+
+    // MODULITH & AMQP (Events)
+    implementation("org.springframework.modulith:spring-modulith-starter-core:1.4.1")
+    implementation("org.springframework.modulith:spring-modulith-events-api:1.4.1")
+    implementation("org.springframework.modulith:spring-modulith-events-amqp:1.4.1")
+    implementation("org.springframework.boot:spring-boot-starter-amqp") // Needed for AMQP connection pooling
+
+    // EXTERNAL APIs
+    implementation("com.stripe:stripe-java:25.0.0")
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
+
+    // TESTING
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
