@@ -3,9 +3,9 @@ package be.kdg.banditgames.gameplay.adapter.in;
 
 import be.kdg.banditgames.gameplay.adapter.in.request.AiRequest;
 import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentMoveDto;
-import be.kdg.banditgames.gameplay.core.AiAgentMoveUseCaseImpl;
 import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
+import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/gameplay/ai-move")
 public class AiAgentMoveController {
     
-    private final AiAgentMoveUseCaseImpl aiAgentMoveUseCase;
+    private final AiAgentMoveUseCase aiAgentMoveUseCase;
 
-    public AiAgentMoveController(AiAgentMoveUseCaseImpl aiAgentMoveUseCase) {
+    public AiAgentMoveController(AiAgentMoveUseCase aiAgentMoveUseCase) {
         this.aiAgentMoveUseCase = aiAgentMoveUseCase;
     }
 

@@ -3,25 +3,24 @@ package be.kdg.banditgames.gameplay.domain;
 import be.kdg.banditgames.common.events.DomainEvent;
 import be.kdg.banditgames.common.events.gameplay.PlayerSide;
 import be.kdg.banditgames.common.events.gameplay.PlayerType;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
-    SessionId sessionId;
-    LocalDateTime timestamp;
-    PlayerType playerType;
-    PlayerSide playerSide;
-    int moveNumber;
-    String board;
-    String legalMoves;
-    
+    private LocalDateTime timestamp;
+    private PlayerType playerType;
+    private PlayerSide playerSide;
+    private int moveNumber;
+    private String board;
+    private String legalMoves;
+    private String bestMove;
+    private Double winProbability; //comes from the AI (MCTS)
+    private Double confidenceScore;
+
     List<DomainEvent> domainEvents = new ArrayList<>();
 
-    private GameState(SessionId sessionId, PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
-        this.sessionId = sessionId;
+    private GameState(PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
         this.timestamp = LocalDateTime.now();
         this.playerType = playerType;
         this.playerSide = playerSide;
@@ -30,8 +29,8 @@ public class GameState {
         this.legalMoves = legalMoves;
     }
     
-    public static GameState createNew(SessionId sessionId, PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
-        return new GameState(sessionId, playerType, playerSide, moveNumber, board, legalMoves);
+    public static GameState createNew(PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
+        return new GameState(playerType, playerSide, moveNumber, board, legalMoves);
     }
 
     public List<DomainEvent> getDomainEvents() {
@@ -44,10 +43,6 @@ public class GameState {
 
     public void clearDomainEvents() {
         this.domainEvents.clear();
-    }
-
-    public SessionId getSessionId() {
-        return sessionId;
     }
 
     public LocalDateTime getTimestamp() {
@@ -72,5 +67,24 @@ public class GameState {
 
     public String getLegalMoves() {
         return legalMoves;
+    }
+
+    public String getBestMove() {
+        return bestMove;
+    }
+
+    public Double getWinProbability() {
+        return winProbability;
+    }
+
+    public Double getConfidenceScore() {
+        return confidenceScore;
+    }
+
+    // TODO: Check if: Adding Double winProbabililty in AIMove and save it in GameState or just add this seperate
+    public void addAIFeatures( String bestMove, Double winProbability, Double confidenceScore){
+        this.bestMove = bestMove;
+        this.winProbability = winProbability;
+        this.confidenceScore = confidenceScore;
     }
 }

@@ -21,13 +21,12 @@ public class MoveMadeImpl implements MoveMadePort {
     @Override
     public void project(MoveMadeCommand moveMadeCommand) {
         GameState gameState = GameState.createNew(
-                SessionId.of(moveMadeCommand.gameId()),
                 moveMadeCommand.playerType(),
                 moveMadeCommand.playerSide(),
                 moveMadeCommand.moveNumber(),
                 moveMadeCommand.serializedBoard(),
                 moveMadeCommand.serializedLegalMoves()
         );
-        persistGameSessionPort.addGameState(gameState.getSessionId(), gameState);
+        persistGameSessionPort.addGameState(SessionId.of(moveMadeCommand.gameId()), gameState);
     }
 }

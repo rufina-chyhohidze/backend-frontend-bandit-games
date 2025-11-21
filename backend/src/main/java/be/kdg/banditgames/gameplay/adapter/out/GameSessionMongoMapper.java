@@ -2,6 +2,9 @@ package be.kdg.banditgames.gameplay.adapter.out;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
+import be.kdg.banditgames.gameplay.domain.GameSessionState;
+import be.kdg.banditgames.common.events.gameplay.PlayerSide;
+import be.kdg.banditgames.common.events.gameplay.PlayerType;
 import be.kdg.banditgames.gameplay.domain.vo.GameId;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 
@@ -12,32 +15,30 @@ import java.util.UUID;
 public class GameSessionMongoMapper {
 
     public static GameSessionMongoEntity fromDomain(GameSession gameSession) {
-        UUID sessionId = gameSession.getSessionsId().sessionsId();
-        UUID gameId = gameSession.getGameId().gameId();
-
-        List<GameState> gameStates = gameSession.getGameStates() != null ? gameSession.getGameStates() : new ArrayList<>();
-
         return new GameSessionMongoEntity(
-                sessionId,
-                gameId,
+                gameSession.getSessionsId().sessionsId(),
+                gameSession.getGameId().gameId(),
                 gameSession.getPlayerType(),
                 gameSession.getPlayer2Type(),
-                gameStates,
-                gameSession.getGameSessionState()
+                gameSession.getGameStates(),
+                gameSession.getGameSessionState(),
+                gameSession.getStartTime(),
+                gameSession.getEndTime(),
+                gameSession.getWinnerId()
         );
     }
 
     public static GameSession toDomain(GameSessionMongoEntity entity) {
 
-        GameId gameId = GameId.of(entity.getGameId());
-        SessionId sessionId = SessionId.of(entity.getSessionId());
-
         GameSession gameSession = GameSession.rehydrate(
-                gameId,
-                sessionId,
+                GameId.of(entity.getGameId()),
+                SessionId.of(entity.getSessionId()),
                 entity.getPlayerType(),
                 entity.getPlayer2Type(),
-                entity.getGameSessionState()
+                entity.getGameSessionState(),
+                entity.getStartTime(),
+                entity.getEndTime(),
+                entity.getWinnerId()
         );
 
         if (entity.getGameStates() != null) {
@@ -46,5 +47,4 @@ public class GameSessionMongoMapper {
 
         return gameSession;
     }
-
 }
