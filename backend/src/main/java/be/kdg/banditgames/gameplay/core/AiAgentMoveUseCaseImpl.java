@@ -2,21 +2,21 @@ package be.kdg.banditgames.gameplay.core;
 
 import be.kdg.banditgames.gameplay.adapter.out.recommendedMove.AiRequest;
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
-import be.kdg.banditgames.gameplay.port.out.recommendedMove.RecommendedMovePort;
+import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMove;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class RecommendedMoveUseCaseImpl {
-    private final RecommendedMovePort recommendedMovePort;
+public class AiAgentMoveUseCaseImpl {
+    private final AiAgentMove aiAgentMove;
 
 
-    public RecommendedMoveUseCaseImpl(RecommendedMovePort recommendedMovePort) {
-        this.recommendedMovePort = recommendedMovePort;
+    public AiAgentMoveUseCaseImpl(AiAgentMove aiAgentMove) {
+        this.aiAgentMove = aiAgentMove;
     }
     
     public RecommendedMove handleNewMove(AiRequest aiRequest) {
-        return recommendedMovePort.getRecommendedMove(aiRequest);
+        return aiAgentMove.getAiAgentMove(aiRequest);
     }
 }
