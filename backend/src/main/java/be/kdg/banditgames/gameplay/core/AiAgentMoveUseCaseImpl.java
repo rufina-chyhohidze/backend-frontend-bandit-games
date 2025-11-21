@@ -1,22 +1,24 @@
 package be.kdg.banditgames.gameplay.core;
 
-import be.kdg.banditgames.gameplay.adapter.out.recommendedMove.AiRequest;
-import be.kdg.banditgames.gameplay.domain.RecommendedMove;
-import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMove;
+import be.kdg.banditgames.gameplay.domain.AiMove;
+import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
+import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;
+import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgenteMoveService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class AiAgentMoveUseCaseImpl {
-    private final AiAgentMove aiAgentMove;
+public class AiAgentMoveUseCaseImpl implements AiAgentMoveUseCase{
+    private final AiAgenteMoveService aiAgentMoveService;
 
 
-    public AiAgentMoveUseCaseImpl(AiAgentMove aiAgentMove) {
-        this.aiAgentMove = aiAgentMove;
+    public AiAgentMoveUseCaseImpl(AiAgenteMoveService aiAgentMoveService) {
+        this.aiAgentMoveService = aiAgentMoveService;
     }
     
-    public RecommendedMove handleNewMove(AiRequest aiRequest) {
-        return aiAgentMove.getAiAgentMove(aiRequest);
+    @Override
+    public AiMove handleMove(AiRequestCommand aiRequest) {
+        return aiAgentMoveService.getAiAgentMove(aiRequest);
     }
 }

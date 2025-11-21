@@ -1,6 +1,6 @@
 package be.kdg.banditgames.gameplay.domain;
 
-public record RecommendedMove(
+public record AiMove(
         String move,
         double confidenceScore
 ) {
