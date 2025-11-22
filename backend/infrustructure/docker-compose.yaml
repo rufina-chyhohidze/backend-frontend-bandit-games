@@ -1,0 +1,85 @@
+name: kdg
+
+services:
+
+  gameplay_mongodb:
+    image: mongo:7.0
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: gameplay
+      MONGO_INITDB_ROOT_USERNAME: user_mongodb
+      MONGO_INITDB_ROOT_PASSWORD: password_mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - kdg-backend
+    volumes:
+      - mongo_data:/data/db
+      - ../data/init-scripts/mongo:/docker-entrypoint-initdb.d
+
+  app_rabbitmq:
+    image: rabbitmq:3.13.7-management-alpine
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - kdg-backend
+    volumes:
+      # Named volumes → safe
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_logs:/var/log/rabbitmq
+
+  idp_mysql:
+    image: mysql:9.0.1
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    networks:
+      - kdg-kc
+    volumes:
+      # Named volume → safe
+      - mysql_data:/var/lib/mysql
+
+  idp_keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: mysql
+      KC_DB_URL_HOST: idp_mysql
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+    command: start-dev
+    depends_on:
+      - idp_mysql
+    ports:
+      - "8180:8080"
+    networks:
+      - kdg-kc
+
+
+networks:
+  kdg-kc:
+    name: kdg-kc-network
+    driver: bridge
+
+  kdg-backend:
+    name: kdg-back-network
+    driver: bridge
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
+  rabbitmq_logs:
+  mysql_data:
