@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Node / frontend (if present)
+node_modules/
+
+# Build outputs
+dist/
+build/
+target/
+
+# Teacher games repo - we don't want to track it inside this repo
+games/
+
+# Logs
+*.log
+logs/

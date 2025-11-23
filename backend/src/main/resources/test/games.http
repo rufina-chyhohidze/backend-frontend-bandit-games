@@ -1,0 +1,3 @@
+### Get all playable games( for now stored in memory adapter)
+GET http://localhost:8080/api/games
+Accept: application/json
