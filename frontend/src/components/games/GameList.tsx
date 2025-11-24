@@ -1,26 +1,23 @@
+import { Grid } from "@mui/material";
 import type { Game } from "../../models/Game";
 import { GameCard } from "./GameCard";
-import { Grid, Typography } from "@mui/material";
 
-interface GameListProps {
+type Props = {
     games: Game[];
     onPlay: (game: Game) => void;
-}
+    onViewAchievements: (game: Game) => void;
+};
 
-export function GameList({ games, onPlay }: GameListProps) {
-    if (games.length === 0) {
-        return (
-            <Typography variant="body1" color="text.secondary">
-                No games available.
-            </Typography>
-        );
-    }
-
+export function GameList({ games, onPlay, onViewAchievements }: Props) {
     return (
         <Grid container spacing={3}>
-            {games.map((g) => (
-                <Grid item key={g.gameId} xs={12} sm={6} md={4} lg={3}>
-                    <GameCard game={g} onPlay={onPlay} />
+            {games.map((game) => (
+                <Grid item xs={12} sm={6} md={4} key={game.gameId}>
+                    <GameCard
+                        game={game}
+                        onPlay={() => onPlay(game)}
+                        onViewAchievements={() => onViewAchievements(game)}
+                    />
                 </Grid>
             ))}
         </Grid>
