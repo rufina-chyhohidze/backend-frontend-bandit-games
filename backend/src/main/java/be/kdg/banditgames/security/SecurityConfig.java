@@ -14,7 +14,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/games").permitAll() // CHANGE LATER WITH SECURITY
+                        .requestMatchers(
+                                "/api/games",
+                                "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
