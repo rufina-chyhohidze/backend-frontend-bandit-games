@@ -11,12 +11,11 @@ import {
 
 interface GameCardProps {
     game: Game;
-    onPlay: (game: Game) => void;
+    onPlay: () => void;
+    onViewAchievements: () => void;
 }
 
-export function GameCard({ game, onPlay }: GameCardProps) {
-    const handlePlayClick = () => onPlay(game);
-
+export function GameCard({ game, onPlay, onViewAchievements }: GameCardProps) {
     return (
         <Card
             sx={{
@@ -26,7 +25,7 @@ export function GameCard({ game, onPlay }: GameCardProps) {
             }}
             elevation={3}
         >
-            <CardActionArea onClick={handlePlayClick} sx={{ flexGrow: 1 }}>
+            <CardActionArea onClick={onPlay} sx={{ flexGrow: 1 }}>
                 {game.pictureUrl && (
                     <CardMedia
                         component="img"
@@ -44,9 +43,13 @@ export function GameCard({ game, onPlay }: GameCardProps) {
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
-                <Button size="small" variant="contained" onClick={handlePlayClick}>
+
+            <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 2 }}>
+                <Button size="small" variant="contained" onClick={onPlay}>
                     Play
+                </Button>
+                <Button size="small" variant="outlined" onClick={onViewAchievements}>
+                    Achievements
                 </Button>
             </CardActions>
         </Card>
