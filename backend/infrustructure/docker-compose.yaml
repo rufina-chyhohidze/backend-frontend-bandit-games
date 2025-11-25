@@ -2,6 +2,21 @@ name: kdg
 
 services:
 
+  platform_postgres:
+    image: postgres:17.6-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: bandit
+      POSTGRES_PASSWORD: bandit
+      POSTGRES_DB: banditgames
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5544:5432"
+    networks:
+      - kdg-backend
+    volumes:
+      - platform_postgres_data:/var/lib/postgresql/data
+
   chess_postgres:
     image: postgres:17.6-alpine
     restart: always
@@ -132,3 +147,4 @@ volumes:
   rabbitmq_data:
   rabbitmq_logs:
   mysql_data:
+  platform_postgres_data:

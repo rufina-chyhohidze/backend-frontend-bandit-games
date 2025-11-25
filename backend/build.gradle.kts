@@ -38,12 +38,15 @@ dependencies {
     // EXTERNAL APIs
     implementation("com.stripe:stripe-java:25.0.0")
     implementation("io.github.cdimascio:dotenv-java:3.0.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.modulith:spring-modulith-starter-jpa:1.4.1")
 
     // TESTING
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
+    runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
