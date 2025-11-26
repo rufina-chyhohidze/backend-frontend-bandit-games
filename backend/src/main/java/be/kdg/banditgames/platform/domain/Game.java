@@ -23,6 +23,15 @@
             this.urlGameSession = urlGameSession;
         }
 
+        public Game(String name, String description, String rules, String pictureUrl, String urlGameSession) {
+            this.name = name;
+            this.description = description;
+            this.rules = rules;
+            this.pictureUrl = pictureUrl;
+            this.urlGameSession = urlGameSession;
+            this.gameId = GameId.of(UUID.randomUUID());
+            this.status = GameStatus.DRAFT;
+        }
 
         public void acceptGame() {
             this.status = GameStatus.PUBLISHED;

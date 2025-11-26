@@ -16,6 +16,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/games",
+                                "/api/dev/games",
                                 "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
                         ).permitAll()
                         .anyRequest().authenticated()

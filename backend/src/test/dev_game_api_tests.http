@@ -1,0 +1,11 @@
+### Submit a new game to the platform
+POST http://localhost:8080/api/dev/games
+Content-Type: application/json
+
+{
+  "name": "Connect Four AI",
+  "description": "A competitive Connect Four game with an AI opponent.",
+  "rules": "Take turns dropping pieces. First to get 4 in a row wins.",
+  "pictureUrl": "https://example.com/images/connect-four.png",
+  "urlGameSession": "https://example.com/connect-four/index.html"
+}
