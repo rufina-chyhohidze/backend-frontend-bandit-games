@@ -41,6 +41,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.modulith:spring-modulith-starter-jpa:1.4.1")
 
+    //SECURITY
+    implementation ("org.springframework.boot:spring-boot-starter-security")
+    implementation ("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+
     // TESTING
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

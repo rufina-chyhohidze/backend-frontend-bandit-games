@@ -1,0 +1,40 @@
+//to get the code, run whats down below
+//http://localhost:8180/realms/banditgames/protocol/openid-connect/auth?client_id=platform-backend&response_type=code&scope=openid&redirect_uri=http://localhost:3333/callback
+POST http://localhost:8180/realms/banditgames/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=platform-backend
+    &client_secret=pzT1SWzQ1qrajmjPUiBeAphsTSyofq5t
+    &grant_type=authorization_code
+    &scope=openid
+    &redirect_uri=http://localhost:3333/callback
+    &code=8db81f2d-293c-4eef-ace2-1202999208d0.dd05977a-84f6-4351-973a-5274b3572168.2927773d-1602-434c-8c1b-a788962eee3c
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}
+
+### then test admin
+GET http://localhost:8080/api/admin/me
+Authorization: Bearer {{access_token}}
+
+###do the same for player
+//to get the code, run whats down below
+//http://localhost:8180/realms/banditgames/protocol/openid-connect/auth?client_id=platform-backend&response_type=code&scope=openid&redirect_uri=http://localhost:3333/callback
+POST http://localhost:8180/realms/banditgames/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=platform-backend
+    &client_secret=pzT1SWzQ1qrajmjPUiBeAphsTSyofq5t
+    &grant_type=authorization_code
+    &scope=openid
+    &redirect_uri=http://localhost:3333/callback
+    &code=da890feb-d0e5-4b17-bd66-c2244b95aad7.d0cb67e6-f0a1-4ba7-a7d9-eb43a9895384.2927773d-1602-434c-8c1b-a788962eee3c
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}
+
+###
+GET http://localhost:8080/api/player/me
+Authorization: Bearer {{access_token}}
+
+
