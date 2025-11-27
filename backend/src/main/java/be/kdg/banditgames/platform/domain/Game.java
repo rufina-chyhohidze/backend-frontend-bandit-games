@@ -14,7 +14,7 @@
         private String urlGameSession;
 
         public Game(UUID gameId, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
-            this.gameId = new GameId(gameId);
+            this.gameId = GameId.create();
             this.name = name;
             this.description = description;
             this.rules = rules;
