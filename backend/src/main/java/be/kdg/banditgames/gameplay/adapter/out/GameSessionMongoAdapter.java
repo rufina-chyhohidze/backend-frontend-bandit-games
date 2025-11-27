@@ -2,7 +2,7 @@ package be.kdg.banditgames.gameplay.adapter.out;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;
 import org.slf4j.Logger;

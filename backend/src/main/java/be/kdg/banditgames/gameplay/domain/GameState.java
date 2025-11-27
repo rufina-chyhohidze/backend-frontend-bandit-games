@@ -1,8 +1,8 @@
 package be.kdg.banditgames.gameplay.domain;
 
 import be.kdg.banditgames.common.events.DomainEvent;
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
+import be.kdg.banditgames.common.shared.PlayerSide;
+import be.kdg.banditgames.common.shared.PlayerType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

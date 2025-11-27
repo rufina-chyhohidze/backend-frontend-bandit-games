@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
-import be.kdg.banditgames.gameplay.domain.vo.GameId;
+import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.port.in.AvailableAchievementResult;
 import be.kdg.banditgames.platform.port.in.ListAvailableAchievementsCommand;
 import be.kdg.banditgames.platform.port.in.ListAvailableAchievementsUseCase;

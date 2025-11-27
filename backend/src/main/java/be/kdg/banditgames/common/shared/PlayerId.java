@@ -1,4 +1,4 @@
-package be.kdg.banditgames.gameplay.domain.vo;
+package be.kdg.banditgames.common.shared;
 
 import java.util.UUID;
 

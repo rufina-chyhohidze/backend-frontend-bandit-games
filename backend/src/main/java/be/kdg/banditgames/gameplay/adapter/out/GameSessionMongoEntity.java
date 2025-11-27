@@ -2,8 +2,8 @@ package be.kdg.banditgames.gameplay.adapter.out;
 
 import be.kdg.banditgames.gameplay.domain.GameSessionState;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
+import be.kdg.banditgames.common.shared.PlayerSide;
+import be.kdg.banditgames.common.shared.PlayerType;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

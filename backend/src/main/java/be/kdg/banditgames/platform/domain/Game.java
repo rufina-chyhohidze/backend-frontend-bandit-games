@@ -1,6 +1,6 @@
     package be.kdg.banditgames.platform.domain;
 
-    import be.kdg.banditgames.gameplay.domain.vo.GameId;
+    import be.kdg.banditgames.common.shared.GameId;
 
     import java.util.UUID;
 
