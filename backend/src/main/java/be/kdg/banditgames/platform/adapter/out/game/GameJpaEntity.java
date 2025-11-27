@@ -9,7 +9,6 @@ import java.util.UUID;
 @Table(name = "games")
 public class GameJpaEntity {
     @Id
-    @GeneratedValue
     private UUID id;
 
     private String name;
@@ -22,6 +21,19 @@ public class GameJpaEntity {
 
     private String urlGameSession;
 
+    public GameJpaEntity(UUID id, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.rules = rules;
+        this.pictureUrl = pictureUrl;
+        this.status = status;
+        this.urlGameSession = urlGameSession;
+    }
+
+    public GameJpaEntity() {
+
+    }
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }

@@ -29,7 +29,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/actuator/health",
                                 "/api/games",
-                                "/api/games/*/achievements"
+                                "/api/dev/games",
+                                "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
                         ).permitAll()
 
                         .requestMatchers("/api/admin/**").hasAuthority("admin")

@@ -3,6 +3,7 @@ package be.kdg.banditgames.platform.adapter.out.game;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.GameStatus;
 import be.kdg.banditgames.platform.port.out.LoadPlayableGamesPort;
+import be.kdg.banditgames.platform.port.out.UpdateGamesPort;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class GameJpaAdapter implements LoadPlayableGamesPort {
+public class GameJpaAdapter implements LoadPlayableGamesPort, UpdateGamesPort {
     private final GameJpaRepository jpa;
 
     public GameJpaAdapter(GameJpaRepository jpa) {
@@ -36,4 +37,18 @@ public class GameJpaAdapter implements LoadPlayableGamesPort {
         );
     }
 
+    @Override
+    public Game updateGames(Game game) {
+        GameJpaEntity entity = new GameJpaEntity(
+                game.getGameId().gameId(),
+                game.getName(),
+                game.getDescription(),
+                game.getRules(),
+                game.getPictureUrl(),
+                game.getStatus(),
+                game.getUrlGameSession()
+        );
+        jpa.save(entity);
+        return game;
+    }
 }
