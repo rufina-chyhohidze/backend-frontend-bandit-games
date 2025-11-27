@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @Transactional
@@ -22,6 +24,12 @@ public class GameJpaAdapter implements LoadPlayableGamesPort {
         return jpa.findByStatus(GameStatus.PUBLISHED).stream()
                 .map(this::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<Game> loadGameById(UUID gameId) {
+        return jpa.findById(gameId)
+                .map(this::toDomain);
     }
 
     private Game toDomain(GameJpaEntity e) {

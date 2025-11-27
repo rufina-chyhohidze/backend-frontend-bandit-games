@@ -1,6 +1,7 @@
 package be.kdg.banditgames.platform.adapter.out.lobby;
 
 import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.platform.domain.LobbyStatus;
 import jakarta.persistence.*;
 import java.util.UUID;
 
@@ -25,6 +26,13 @@ public class LobbyJpaEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "guest_type")
     private PlayerType guestType;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private LobbyStatus status;
+    
+    @Column(name = "game_id")
+    private UUID gameId;
 
     public LobbyJpaEntity() {
     }
@@ -67,5 +75,18 @@ public class LobbyJpaEntity {
 
     public void setGuestType(PlayerType guestType) {
         this.guestType = guestType;
+    }
+    
+    public LobbyStatus getStatus() {
+        return status;
+    }
+    public void setStatus(LobbyStatus status) {
+        this.status = status;
+    }
+    public UUID getGameId() {
+        return gameId;
+    }
+    public void setGameId(UUID gameId) {
+        this.gameId = gameId;
     }
 }

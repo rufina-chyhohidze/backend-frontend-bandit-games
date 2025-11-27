@@ -8,6 +8,6 @@ public interface PersistLobbyPort {
     
     void saveLobby(Lobby lobby);
     void removeLobby(LobbyId lobbyId);
-    void addPlayerToLobby(LobbyId lobbyId, PlayerId playerId);
+    Lobby addPlayerToLobby(LobbyId lobbyId, PlayerId playerId);
     
 }

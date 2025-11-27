@@ -1,5 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
+import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.requests.CreateLobbyRequest;
 import be.kdg.banditgames.platform.adapter.in.response.LobbyDto;
@@ -9,9 +10,12 @@ import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.in.lobby.CreateLobbyCommand;
 import be.kdg.banditgames.platform.port.in.lobby.LobbyCreationUseCase;
 import be.kdg.banditgames.platform.port.in.lobby.ManagingLobbyUseCase;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.http.HttpHeaders;
 import java.util.UUID;
 
 @RestController
@@ -36,14 +40,37 @@ public class LobbyController {
     }
 
     @PostMapping("/{lobbyId}/add-player")
-    public ResponseEntity<Lobby> addPlayerToLobby(@PathVariable UUID lobbyId, @RequestParam UUID playerId) {
+    public ResponseEntity<LobbyDto> addPlayerToLobby(@PathVariable UUID lobbyId, @RequestParam UUID playerId) {
         Lobby lobby = managingLobbyUseCase.addPlayerToLobby(PlayerId.of(playerId), LobbyId.of(lobbyId));
-        return ResponseEntity.ok(lobby);
+        LobbyDto lobbyDto = LobbyDtoMapper.toDto(lobby);
+        return ResponseEntity.ok(lobbyDto);
     }
 
     @DeleteMapping("/{lobbyId}")
     public ResponseEntity<Void> closeLobby(@PathVariable UUID lobbyId) {
         lobbyCreationUseCase.closeLobby(LobbyId.of(lobbyId));
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/{lobbyId}/leave-lobby")
+    public ResponseEntity<Void> leaveLobby(@PathVariable UUID lobbyId, @RequestParam UUID playerId) {
+        managingLobbyUseCase.removePlayerFromLobby(PlayerId.of(playerId), LobbyId.of(lobbyId));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{lobbyId}/start-game")
+    public ResponseEntity<Void> startGame(@PathVariable UUID lobbyId) {
+        String redirectUrl = managingLobbyUseCase.startGameInLobby(LobbyId.of(lobbyId));
+
+        return ResponseEntity
+                .status(HttpStatus.SEE_OTHER) // 303 See Other is ideal for POST redirects
+                .location(URI.create(redirectUrl))
+                .build();
+    }
+    
+    @PostMapping("/{lobbyId}/choose-game")
+    public ResponseEntity<Void> chooseGame(@PathVariable UUID lobbyId, @RequestParam UUID gameId) {
+        managingLobbyUseCase.chooseGameForLobby(LobbyId.of(lobbyId), GameId.of(gameId));
         return ResponseEntity.noContent().build();
     }
 }

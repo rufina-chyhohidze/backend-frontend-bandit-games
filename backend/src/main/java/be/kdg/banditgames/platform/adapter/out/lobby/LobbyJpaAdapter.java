@@ -3,6 +3,8 @@ package be.kdg.banditgames.platform.adapter.out.lobby;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.common.shared.PlayerType;
 import be.kdg.banditgames.platform.domain.Lobby;
+import be.kdg.banditgames.platform.domain.exception.LobbyFullException;
+import be.kdg.banditgames.platform.domain.exception.LobbyNotFoundException;
 import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.out.lobby.LoadLobbyPort;
 import be.kdg.banditgames.platform.port.out.lobby.LobbyLookupPort;
@@ -37,14 +39,20 @@ public class LobbyJpaAdapter implements LoadLobbyPort, PersistLobbyPort, LobbyLo
     }
 
     @Override
-    public void addPlayerToLobby(LobbyId lobbyId, PlayerId playerId) {
-        lobbyJpaRepository.findById(lobbyId.lobbyID()).ifPresent(lobbyEntity -> {
-            if (lobbyEntity.getGuestPlayerId() == null) {
-                lobbyEntity.setGuestPlayerId(playerId.playerId());
-                lobbyEntity.setGuestType(PlayerType.HUMAN);
-                lobbyJpaRepository.save(lobbyEntity);
-            }
-        });
+    public Lobby addPlayerToLobby(LobbyId lobbyId, PlayerId playerId) {
+        LobbyJpaEntity lobbyEntity = lobbyJpaRepository.findById(lobbyId.lobbyID())
+                .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId.lobbyID() + " not found."));
+
+        if (lobbyEntity.getGuestPlayerId() == null) {
+            lobbyEntity.setGuestPlayerId(playerId.playerId());
+            lobbyEntity.setGuestType(PlayerType.HUMAN);
+
+            LobbyJpaEntity updatedLobbyEntity = lobbyJpaRepository.save(lobbyEntity);
+
+            return LobbyJpaMapper.toDomain(updatedLobbyEntity);
+        } else {
+            throw new LobbyFullException("Lobby with ID " + lobbyId.lobbyID() + " is already full.");
+        }
     }
 
     @Override
