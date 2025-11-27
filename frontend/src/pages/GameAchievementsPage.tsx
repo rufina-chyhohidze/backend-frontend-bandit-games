@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import type { Achievement } from "../models/Achievement";
-import type { Game } from "../models/Game";
+import type { Achievement } from "../models/achievement.ts";
+import type { Game } from "../models/game.ts";
 import { fetchAchievements, fetchGames } from "../api/gamesApi";
 
 export default function GameAchievementsPage() {
@@ -66,7 +66,6 @@ export default function GameAchievementsPage() {
                 bgcolor: "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
             }}
         >
-            {/* Background gradients */}
             <Box
                 sx={{
                     position: "absolute",
@@ -80,7 +79,6 @@ export default function GameAchievementsPage() {
                 }}
             />
 
-            {/* Centered main content */}
             <Box
                 sx={{
                     position: "relative",
@@ -130,7 +128,6 @@ export default function GameAchievementsPage() {
                     </Button>
                 </Stack>
 
-                {/* Game summary card */}
                 {game && (
                     <Card
                         sx={{

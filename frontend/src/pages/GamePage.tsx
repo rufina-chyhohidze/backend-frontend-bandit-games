@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Game } from "../models/Game";
+import type { Game } from "../models/game.ts";
 import { fetchGames } from "../api/gamesApi";
 import { GameList } from "../components/games/GameList";
 import {
