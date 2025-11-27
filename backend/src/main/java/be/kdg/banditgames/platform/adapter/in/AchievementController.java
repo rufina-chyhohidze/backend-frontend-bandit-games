@@ -14,10 +14,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/games/{gameId}/achievements")
-public class AchievementRestController {
+public class AchievementController {
     private final ListAvailableAchievementsUseCase listAvailableAchievementsUseCase;
 
-    public AchievementRestController(ListAvailableAchievementsUseCase listAvailableAchievementsUseCase) {
+    public AchievementController(ListAvailableAchievementsUseCase listAvailableAchievementsUseCase) {
         this.listAvailableAchievementsUseCase = listAvailableAchievementsUseCase;
     }
 

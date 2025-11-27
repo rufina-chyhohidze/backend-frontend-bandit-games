@@ -14,8 +14,8 @@ public class Lobby {
 
     private Lobby(LobbyId lobbyId,
                   PlayerId hostPlayer,
-                  PlayerId guestPlayer,
                   PlayerType hostType,
+                  PlayerId guestPlayer,
                   PlayerType guestType) {
 
         this.lobbyId = lobbyId;
@@ -25,19 +25,16 @@ public class Lobby {
         this.guestType = guestType;
     }
 
-    public static Lobby createNew(PlayerId hostPlayer,
-                                  PlayerId guestPlayer,
-                                  PlayerType hostType,
-                                  PlayerType guestType) {
-        return new Lobby(LobbyId.create(), hostPlayer, guestPlayer, hostType, guestType);
+    public static Lobby createNew(PlayerId hostPlayerId) {
+        return new Lobby(LobbyId.create(), hostPlayerId,  PlayerType.HUMAN,null, null);
     }
 
     public static Lobby rehydrate(LobbyId lobbyId,
                                   PlayerId hostPlayer,
-                                  PlayerId guestPlayer,
                                   PlayerType hostType,
+                                  PlayerId guestPlayer,
                                   PlayerType guestType) {
-        return new Lobby(lobbyId, hostPlayer, guestPlayer, hostType, guestType);
+        return new Lobby(lobbyId, hostPlayer, hostType, guestPlayer, guestType);
     }
 
     public LobbyId getLobbyId() {

@@ -25,7 +25,7 @@ public class Player {
     }
     
     
-    public static Player createNew(PlayerId playerId, String username) {
+    public static Player createNew(String username) {
         return new Player(PlayerId.create(), username, List.of(), List.of(), List.of());
     }
     

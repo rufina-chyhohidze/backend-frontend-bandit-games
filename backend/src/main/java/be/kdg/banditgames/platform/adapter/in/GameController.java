@@ -11,10 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/games")
-public class GameRestController {
+public class GameController {
     private final ListPlayableGamesUseCase useCase;
 
-    public GameRestController(ListPlayableGamesUseCase useCase) {
+    public GameController(ListPlayableGamesUseCase useCase) {
         this.useCase = useCase;
     }
 
