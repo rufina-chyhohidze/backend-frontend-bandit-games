@@ -56,12 +56,4 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
     }
 
-    // adapter-specific helper, not part of the port
-    public void addGameStateWithAnnotations(SessionId sessionId, GameState gameState, AiAgentMoveDto dto) {
-        UUID idValue = sessionId.sessionsId();
-        Query query = new Query(Criteria.where("_id").is(idValue));
-        GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, dto);
-        Update update = new Update().push("game_states", embedded);
-        mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
-    }
 }

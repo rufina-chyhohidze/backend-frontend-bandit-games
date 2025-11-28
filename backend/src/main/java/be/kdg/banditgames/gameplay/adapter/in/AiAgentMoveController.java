@@ -30,6 +30,7 @@ public class AiAgentMoveController {
         );
 
         AiAgentMoveDto aiAgentMoveDto = new AiAgentMoveDto(aiMove.move(), aiMove.confidenceScore(), aiMove.bestMove(), aiMove.heuristicScore(), aiMove.visitCount(), aiMove.searchDepth());
+
         return ResponseEntity.ok(aiAgentMoveDto);
         }
 }
