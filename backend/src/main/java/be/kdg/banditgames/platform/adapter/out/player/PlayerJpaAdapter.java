@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.out.player;
 
-import be.kdg.banditgames.gameplay.domain.vo.PlayerId;
+import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.out.mapper.PlayerJpaMapper;
 import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.out.LoadPlayerPort;

@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
-import be.kdg.banditgames.gameplay.domain.vo.PlayerId;
+import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.dto.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.out.LoadPlayerPort;
@@ -43,7 +43,7 @@ public class PlayerController {
 
         Player player = loadPlayerPort.loadById(playerId)
                 .orElseGet(() -> {
-                    Player newPlayer = new Player(playerId, username);
+                    Player newPlayer = Player.createNew(username);
                     savePlayerPort.save(newPlayer);
                     return newPlayer;
                 });
@@ -66,7 +66,7 @@ public class PlayerController {
 
         Player player = loadPlayerPort.loadById(playerId)
                 .orElseGet(() -> {
-                    Player newPlayer = new Player(playerId, username);
+                    Player newPlayer = Player.createNew(username);
                     savePlayerPort.save(newPlayer);
                     return newPlayer;
                 });
