@@ -1,8 +1,8 @@
 package be.kdg.banditgames.gameplay.core;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
-import be.kdg.banditgames.gameplay.domain.vo.GameId;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.common.shared.GameId;
+import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedCommand;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;

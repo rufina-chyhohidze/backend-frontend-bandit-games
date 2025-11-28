@@ -1,4 +1,4 @@
-package be.kdg.banditgames.common.events.gameplay;
+package be.kdg.banditgames.common.shared;
 
 public enum PlayerType {
     HUMAN,

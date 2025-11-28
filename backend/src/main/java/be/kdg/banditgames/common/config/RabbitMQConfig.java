@@ -1,5 +1,7 @@
 package be.kdg.banditgames.common.config;
 
+import be.kdg.banditgames.common.events.GameCreatedEvent;
+import be.kdg.banditgames.common.events.MoveMadeEvent;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
@@ -34,8 +36,8 @@ public class RabbitMQConfig {
 
         // Map incoming RabbitMQ class names to DTOs
         classMapper.setIdClassMapping(Map.of(
-                "connect4.domain.event.GameCreatedEvent", be.kdg.banditgames.common.events.gameplay.GameCreatedEvent.class,
-                "connect4.domain.event.MoveMadeEvent", be.kdg.banditgames.common.events.gameplay.MoveMadeEvent.class
+                "connect4.domain.event.GameCreatedEvent", GameCreatedEvent.class,
+                "connect4.domain.event.MoveMadeEvent", MoveMadeEvent.class
         ));
 
         converter.setClassMapper(classMapper);

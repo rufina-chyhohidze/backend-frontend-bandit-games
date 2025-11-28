@@ -1,16 +1,8 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
-import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.GameSessionState;
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
-import be.kdg.banditgames.gameplay.domain.vo.GameId;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import be.kdg.banditgames.common.shared.GameId;
+import be.kdg.banditgames.common.shared.SessionId;
 
 public class GameSessionMongoMapper {
 

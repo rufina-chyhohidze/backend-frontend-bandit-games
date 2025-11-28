@@ -1,7 +1,7 @@
 package be.kdg.banditgames.platform.adapter.out.achievement;
 
-import be.kdg.banditgames.gameplay.domain.vo.AchievementId;
-import be.kdg.banditgames.gameplay.domain.vo.GameId;
+import be.kdg.banditgames.common.shared.AchievementId;
+import be.kdg.banditgames.common.shared.GameId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
