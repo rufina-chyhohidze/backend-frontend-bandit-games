@@ -28,7 +28,7 @@ client_id=platform-backend
     &grant_type=authorization_code
     &scope=openid
     &redirect_uri=http://localhost:3333/callback
-    &code=da890feb-d0e5-4b17-bd66-c2244b95aad7.d0cb67e6-f0a1-4ba7-a7d9-eb43a9895384.2927773d-1602-434c-8c1b-a788962eee3c
+    &code=26d3807d-d99d-4894-8854-7930e2d2129c.d1daa911-a92e-4553-9788-847cc2c41276.2927773d-1602-434c-8c1b-a788962eee3c
 > {%
     client.global.set("access_token", response.body.access_token);
 %}
@@ -36,5 +36,4 @@ client_id=platform-backend
 ###
 GET http://localhost:8080/api/player/me
 Authorization: Bearer {{access_token}}
-
 

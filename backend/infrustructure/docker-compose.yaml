@@ -131,6 +131,8 @@ services:
       - "8180:8080"
     networks:
       - kdg-kc
+    volumes:
+      - ./realm-export:/opt/keycloak/data/import
 
 
 networks:
