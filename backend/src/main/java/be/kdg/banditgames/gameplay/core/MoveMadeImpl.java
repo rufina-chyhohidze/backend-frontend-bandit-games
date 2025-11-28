@@ -25,8 +25,8 @@ public class MoveMadeImpl implements MoveMadePort {
                 moveMadeCommand.playerSide(),
                 moveMadeCommand.moveNumber(),
                 moveMadeCommand.serializedBoard(),
-                moveMadeCommand.serializedLegalMoves()
-        );
+                moveMadeCommand.serializedLegalMoves());
         persistGameSessionPort.addGameState(SessionId.of(moveMadeCommand.gameId()), gameState);
     }
 }
+

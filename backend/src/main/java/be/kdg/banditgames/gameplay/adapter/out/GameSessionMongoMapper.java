@@ -1,30 +1,46 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
+import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentMoveDto;
+import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.GameSessionState;
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
 import be.kdg.banditgames.gameplay.domain.vo.GameId;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GameSessionMongoMapper {
 
+    // Minimal: session without states (when created)
     public static GameSessionMongoEntity fromDomain(GameSession gameSession) {
         return new GameSessionMongoEntity(
                 gameSession.getSessionsId().sessionsId(),
                 gameSession.getGameId().gameId(),
                 gameSession.getPlayerType(),
                 gameSession.getPlayer2Type(),
-                gameSession.getGameStates(),
                 gameSession.getGameSessionState(),
                 gameSession.getStartTime(),
                 gameSession.getEndTime(),
-                gameSession.getWinnerId()
+                gameSession.getWinnerId(),
+                null
+        );
+    }
+
+    // Full: session with embedded states already prepared
+    public static GameSessionMongoEntity fromDomain(GameSession gameSession,
+                                                    List<GameStateMongoEmbedded> embeddedStates) {
+        return new GameSessionMongoEntity(
+                gameSession.getSessionsId().sessionsId(),
+                gameSession.getGameId().gameId(),
+                gameSession.getPlayerType(),
+                gameSession.getPlayer2Type(),
+                gameSession.getGameSessionState(),
+                gameSession.getStartTime(),
+                gameSession.getEndTime(),
+                gameSession.getWinnerId(),
+                embeddedStates
         );
     }
 
@@ -38,13 +54,39 @@ public class GameSessionMongoMapper {
                 entity.getGameSessionState(),
                 entity.getStartTime(),
                 entity.getEndTime(),
-                entity.getWinnerId()
+                entity.getWinnerId(),
+                null
         );
 
         if (entity.getGameStates() != null) {
-            entity.getGameStates().forEach(gameSession::addGameState);
+            entity.getGameStates().forEach(gs -> {
+                GameState domainState = GameState.createNew(
+                        gs.getPlayerType(),
+                        gs.getPlayerSide(),
+                        gs.getMoveNumber(),
+                        gs.getBoard(),
+                        gs.getLegalMoves());
+                gameSession.addGameState(domainState);
+            });
         }
 
         return gameSession;
+    }
+
+    // Build a single embedded state from one domain state and optional annotation
+    public static GameStateMongoEmbedded toEmbeddedState(GameState state, AiMove ann) {
+        return new GameStateMongoEmbedded(
+                state.getTimestamp(),
+                state.getPlayerType(),
+                state.getPlayerSide(),
+                state.getMoveNumber(),
+                state.getBoard(),
+                state.getLegalMoves(),
+                ann != null ? ann.bestMove() : null,
+                ann != null ? ann.confidenceScore() : null,
+                ann != null ? ann.heuristicScore() : null,
+                ann != null ? ann.visitCount() : null,
+                ann != null ? ann.searchDepth() : null
+        );
     }
 }

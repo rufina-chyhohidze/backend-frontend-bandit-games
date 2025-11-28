@@ -32,8 +32,7 @@ public class MoveMadeEventListener {
                 event.playerSide(),
                 event.moveNumber(),
                 event.serializedBoard(),
-                event.serializedLegalMoves()
-        ));
+                event.serializedLegalMoves()));
     }
     
     

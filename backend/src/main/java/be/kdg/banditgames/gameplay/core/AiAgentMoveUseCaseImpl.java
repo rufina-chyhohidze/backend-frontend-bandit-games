@@ -19,6 +19,9 @@ public class AiAgentMoveUseCaseImpl implements AiAgentMoveUseCase{
     
     @Override
     public AiMove handleMove(AiRequestCommand aiRequest) {
-        return aiAgentMoveService.getAiAgentMove(aiRequest);
+        AiMove aiMove = aiAgentMoveService.getAiAgentMove(aiRequest);
+        // TODO: saving to db
+
+        return aiMove;
     }
 }

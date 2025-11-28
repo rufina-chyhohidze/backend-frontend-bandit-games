@@ -26,13 +26,10 @@ public class AiAgentMoveController {
     public ResponseEntity<AiAgentMoveDto> getBestMove(@RequestBody AiRequest aiRequest) {
         AiMove aiMove = aiAgentMoveUseCase.handleMove(
                 new AiRequestCommand(
-                        aiRequest.gameState(), aiRequest.legalMoves()
-                )
+                        aiRequest.gameState(), aiRequest.legalMoves())
         );
-        
-        AiAgentMoveDto aiAgentMoveDto = new AiAgentMoveDto(aiMove.move(),
-                aiMove.confidenceScore());
-        
+
+        AiAgentMoveDto aiAgentMoveDto = new AiAgentMoveDto(aiMove.move(), aiMove.confidenceScore(), aiMove.bestMove(), aiMove.heuristicScore(), aiMove.visitCount(), aiMove.searchDepth());
         return ResponseEntity.ok(aiAgentMoveDto);
         }
 }

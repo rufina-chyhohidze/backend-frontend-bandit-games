@@ -2,7 +2,11 @@ package be.kdg.banditgames.gameplay.domain;
 
 public record AiMove(
         String move,
-        double confidenceScore
+        double confidenceScore,
+        String bestMove,
+        Double heuristicScore,
+        Integer visitCount,
+        Integer searchDepth
 ) {
 }
 
