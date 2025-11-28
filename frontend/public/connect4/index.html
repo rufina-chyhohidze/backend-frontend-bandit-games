@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Connect Four</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<h1>Connect Four</h1>
+
+<div id="game-info">
+    <button id="new-game-btn" class="btn">Start New Game</button>
+    <span id="status-text">Click "Start New Game" to begin.</span>
+</div>
+
+<div id="players">
+    <div id="player1" class="player-card">
+        <div class="color-circle red"></div>
+        <span>Player 1 (Red)</span>
+    </div>
+
+    <div id="player2" class="player-card">
+        <div class="color-circle yellow"></div>
+        <span>Player 2 (Yellow)</span>
+    </div>
+</div>
+
+<div id="board-container">
+    <div id="board" aria-label="Connect Four board"></div>
+</div>
+
+<div id="error-message"></div>
+
+
+<script src="main.js"></script>
+</body>
+</html>

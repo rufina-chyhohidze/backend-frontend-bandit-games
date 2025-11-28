@@ -7,6 +7,7 @@ import { PublicPage } from "../pages/PublicPage";
 import { AdminRoute } from "../components/routes/AdminRoute";
 import { PlayerRoute } from "../components/routes/PlayerRoute";
 import { RootRedirect } from "../components/RootRedirect";
+import {FullScreenFrame} from "../components/connect4/FullScreenFrame.tsx";
 
 export function AppRoutes() {
     return (
@@ -36,7 +37,7 @@ export function AppRoutes() {
                 path="/games/connect4"
                 element={
                     <PlayerRoute>
-                        <ConnectFourPage />
+                        <FullScreenFrame src="/connect4/index.html" />
                     </PlayerRoute>
                 }
             />
