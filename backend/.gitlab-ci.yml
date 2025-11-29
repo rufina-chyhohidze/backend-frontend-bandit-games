@@ -7,14 +7,14 @@ variables:
     
 build_job:
   stage: build
-  image: $DEFAULT_IMAGE_NAME
+  image: eclipse-temurin:21-jdk-alpine
   script:
     - echo "Compiling backend using direct Java execution from root..."
     - java -jar gradle/wrapper/gradle-wrapper.jar :backend:clean :backend:build
       
 test_job:
   stage: test
-  image: $DEFAULT_IMAGE_NAME
+  image: eclipse-temurin:21-jdk-alpine
   script:
     - ./gradlew test
       
