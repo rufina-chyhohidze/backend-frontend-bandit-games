@@ -19,7 +19,7 @@ build_job:
   script:
     - echo "Compiling backend..."
     - cd backend
-    - ./gradlew clean build
+    - ./gradlew clean build -x test
       
 test_job:
   stage: test
@@ -35,4 +35,4 @@ test_job:
   script:
     - echo "Testing backend..."
     - cd backend
-    - java -jar ../gradle/wrapper/gradle-wrapper.jar test
+    - ./gradlew test
