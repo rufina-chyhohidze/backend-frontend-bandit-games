@@ -3,7 +3,6 @@ package be.kdg.banditgames.gameplay.adapter.in;
 
 import be.kdg.banditgames.gameplay.adapter.in.request.AiRequest;
 import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentResponseDto;
-import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;

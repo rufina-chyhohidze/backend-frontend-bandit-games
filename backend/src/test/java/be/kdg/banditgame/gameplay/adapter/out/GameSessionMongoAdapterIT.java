@@ -6,7 +6,6 @@ import be.kdg.banditgames.common.events.gameplay.PlayerType;
 import be.kdg.banditgames.gameplay.adapter.out.GameSessionMongoAdapter;
 import be.kdg.banditgames.gameplay.adapter.out.GameSessionMongoEntity;
 import be.kdg.banditgames.gameplay.adapter.out.GameStateMongoEmbedded;
-import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 import java.util.List;

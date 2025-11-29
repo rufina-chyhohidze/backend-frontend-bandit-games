@@ -60,6 +60,9 @@ public class GameSession {
     }
 
     public void addGameState(GameState gameState) {
+        if (this.gameSessionState == GameSessionState.COMPLETED) {
+            throw new IllegalStateException("Cannot add moves to a completed game");
+        }
         this.gameStates.add(gameState);
     }
 
@@ -67,6 +70,33 @@ public class GameSession {
         this.winnerId = winnerId;
         this.endTime = LocalDateTime.now();
         this.gameSessionState = GameSessionState.COMPLETED;
+    }
+    public PlayerSide getCurrentTurn() {
+        int moveCount = gameStates.size();
+        return moveCount % 2 == 0 ? PlayerSide.A : PlayerSide.B;
+    }
+
+    public boolean isNextPlayerAi() {
+        PlayerSide currentTurn = getCurrentTurn();
+        return (currentTurn == PlayerSide.A && !(playerType == PlayerType.HUMAN)) ||
+                (currentTurn == PlayerSide.B && !(playerType == PlayerType.HUMAN));
+    }
+
+    public PlayerType getCurrentPlayerType() {
+        PlayerSide currentTurn = getCurrentTurn();
+        return currentTurn == PlayerSide.A ? playerType : player2Type;
+    }
+
+    public String getCurrentBoardState() {
+        if (gameStates.isEmpty()) {
+            return getInitialBoard(); // Empty Connect4 board
+        }
+        return gameStates.get(gameStates.size() - 1).getBoard();
+    }
+    //TODO: check how to do this adaptable for different games
+    private String getInitialBoard() {
+        // Empty Connect4 board (6 rows x 7 columns = 42 cells)
+        return "o ".repeat(42).trim();
     }
 
     public LocalDateTime getStartTime() { return startTime; }

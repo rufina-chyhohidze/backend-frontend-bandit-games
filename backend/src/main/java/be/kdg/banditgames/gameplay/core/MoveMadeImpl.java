@@ -1,6 +1,5 @@
 package be.kdg.banditgames.gameplay.core;
 
-import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;

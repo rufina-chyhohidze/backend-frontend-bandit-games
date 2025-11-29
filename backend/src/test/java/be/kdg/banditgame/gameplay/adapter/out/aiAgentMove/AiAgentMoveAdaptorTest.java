@@ -2,7 +2,6 @@
 package be.kdg.banditgame.gameplay.adapter.out.aiAgentMove;
 
 import be.kdg.banditgames.gameplay.adapter.out.aiAgentMove.AiAgentMoveAdaptor;
-import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import org.junit.jupiter.api.BeforeEach;

@@ -3,7 +3,7 @@ package be.kdg.banditgame.gameplay.adapter.in;
 
 import be.kdg.banditgames.gameplay.adapter.in.AiAgentMoveController;
 import be.kdg.banditgames.gameplay.adapter.in.request.AiRequest;
-import be.kdg.banditgames.gameplay.domain.AiMove;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class AiAgentMoveControllerTest {
     @Test
     void returnsAiMoveDto() throws Exception {
         when(useCase.handleMove(new be.kdg.banditgames.gameplay.port.in.AiRequestCommand("b","l")))
-            .thenReturn(new AiMove("drop(3)", 0.85, "drop(4)", 0.65, 1200, 7));
+            .thenReturn(new AiMoveMetadata("drop(3)", 0.85, "drop(4)", 0.65, 1200, 7));
 
         AiRequest req = new AiRequest("b","l");
 
