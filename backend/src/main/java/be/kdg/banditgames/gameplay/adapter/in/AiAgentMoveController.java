@@ -28,9 +28,6 @@ public class AiAgentMoveController {
                 new AiRequestCommand(
                         aiRequest.gameState(), aiRequest.legalMoves())
         );
-
-        AiAgentResponseDto aiAgentMoveDto = new AiAgentResponseDto(aiMove.recommendedMove(), aiMove.confidenceScore(), aiMove.bestMove(), aiMove.heuristicScore(), aiMove.visitCount(), aiMove.searchDepth());
-
-        return ResponseEntity.ok(aiAgentMoveDto);
-        }
+        return ResponseEntity.ok(AiAgentResponseDto.fromMetadata(aiMove));
+    }
 }

@@ -33,19 +33,17 @@ public class GameState {
     public static GameState createNew(PlayerType playerType,
                                       PlayerSide playerSide,
                                       int moveNumber,
-                                      String board,
-                                      String legalMoves) {
-        return new GameState(playerType, playerSide, moveNumber, board, legalMoves);
+                                      String board, String legalMoves) {
+        return new GameState(playerType, playerSide, moveNumber, board,legalMoves);
     }
 
     public List<DomainEvent> getDomainEvents() { return domainEvents; }
     public void addDomainEvent(DomainEvent domainEvent) { this.domainEvents.add(domainEvent); }
     public void clearDomainEvents() { this.domainEvents.clear(); }
-
+    public String getLegalMoves() { return legalMoves; }
     public LocalDateTime getTimestamp() { return timestamp; }
     public PlayerType getPlayerType() { return playerType; }
     public PlayerSide getPlayerSide() { return playerSide; }
     public int getMoveNumber() { return moveNumber; }
     public String getBoard() { return board; }
-    public String getLegalMoves() { return legalMoves; }
 }

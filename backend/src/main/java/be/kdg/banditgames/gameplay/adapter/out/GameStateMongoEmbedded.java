@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
+import be.kdg.banditgames.common.shared.PlayerSide;
+import be.kdg.banditgames.common.shared.PlayerType;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
@@ -23,8 +23,10 @@ public class GameStateMongoEmbedded {
     @Field("board")
     private String board;
 
+
     @Field("legal_moves")
     private String legalMoves;
+
     // AI/ML annotations (persistence/logging concerns)
     @Field("best_move")
     private String bestMove;
@@ -59,27 +61,29 @@ public class GameStateMongoEmbedded {
                                   Double heuristicScore,
                                   Integer visitCount,
                                   Integer searchDepth,
-                                  String recommendedMove) {
+                                  String recommendedMove
+                                  ) {
         this.timestamp = timestamp;
         this.playerType = playerType;
         this.playerSide = playerSide;
         this.moveNumber = moveNumber;
         this.board = board;
-        this.legalMoves = legalMoves;
         this.bestMove = bestMove;
         this.confidenceScore = confidenceScore;
         this.heuristicScore = heuristicScore;
         this.visitCount = visitCount;
         this.searchDepth = searchDepth;
         this.recommendedMove = recommendedMove;
+        this.legalMoves = legalMoves;
     }
-
+    public String getLegalMoves() {
+        return legalMoves;
+    }
     public LocalDateTime getTimestamp() { return timestamp; }
     public PlayerType getPlayerType() { return playerType; }
     public PlayerSide getPlayerSide() { return playerSide; }
     public int getMoveNumber() { return moveNumber; }
     public String getBoard() { return board; }
-    public String getLegalMoves() { return legalMoves; }
     public String getBestMove() { return bestMove; }
     public Double getConfidenceScore() { return confidenceScore; }
     public Double getHeuristicScore() { return heuristicScore; }

@@ -10,7 +10,6 @@ import be.kdg.banditgames.common.shared.SessionId;
 @Component
 public class GameSessionMongoMapper {
 
-    // Minimal: session without states (when created)
     public static GameSessionMongoEntity fromDomain(GameSession gameSession) {
         return new GameSessionMongoEntity(
                 gameSession.getSessionsId().sessionsId(),
@@ -25,7 +24,6 @@ public class GameSessionMongoMapper {
         );
     }
 
-    // Full: session with embedded states already prepared
     public static GameSessionMongoEntity fromDomain(GameSession gameSession,
                                                     List<GameStateMongoEmbedded> embeddedStates) {
         return new GameSessionMongoEntity(

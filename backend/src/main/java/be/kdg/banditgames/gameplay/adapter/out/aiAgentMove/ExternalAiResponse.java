@@ -8,5 +8,6 @@ public record ExternalAiResponse(
         @JsonProperty("bestMove") String bestMove,
         @JsonProperty("heuristic") Double heuristic,
         @JsonProperty("visits") Integer visits,
-        @JsonProperty("depth") Integer depth
+        @JsonProperty("depth") Integer depth,
+        @JsonProperty("legalMoves") String legalMoves
     ) {}

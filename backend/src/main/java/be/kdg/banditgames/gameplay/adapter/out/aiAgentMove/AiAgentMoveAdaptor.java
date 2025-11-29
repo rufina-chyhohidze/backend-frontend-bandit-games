@@ -34,8 +34,7 @@ public class AiAgentMoveAdaptor implements AiAgenteMoveService {
                 response.bestMove(),
                 response.heuristic(),
                 response.visits(),
-                response.depth()
-        );
+                response.depth());
     }
     
 }

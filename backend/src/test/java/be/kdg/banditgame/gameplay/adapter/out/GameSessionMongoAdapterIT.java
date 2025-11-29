@@ -1,13 +1,14 @@
 // src/test/java/be/kdg/banditgames/gameplay/adapter/out/GameSessionMongoAdapterIT.java
 package be.kdg.banditgame.gameplay.adapter.out;
 
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
+
+import be.kdg.banditgames.common.shared.PlayerSide;
+import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.adapter.out.GameSessionMongoAdapter;
 import be.kdg.banditgames.gameplay.adapter.out.GameSessionMongoEntity;
 import be.kdg.banditgames.gameplay.adapter.out.GameStateMongoEmbedded;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
