@@ -23,10 +23,7 @@ build_job:
       
 test_job:
   stage: test
-  image: $DEFAULT_IMAGE_NAME
-  artifacts:
-    reports:
-      junit: backend/build/test-results/test/*.xml
+  image: docker:24
   services:
     - name: docker:dind
   variables:
@@ -35,8 +32,7 @@ test_job:
     TESTCONTAINERS_HOST_OVERRIDE: "docker"
     TESTCONTAINERS_RYUK_DISABLED: "true"
   script:
-    - echo "Waiting for Docker daemon..."
-    - until docker info; do sleep 3; done
-    - echo "Testing backend..."
+    - apk add --no-cache openjdk21
     - cd backend
     - ./gradlew test
+
