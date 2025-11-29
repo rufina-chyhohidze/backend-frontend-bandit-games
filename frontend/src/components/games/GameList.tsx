@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import type { Game } from "../../models/Game";
+import type { Game } from "../../models/game.ts";
 import { GameCard } from "./GameCard";
 
 type Props = {

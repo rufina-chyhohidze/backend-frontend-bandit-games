@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
-import be.kdg.banditgames.common.events.gameplay.MoveMadeEvent;
+import be.kdg.banditgames.common.events.MoveMadeEvent;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
 import org.slf4j.Logger;
@@ -21,12 +21,11 @@ public class MoveMadeEventListener {
     
     @RabbitListener(queues = RabbitMQTopology.CONNECT4_MOVE_MADE_QUEUE)
     public void moveMadeEvent(MoveMadeEvent event) {
-        log.info("Received MoveMadeEvent for game: {}", event.gameId());
+        log.info("Received MoveMadeEvent: {}", event);
         
         moveMadePort.project(new MoveMadeCommand(
                 event.eventId(),
                 event.occurredAt(),
-                event.gameId(),
                 event.sessionId(),
                 event.playerType(),
                 event.playerSide(),

@@ -1,13 +1,11 @@
 package be.kdg.banditgames.gameplay.adapter.out;
-
+import org.springframework.stereotype.Component;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.vo.GameId;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
+import be.kdg.banditgames.common.shared.GameId;
+import be.kdg.banditgames.common.shared.SessionId;
 
 @Component
 public class GameSessionMongoMapper {

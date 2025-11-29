@@ -1,13 +1,15 @@
 package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
-import be.kdg.banditgames.common.events.gameplay.GameCreatedEvent;
+import be.kdg.banditgames.common.events.GameCreatedEvent;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedCommand;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public class GameCreatedEventListener {
@@ -26,8 +28,7 @@ public class GameCreatedEventListener {
         gameCreatedPort.project(new GameCreatedCommand(
                 gameCreatedEvent.eventId(),
                 gameCreatedEvent.occurredAt(),
-                gameCreatedEvent.gameId(),
-                gameCreatedEvent.sessionId(),
+                UUID.fromString(gameCreatedEvent.sessionId()),
                 gameCreatedEvent.player1(),
                 gameCreatedEvent.player2()
         ));

@@ -1,8 +1,8 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
-import be.kdg.banditgames.common.events.gameplay.PlayerSide;
-import be.kdg.banditgames.common.events.gameplay.PlayerType;
 import be.kdg.banditgames.gameplay.domain.GameSessionState;
+import be.kdg.banditgames.common.shared.PlayerSide;
+import be.kdg.banditgames.common.shared.PlayerType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -61,6 +61,7 @@ public class GameSessionMongoEntity {
         this.gameId = gameId;
         this.playerType = playerType;
         this.player2Type = player2Type;
+        this.gameStates = gameStates;
         this.gameSessionState = gameSessionState;
         this.startTime = startTime;
         this.endTime = endTime;

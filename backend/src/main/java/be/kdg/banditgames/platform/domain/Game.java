@@ -1,6 +1,6 @@
     package be.kdg.banditgames.platform.domain;
 
-    import be.kdg.banditgames.gameplay.domain.vo.GameId;
+    import be.kdg.banditgames.common.shared.GameId;
 
     import java.util.UUID;
 
@@ -14,7 +14,7 @@
         private String urlGameSession;
 
         public Game(UUID gameId, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
-            this.gameId = new GameId(gameId);
+            this.gameId = GameId.create();
             this.name = name;
             this.description = description;
             this.rules = rules;
@@ -23,6 +23,15 @@
             this.urlGameSession = urlGameSession;
         }
 
+        public Game(String name, String description, String rules, String pictureUrl, String urlGameSession) {
+            this.name = name;
+            this.description = description;
+            this.rules = rules;
+            this.pictureUrl = pictureUrl;
+            this.urlGameSession = urlGameSession;
+            this.gameId = GameId.of(UUID.randomUUID());
+            this.status = GameStatus.DRAFT;
+        }
 
         public void acceptGame() {
             this.status = GameStatus.PUBLISHED;

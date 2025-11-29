@@ -1,8 +1,8 @@
 package be.kdg.banditgames.gameplay.domain;
 
-import be.kdg.banditgames.gameplay.domain.vo.AchievementId;
-import be.kdg.banditgames.gameplay.domain.vo.PlayerId;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.common.shared.AchievementId;
+import be.kdg.banditgames.common.shared.PlayerId;
+import be.kdg.banditgames.common.shared.SessionId;
 
 public class Achievement {
     private PlayerId playerId;

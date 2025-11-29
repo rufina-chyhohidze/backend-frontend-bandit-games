@@ -1,5 +1,5 @@
-import type { Game } from "../models/Game";
-import type { Achievement } from "../models/Achievement";
+import type { Game } from "../models/game.ts";
+import type { Achievement } from "../models/achievement.ts";
 
 const API_BASE = "/api";
 

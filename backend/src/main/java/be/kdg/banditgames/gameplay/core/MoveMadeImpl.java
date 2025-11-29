@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.core;
 
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
@@ -38,6 +38,5 @@ public class MoveMadeImpl implements MoveMadePort {
                         moveMadeCommand.serializedLegalMoves())
         );
 
-        persistGameSessionPort.addGameState(SessionId.of(moveMadeCommand.gameId()), gameState, aiMove);    }
+        persistGameSessionPort.addGameState(SessionId.of(moveMadeCommand.sessionId()), gameState, aiMove);    }
 }
-

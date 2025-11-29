@@ -2,7 +2,7 @@ package be.kdg.banditgames.gameplay.adapter.out;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
-import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;
@@ -27,12 +27,13 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         this.mongoTemplate = mongoTemplate;
         this.mongoGameplayRepository = mongoGameplayRepository;
     }
-
+    
     @Override
     public void save(GameSession gameSession) {
         GameSessionMongoEntity entity = GameSessionMongoMapper.fromDomain(gameSession);
         GameSessionMongoEntity savedEntity = mongoGameplayRepository.save(entity);
-        logger.info("Saved GameSession (header) with id: {}", savedEntity.getSessionId());
+        logger.info("Saved GameSession with id: {}", savedEntity.getSessionId());
+        GameSessionMongoMapper.toDomain(savedEntity);
     }
 
     @Override
@@ -41,11 +42,11 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         return entity.map(GameSessionMongoMapper::toDomain);
     }
 
-
     @Override
     public void addGameState(SessionId sessionId, GameState gameState, AiMoveMetadata aiMove) {
         // no DTO here, pure domain
         UUID idValue = sessionId.sessionsId();
+
         Query query = new Query(Criteria.where("_id").is(idValue));
 
         // if you have an annotation DTO, map it here
@@ -54,5 +55,4 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         Update update = new Update().push("game_states", embedded);
         mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
     }
-
 }
