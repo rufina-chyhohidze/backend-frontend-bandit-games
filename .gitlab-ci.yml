@@ -23,16 +23,13 @@ build_job:
       
 test_job:
   stage: test
-  image: docker:24
+  image: $DEFAULT_IMAGE_NAME
   services:
     - name: docker:dind
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
-    TESTCONTAINERS_HOST_OVERRIDE: "docker"
-    TESTCONTAINERS_RYUK_DISABLED: "true"
   script:
-    - apk add --no-cache openjdk21
     - cd backend
     - ./gradlew test
 
