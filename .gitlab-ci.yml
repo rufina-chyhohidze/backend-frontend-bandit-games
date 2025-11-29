@@ -24,11 +24,18 @@ build_job:
 test_job:
   stage: test
   image: $DEFAULT_IMAGE_NAME
+  artifacts:
+    reports:
+      junit: backend/build/test-results/test/*.xml
   services:
-    - name: docker:dind
+    - name: docker:27-dind
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
+    TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE: "/var/run/docker.sock"
+    TESTCONTAINERS_HOST_OVERRIDE: "docker"
+    # Ryuk needs to be disabled in GitLab CI
+    TESTCONTAINERS_RYUK_DISABLED: "true"
   script:
     - cd backend
     - ./gradlew test
