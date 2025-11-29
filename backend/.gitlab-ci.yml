@@ -1,20 +1,20 @@
-stages: 
+image: eclipse-temurin:21-jdk-alpine
+
+stages:
   - build
   - test
-    
-variables:
-  DEFAULT_IMAGE_NAME: eclipse-temurin:21-jdk-alpine
-    
-build_job:
+
+before_script:
+  - chmod +x backend/gradlew
+
+build_backend:
   stage: build
-  image: eclipse-temurin:21-jdk-alpine
   script:
-    - echo "Compiling backend using direct Java execution from root..."
-    - java -jar gradle/wrapper/gradle-wrapper.jar :backend:clean :backend:build
-      
-test_job:
+    - cd backend
+    - ./gradlew clean build
+
+test_backend:
   stage: test
-  image: eclipse-temurin:21-jdk-alpine
   script:
+    - cd backend
     - ./gradlew test
-      
