@@ -1,0 +1,19 @@
+stages: 
+  - compile
+  - test
+    
+variables:
+  DEFAULT_IMAGE_NAME: eclipse-temurin:25-jdk-alpine
+    
+compile_job:
+  stage: compile
+  image: $DEFAULT_IMAGE_NAME
+  script:
+    - ./gradlew build
+      
+test_job:
+  stage: test
+  image: $DEFAULT_IMAGE_NAME
+  script:
+    - ./gradlew test
+      
