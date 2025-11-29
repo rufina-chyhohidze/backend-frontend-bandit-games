@@ -16,6 +16,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/milestone")
 }
 
 
@@ -49,7 +50,7 @@ dependencies {
     // TESTING
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.springframework.modulith:spring-modulith-starter-test")
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.4.1")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
