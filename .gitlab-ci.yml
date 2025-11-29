@@ -35,6 +35,8 @@ test_job:
     TESTCONTAINERS_HOST_OVERRIDE: "docker"
     TESTCONTAINERS_RYUK_DISABLED: "true"
   script:
+    - echo "Waiting for Docker daemon..."
+    - until docker info; do sleep 3; done
     - echo "Testing backend..."
     - cd backend
     - ./gradlew test
