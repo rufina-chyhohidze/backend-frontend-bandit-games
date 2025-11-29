@@ -2,10 +2,10 @@ package be.kdg.banditgames;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
-@SpringBootTest(properties = {
-        "spring.datasource.url=jdbc:h2:mem:testdb"
-})
+@SpringBootTest
+@Import(TestContainerConfig.class)
 class BackendApplicationTest {
     
     @Test
