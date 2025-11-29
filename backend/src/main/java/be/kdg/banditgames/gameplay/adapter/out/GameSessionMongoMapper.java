@@ -69,7 +69,7 @@ public class GameSessionMongoMapper {
     }
 
     // Build a single embedded state from one domain state and optional annotation
-    public static GameStateMongoEmbedded toEmbeddedState(GameState state, AiMoveMetadata ann) {
+    public static GameStateMongoEmbedded toEmbeddedState(GameState state, AiMetadataEmbedded ann) {
         return new GameStateMongoEmbedded(
                 state.getTimestamp(),
                 state.getPlayerType(),
@@ -77,12 +77,7 @@ public class GameSessionMongoMapper {
                 state.getMoveNumber(),
                 state.getBoard(),
                 state.getLegalMoves(),
-                ann != null ? ann.bestMove() : null,
-                ann != null ? ann.confidenceScore() : null,
-                ann != null ? ann.heuristicScore() : null,
-                ann != null ? ann.visitCount() : null,
-                ann != null ? ann.searchDepth() : null,
-                ann != null ? ann.recommendedMove() : null
+                ann
         );
     }
 }

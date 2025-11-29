@@ -8,5 +8,5 @@ import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 public interface PersistGameSessionPort {
     
     void save(GameSession gameSession);
-    void addGameState(SessionId sessionId, GameState gameState, AiMoveMetadata aiMoveMetadata);
+    void addGameState(SessionId sessionId, GameState gameState);
 }

@@ -1,10 +1,7 @@
 package be.kdg.banditgames.gameplay.core;
 
-import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.common.shared.SessionId;
-import be.kdg.banditgames.gameplay.port.in.AiTurn.ProcessAiTurnCommand;
-import be.kdg.banditgames.gameplay.port.in.AiTurn.ProcessAiTurnPort;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
@@ -20,12 +17,10 @@ public class MoveMadeImpl implements MoveMadePort {
     private static final Logger logger = LoggerFactory.getLogger(MoveMadeImpl.class);
     private final PersistGameSessionPort persistGameSessionPort;
     private final LoadGameSessionPort loadGameSessionPort;
-    private final ProcessAiTurnPort processAiTurnPort;
 
-    public MoveMadeImpl(PersistGameSessionPort persistGameSessionPort, LoadGameSessionPort loadGameSessionPort, ProcessAiTurnPort processAiTurnPort) {
+    public MoveMadeImpl(PersistGameSessionPort persistGameSessionPort, LoadGameSessionPort loadGameSessionPort) {
         this.persistGameSessionPort = persistGameSessionPort;
         this.loadGameSessionPort = loadGameSessionPort;
-        this.processAiTurnPort = processAiTurnPort;
     }
 
     @Override
@@ -41,18 +36,7 @@ public class MoveMadeImpl implements MoveMadePort {
                 moveMadeCommand.serializedLegalMoves());
 
         SessionId sessionId = SessionId.of(moveMadeCommand.sessionId());
-        persistGameSessionPort.addGameState(sessionId, gameState, null);
+        persistGameSessionPort.addGameState(sessionId, gameState);
 
-        logger.info("Saved move #{} to database", moveMadeCommand.moveNumber());
-
-        GameSession session = loadGameSessionPort.loadGameSessionById(sessionId)
-                .orElseThrow(() -> new IllegalStateException("Game session not found: " + sessionId));
-
-        if (session.isNextPlayerAi()) {
-            logger.info("Next player is AI, triggering AI turn");
-            processAiTurnPort.processAiTurn(new ProcessAiTurnCommand(moveMadeCommand.sessionId(),moveMadeCommand.serializedBoard(), moveMadeCommand.serializedLegalMoves()));
-        } else {
-            logger.info("Next player is HUMAN, waiting for their move");
-        }
     }
 }

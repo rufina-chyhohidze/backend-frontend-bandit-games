@@ -28,23 +28,8 @@ public class GameStateMongoEmbedded {
     private String legalMoves;
 
     // AI/ML annotations (persistence/logging concerns)
-    @Field("best_move")
-    private String bestMove;
-
-    @Field("confidence_score")
-    private Double confidenceScore;
-
-    @Field("heuristic_score")
-    private Double heuristicScore;
-
-    @Field("visit_count")
-    private Integer visitCount;
-
-    @Field("search_depth")
-    private Integer searchDepth;
-
-    @Field("recommended_move")
-    private String recommendedMove;
+    @Field("ai_metadata_embedded")
+    private AiMetadataEmbedded aiMetadataEmbedded;
 
 
 
@@ -56,25 +41,15 @@ public class GameStateMongoEmbedded {
                                   int moveNumber,
                                   String board,
                                   String legalMoves,
-                                  String bestMove,
-                                  Double confidenceScore,
-                                  Double heuristicScore,
-                                  Integer visitCount,
-                                  Integer searchDepth,
-                                  String recommendedMove
+                                  AiMetadataEmbedded aiMetadataEmbedded
                                   ) {
         this.timestamp = timestamp;
         this.playerType = playerType;
         this.playerSide = playerSide;
         this.moveNumber = moveNumber;
         this.board = board;
-        this.bestMove = bestMove;
-        this.confidenceScore = confidenceScore;
-        this.heuristicScore = heuristicScore;
-        this.visitCount = visitCount;
-        this.searchDepth = searchDepth;
-        this.recommendedMove = recommendedMove;
         this.legalMoves = legalMoves;
+        this.aiMetadataEmbedded=aiMetadataEmbedded;
     }
     public String getLegalMoves() {
         return legalMoves;
@@ -84,10 +59,5 @@ public class GameStateMongoEmbedded {
     public PlayerSide getPlayerSide() { return playerSide; }
     public int getMoveNumber() { return moveNumber; }
     public String getBoard() { return board; }
-    public String getBestMove() { return bestMove; }
-    public Double getConfidenceScore() { return confidenceScore; }
-    public Double getHeuristicScore() { return heuristicScore; }
-    public Integer getVisitCount() { return visitCount; }
-    public Integer getSearchDepth() { return searchDepth; }
-    public String getRecommendedMove() { return recommendedMove; }
+    public AiMetadataEmbedded getAiMetadataEmbedded() { return aiMetadataEmbedded; }
 }

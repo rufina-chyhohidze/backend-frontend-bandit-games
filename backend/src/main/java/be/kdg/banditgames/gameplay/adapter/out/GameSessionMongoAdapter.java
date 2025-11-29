@@ -1,9 +1,14 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
+import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.gameplay.adapter.out.aiMetadataPending.AiMetadataPendingEntity;
+import be.kdg.banditgames.gameplay.adapter.out.aiMetadataPending.MongoAiMetadataPendingRepository;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
+import be.kdg.banditgames.gameplay.port.out.aiMetadataPending.DeleteAiMetadataPendingPort;
+import be.kdg.banditgames.gameplay.port.out.aiMetadataPending.LoadAiMetadataPendingPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;
 import org.slf4j.Logger;
@@ -18,12 +23,16 @@ import java.util.UUID;
 
 @Repository
 public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGameSessionPort {
+    private final LoadAiMetadataPendingPort loadAiPendingPort;
+    private final DeleteAiMetadataPendingPort deleteAiPendingPort;
     private final MongoGameplayRepository mongoGameplayRepository;
     private final MongoTemplate mongoTemplate;
     private final Logger logger = LoggerFactory.getLogger(GameSessionMongoAdapter.class);
 
-    public GameSessionMongoAdapter(MongoGameplayRepository mongoGameplayRepository,
+    public GameSessionMongoAdapter(LoadAiMetadataPendingPort loadAiPendingPort, DeleteAiMetadataPendingPort deleteAiPendingPort, MongoGameplayRepository mongoGameplayRepository,
                                    MongoTemplate mongoTemplate) {
+        this.loadAiPendingPort = loadAiPendingPort;
+        this.deleteAiPendingPort = deleteAiPendingPort;
         this.mongoTemplate = mongoTemplate;
         this.mongoGameplayRepository = mongoGameplayRepository;
     }
@@ -43,14 +52,26 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
     }
 
     @Override
-    public void addGameState(SessionId sessionId, GameState gameState, AiMoveMetadata aiMove) {
-        // no DTO here, pure domain
+    public void addGameState(SessionId sessionId, GameState gameState) {
         UUID idValue = sessionId.sessionsId();
 
         Query query = new Query(Criteria.where("_id").is(idValue));
+        AiMetadataEmbedded aiMetadata = null;
 
-        // if you have an annotation DTO, map it here
-        GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMove);
+        if (gameState.getPlayerType() != PlayerType.HUMAN) {
+            // Fetch from pending collection
+            Optional<AiMetadataPendingEntity> pending =
+                    loadAiPendingPort.find(
+                            sessionId.sessionsId(),
+                            gameState.getMoveNumber()
+                    );
+
+            if (pending.isPresent()) {
+                aiMetadata = pending.get().getMetadata();
+                deleteAiPendingPort.delete(pending.get());  // Cleanup
+            }
+        }
+        GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
 
         Update update = new Update().push("game_states", embedded);
         mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);

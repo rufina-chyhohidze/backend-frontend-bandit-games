@@ -4,6 +4,7 @@ import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentResponseDto;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgenteMoveService;
+import be.kdg.banditgames.gameplay.port.out.aiMetadataPending.SaveAiMetadataPendingPort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,7 +12,11 @@ import org.springframework.web.client.RestTemplate;
 public class AiAgentMoveAdaptor implements AiAgenteMoveService {
     
     private final RestTemplate restTemplate = new RestTemplate();
+    private final SaveAiMetadataPendingPort savePendingPort;
 
+    public AiAgentMoveAdaptor(SaveAiMetadataPendingPort savePendingPort) {
+        this.savePendingPort = savePendingPort;
+    }
     @Override
     public AiMoveMetadata getAiAgentMove(AiRequestCommand aiRequest) {
         String aiApiUrl = "http://localhost:8081/ai";
@@ -28,13 +33,23 @@ public class AiAgentMoveAdaptor implements AiAgenteMoveService {
             throw new IllegalStateException("AI service returned an unexpected null response.");
         }
 
-        return  new AiMoveMetadata(
+        AiMoveMetadata metadata = new AiMoveMetadata(
                 response.move(),
                 response.confidence(),
                 response.bestMove(),
                 response.heuristic(),
                 response.visits(),
-                response.depth());
+                response.depth()
+        );
+
+        // Save snapshot
+        savePendingPort.saveTemporaryMetadata(
+                aiRequest.sessionId(),
+                aiRequest.moveNumber(),
+                metadata
+        );
+
+        return metadata;
     }
     
 }

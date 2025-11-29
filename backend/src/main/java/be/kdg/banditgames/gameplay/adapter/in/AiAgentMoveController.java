@@ -25,7 +25,7 @@ public class AiAgentMoveController {
     @GetMapping
     public ResponseEntity<AiAgentResponseDto> getBestMove(@RequestBody AiRequest aiRequest) {
         AiMoveMetadata aiMove = aiAgentMoveUseCase.handleMove(
-                new AiRequestCommand(
+                new AiRequestCommand(aiRequest.sessionId(), aiRequest.moveNumber(),
                         aiRequest.gameState(), aiRequest.legalMoves())
         );
         return ResponseEntity.ok(AiAgentResponseDto.fromMetadata(aiMove));
