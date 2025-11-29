@@ -11,13 +11,17 @@ import be.kdg.banditgames.platform.port.in.lobby.CreateLobbyCommand;
 import be.kdg.banditgames.platform.port.in.lobby.LobbyCreationUseCase;
 import be.kdg.banditgames.platform.port.in.lobby.ManagingLobbyUseCase;
 import be.kdg.banditgames.platform.port.out.LoadPlayableGamesPort;
+import be.kdg.banditgames.platform.port.out.lobby.FindLobbyPort;
 import be.kdg.banditgames.platform.port.out.lobby.LoadLobbyPort;
 import be.kdg.banditgames.platform.port.out.lobby.LobbyLookupPort;
 import be.kdg.banditgames.platform.port.out.lobby.PersistLobbyPort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
-public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseCase {
+public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseCase, FindLobbyPort {
     
     private final LoadLobbyPort loadLobbyPort;
     private final PersistLobbyPort persistLobbyPort;
@@ -93,4 +97,16 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         lobby.chooseGame(gameId);
         persistLobbyPort.saveLobby(lobby);
     }
+
+    @Override
+    public Lobby findLobbyById(UUID lobbyId) {
+        return loadLobbyPort.loadLobbyById(LobbyId.of(lobbyId))
+                .orElseThrow();
+    }
+
+    @Override
+    public Optional<Lobby> findLobbyByPlayerId(UUID playerId) {
+        return loadLobbyPort.loadLobbyByPlayerId(PlayerId.of(playerId));
+    }
+
 }

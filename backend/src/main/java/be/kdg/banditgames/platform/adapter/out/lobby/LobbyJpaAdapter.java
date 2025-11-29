@@ -59,4 +59,10 @@ public class LobbyJpaAdapter implements LoadLobbyPort, PersistLobbyPort, LobbyLo
     public boolean isPlayerInAnyLobby(PlayerId playerId) {
         return lobbyJpaRepository.existsByHostPlayerIdOrGuestPlayerId(playerId.playerId(), playerId.playerId());
     }
+
+    @Override
+    public Optional<Lobby> loadLobbyByPlayerId(PlayerId playerId) {
+        return lobbyJpaRepository.findByHostPlayerIdOrGuestPlayerId(playerId.playerId(), playerId.playerId())
+                .map(LobbyJpaMapper::toDomain);
+    }
 }

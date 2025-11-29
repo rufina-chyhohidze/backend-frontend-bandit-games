@@ -1,7 +1,6 @@
-package be.kdg.banditgames.platform.adapter.out.mapper;
+package be.kdg.banditgames.platform.adapter.out.player;
 
-import be.kdg.banditgames.gameplay.domain.vo.PlayerId;
-import be.kdg.banditgames.platform.adapter.out.player.PlayerJpaEntity;
+import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.domain.Player;
 
 import java.util.UUID;
@@ -13,7 +12,7 @@ public final class PlayerJpaMapper {
     public static Player toDomain(PlayerJpaEntity entity) {
         if (entity == null) return null;
         PlayerId playerId = PlayerId.of(entity.getId());
-        return new Player(playerId, entity.getUsername());
+        return Player.rehydrate(playerId, entity.getUsername(), null, null, null);
     }
 
     public static PlayerJpaEntity toEntity(Player player) {
