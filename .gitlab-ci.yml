@@ -1,39 +1,15 @@
-stages: 
-  - build
-  - test
-    
-cache:
-  key: "${CI_PROJECT_ID}"
-  paths:
-    - .gradle/wrapper/
-    - .gradle/caches/
-    - build/
-
-    
-variables:
-  DEFAULT_IMAGE_NAME: eclipse-temurin:21-jdk-alpine
-    
-build_job:
-  stage: build
-  image: $DEFAULT_IMAGE_NAME
-  script:
-    - echo "Compiling backend..."
-    - cd backend
-    - ./gradlew clean build
-      
 test_job:
   stage: test
-  image: $DEFAULT_IMAGE_NAME
-  artifacts: 
-    reports: 
-        junit: backend/build/test-results/test/*.xml
+  image: eclipse-temurin:21-jdk-alpine
+  artifacts:
+    reports:
+      junit: backend/build/test-results/test/*.xml
   services:
-    - name: docker:27-dind
-  variables: 
+    - name: docker:dind
+  variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
   script:
     - echo "Testing backend..."
     - cd backend
-    - ./gradlew test
-      
+    - java -jar ../gradle/wrapper/gradle-wrapper.jar test
