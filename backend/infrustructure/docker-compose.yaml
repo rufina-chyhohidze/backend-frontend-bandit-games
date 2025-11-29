@@ -96,7 +96,8 @@ services:
       - kdg-backend
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-      - rabbitmq_logs:/var/log/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
 
   idp_mysql:
     image: mysql:9.0.1
