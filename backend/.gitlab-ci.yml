@@ -9,7 +9,8 @@ build_job:
   stage: build
   image: $DEFAULT_IMAGE_NAME
   script:
-    - ./gradlew clean build
+    - echo "Compiling backend using direct Java execution from root..."
+    - java -jar gradle/wrapper/gradle-wrapper.jar :backend:clean :backend:build
       
 test_job:
   stage: test
