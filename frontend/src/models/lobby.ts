@@ -7,5 +7,5 @@ export interface LobbyDto {
 }
 
 export interface CreateLobbyRequest {
-    playerId: string;
+    playerId?: string;
 }

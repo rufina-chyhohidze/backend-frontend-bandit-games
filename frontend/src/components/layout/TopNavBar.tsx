@@ -111,8 +111,8 @@ export function TopNavBar() {
                         Achievements
                     </Button>
                     <Button
-                        disabled
-                        sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
+                        onClick={() => handleNavClick("/lobby")}
                     >
                         Lobby
                     </Button>
