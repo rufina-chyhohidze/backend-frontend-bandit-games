@@ -27,6 +27,11 @@ test_job:
   artifacts: 
     reports: 
         junit: backend/build/test-results/test/*.xml
+  services:
+    - name: docker:27-dind
+  variables: 
+    DOCKER_HOST: "tcp://docker:2375/"
+    DOCKER_TLS_CERTDIR: ""
   script:
     - echo "Testing backend..."
     - cd backend
