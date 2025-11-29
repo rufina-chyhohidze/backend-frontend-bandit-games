@@ -41,6 +41,10 @@ public class GameStateMongoEmbedded {
     @Field("search_depth")
     private Integer searchDepth;
 
+    @Field("recommended_move")
+    private String recommendedMove;
+
+
 
     public GameStateMongoEmbedded() {}
 
@@ -54,7 +58,8 @@ public class GameStateMongoEmbedded {
                                   Double confidenceScore,
                                   Double heuristicScore,
                                   Integer visitCount,
-                                  Integer searchDepth) {
+                                  Integer searchDepth,
+                                  String recommendedMove) {
         this.timestamp = timestamp;
         this.playerType = playerType;
         this.playerSide = playerSide;
@@ -66,6 +71,7 @@ public class GameStateMongoEmbedded {
         this.heuristicScore = heuristicScore;
         this.visitCount = visitCount;
         this.searchDepth = searchDepth;
+        this.recommendedMove = recommendedMove;
     }
 
     public LocalDateTime getTimestamp() { return timestamp; }
@@ -79,4 +85,5 @@ public class GameStateMongoEmbedded {
     public Double getHeuristicScore() { return heuristicScore; }
     public Integer getVisitCount() { return visitCount; }
     public Integer getSearchDepth() { return searchDepth; }
+    public String getRecommendedMove() { return recommendedMove; }
 }

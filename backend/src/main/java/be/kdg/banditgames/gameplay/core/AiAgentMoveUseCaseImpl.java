@@ -1,6 +1,7 @@
 package be.kdg.banditgames.gameplay.core;
 
 import be.kdg.banditgames.gameplay.domain.AiMove;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgenteMoveService;
@@ -18,8 +19,8 @@ public class AiAgentMoveUseCaseImpl implements AiAgentMoveUseCase{
     }
     
     @Override
-    public AiMove handleMove(AiRequestCommand aiRequest) {
-        AiMove aiMove = aiAgentMoveService.getAiAgentMove(aiRequest);
+    public AiMoveMetadata handleMove(AiRequestCommand aiRequest) {
+        AiMoveMetadata aiMove = aiAgentMoveService.getAiAgentMove(aiRequest);
         return aiMove;
     }
 }

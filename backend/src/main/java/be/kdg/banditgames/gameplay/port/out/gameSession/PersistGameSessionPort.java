@@ -4,8 +4,9 @@ import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 
 public interface PersistGameSessionPort {
     void save(GameSession gameSession);
-    void addGameState(SessionId sessionId, GameState gameState, AiMove aiMove);
+    void addGameState(SessionId sessionId, GameState gameState, AiMoveMetadata aiMoveMetadata);
 }

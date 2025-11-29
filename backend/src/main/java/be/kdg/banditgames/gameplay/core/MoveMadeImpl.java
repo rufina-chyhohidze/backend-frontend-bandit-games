@@ -3,6 +3,7 @@ package be.kdg.banditgames.gameplay.core;
 import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
@@ -33,7 +34,7 @@ public class MoveMadeImpl implements MoveMadePort {
                 moveMadeCommand.serializedLegalMoves());
 
         // Call AI service to evaluate
-        AiMove aiMove = aiAgentMoveUseCase.handleMove(
+        AiMoveMetadata aiMove = aiAgentMoveUseCase.handleMove(
                 new AiRequestCommand(moveMadeCommand.serializedBoard(),
                         moveMadeCommand.serializedLegalMoves())
         );

@@ -1,10 +1,10 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
-import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentMoveDto;
 import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
 
 
     @Override
-    public void addGameState(SessionId sessionId, GameState gameState, AiMove aiMove) {
+    public void addGameState(SessionId sessionId, GameState gameState, AiMoveMetadata aiMove) {
         // no DTO here, pure domain
         UUID idValue = sessionId.sessionsId();
         Query query = new Query(Criteria.where("_id").is(idValue));

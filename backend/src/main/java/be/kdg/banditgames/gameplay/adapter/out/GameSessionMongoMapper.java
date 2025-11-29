@@ -1,16 +1,16 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
-import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentMoveDto;
 import be.kdg.banditgames.gameplay.domain.AiMove;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.domain.vo.GameId;
 import be.kdg.banditgames.gameplay.domain.vo.SessionId;
+import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+@Component
 public class GameSessionMongoMapper {
 
     // Minimal: session without states (when created)
@@ -74,7 +74,7 @@ public class GameSessionMongoMapper {
     }
 
     // Build a single embedded state from one domain state and optional annotation
-    public static GameStateMongoEmbedded toEmbeddedState(GameState state, AiMove ann) {
+    public static GameStateMongoEmbedded toEmbeddedState(GameState state, AiMoveMetadata ann) {
         return new GameStateMongoEmbedded(
                 state.getTimestamp(),
                 state.getPlayerType(),
@@ -86,7 +86,8 @@ public class GameSessionMongoMapper {
                 ann != null ? ann.confidenceScore() : null,
                 ann != null ? ann.heuristicScore() : null,
                 ann != null ? ann.visitCount() : null,
-                ann != null ? ann.searchDepth() : null
+                ann != null ? ann.searchDepth() : null,
+                ann != null ? ann.recommendedMove() : null
         );
     }
 }
