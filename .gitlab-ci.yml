@@ -1,0 +1,23 @@
+stages: 
+  - build
+  - test
+    
+variables:
+  DEFAULT_IMAGE_NAME: eclipse-temurin:25-jdk-alpine
+    
+build_job:
+  stage: build
+  image: $DEFAULT_IMAGE_NAME
+  script:
+    - echo "Compiling backend..."
+    - cd backend
+    - ./gradlew clean build
+      
+test_job:
+  stage: test
+  image: $DEFAULT_IMAGE_NAME
+  script:
+    - echo "Testing backend..."
+    - cd backend
+    - ./gradlew test
+      
