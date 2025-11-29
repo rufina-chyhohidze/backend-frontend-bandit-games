@@ -8,7 +8,6 @@ import java.util.UUID;
 public record GameCreatedCommand(
         UUID eventId,
         LocalDateTime occurredAt,
-        UUID gameId,
         UUID sessionId,
         PlayerType player1,
         PlayerType player2

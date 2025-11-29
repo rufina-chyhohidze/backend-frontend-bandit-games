@@ -9,7 +9,6 @@ import java.util.UUID;
 public record MoveMadeCommand(
         UUID eventId,
         LocalDateTime occurredAt,
-        UUID gameId,
         UUID sessionId,
         PlayerType playerType,
         PlayerSide playerSide,

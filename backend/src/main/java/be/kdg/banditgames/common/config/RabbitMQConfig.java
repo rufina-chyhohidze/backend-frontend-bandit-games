@@ -31,7 +31,7 @@ public class RabbitMQConfig {
 
         DefaultClassMapper classMapper = new DefaultClassMapper();
         classMapper.setTrustedPackages(
-                "be.kdg.banditgames.connect4.messages"
+                "*"
         );
 
         // Map incoming RabbitMQ class names to DTOs
