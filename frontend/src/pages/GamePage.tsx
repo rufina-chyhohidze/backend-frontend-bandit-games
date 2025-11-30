@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Game } from "../models/game.ts";
-import { fetchGames } from "../api/gamesApi";
+import { fetchGames } from "../services/gamesService.ts";
 import { GameList } from "../components/games/GameList";
 import {
     Box,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function GamesPage() {
     const [games, setGames] = useState<Game[]>([]);
@@ -61,14 +62,31 @@ export function GamesPage() {
                 alignItems: "center",
                 justifyContent: "center",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
+                position: "relative",
+                overflow: "hidden",
             }}
         >
+            {/* Top navigation bar fixed at the top */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 2,
+                }}
+            >
+                <TopNavBar />
+            </Box>
+
+            {/* Main card, centered (same alignment as before) */}
             <Box
                 sx={{
                     width: { xs: "98vw", sm: 700, md: 900 },
                     maxWidth: "98vw",
                     borderRadius: 4,
                     p: { xs: 2, md: 4 },
+                    pt: { xs: 6, md: 7 }, // extra top padding so content is not hidden behind navbar
                     bgcolor: "rgba(10, 16, 36, 0.97)",
                     boxShadow: "0 24px 60px rgba(0,0,0,0.7)",
                     position: "relative",
@@ -89,7 +107,15 @@ export function GamesPage() {
                     }}
                 />
 
-                <Stack spacing={3} alignItems="center" sx={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                <Stack
+                    spacing={3}
+                    alignItems="center"
+                    sx={{
+                        textAlign: "center",
+                        position: "relative",
+                        zIndex: 1,
+                    }}
+                >
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <SportsEsportsRoundedIcon sx={{ fontSize: 32, color: "#9d7dff" }} />
                         <Typography
@@ -104,6 +130,7 @@ export function GamesPage() {
                             Games Library
                         </Typography>
                     </Stack>
+
                     <Typography
                         variant="body1"
                         sx={{
@@ -114,6 +141,7 @@ export function GamesPage() {
                     >
                         Pick a game to start playing or explore its achievements.
                     </Typography>
+
                     <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
                         <Chip
                             label="All platforms"
@@ -124,7 +152,7 @@ export function GamesPage() {
                             }}
                         />
                         <Chip
-                            label={`${games.length} game${games.length === 1 ? "" : "s"} `}
+                            label={`${games.length} game${games.length === 1 ? "" : "s"}`}
                             size="small"
                             sx={{
                                 bgcolor: "rgba(0, 220, 130, 0.12)",
@@ -132,6 +160,7 @@ export function GamesPage() {
                             }}
                         />
                     </Stack>
+
                     <Button
                         variant="outlined"
                         onClick={loadGames}
@@ -148,7 +177,8 @@ export function GamesPage() {
                             borderRadius: 100,
                             "&:hover": {
                                 borderColor: "#ffffff",
-                                background: "linear-gradient(120deg, rgba(157,125,255,0.25), rgba(0,220,130,0.25))",
+                                background:
+                                    "linear-gradient(120deg, rgba(157,125,255,0.25), rgba(0,220,130,0.25))",
                             },
                         }}
                     >
