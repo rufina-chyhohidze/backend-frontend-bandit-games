@@ -5,6 +5,7 @@ import java.util.UUID;
 public record AiRequest(
         UUID sessionId,
         int moveNumber,
+        String AiType,
         String gameState,
         String legalMoves
 ) {

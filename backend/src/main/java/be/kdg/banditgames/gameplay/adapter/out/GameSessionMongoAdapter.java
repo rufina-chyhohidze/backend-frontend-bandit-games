@@ -55,8 +55,12 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
     public void addGameState(SessionId sessionId, GameState gameState) {
         UUID idValue = sessionId.sessionsId();
 
-        Query query = new Query(Criteria.where("_id").is(idValue));
+        boolean exists = mongoGameplayRepository.existsById(idValue);
+        logger.info("Exists? {}", exists);
+
+        Query query = new Query(Criteria.where("session_id").is(idValue));
         AiMetadataEmbedded aiMetadata = null;
+
 
         if (gameState.getPlayerType() != PlayerType.HUMAN) {
             // Fetch from pending collection
@@ -74,6 +78,8 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
 
         Update update = new Update().push("game_states", embedded);
-        mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
+        var result = mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
+        logger.info("Matched: {}, Modified: {}", result.getMatchedCount(), result.getModifiedCount());
+
     }
 }

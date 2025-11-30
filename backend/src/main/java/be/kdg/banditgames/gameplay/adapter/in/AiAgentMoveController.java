@@ -1,6 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.in;
 
 
+import be.kdg.banditgames.common.shared.PlayerType;
 import be.kdg.banditgames.gameplay.adapter.in.request.AiRequest;
 import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentResponseDto;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
@@ -26,6 +27,7 @@ public class AiAgentMoveController {
     public ResponseEntity<AiAgentResponseDto> getBestMove(@RequestBody AiRequest aiRequest) {
         AiMoveMetadata aiMove = aiAgentMoveUseCase.handleMove(
                 new AiRequestCommand(aiRequest.sessionId(), aiRequest.moveNumber(),
+                        PlayerType.valueOf(aiRequest.AiType()),
                         aiRequest.gameState(), aiRequest.legalMoves())
         );
         return ResponseEntity.ok(AiAgentResponseDto.fromMetadata(aiMove));

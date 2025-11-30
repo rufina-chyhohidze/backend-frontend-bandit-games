@@ -1,0 +1,11 @@
+### Create a new Connect 4 game
+POST http://localhost:8000/lobby/create-game
+Content-Type: application/json
+
+{
+  "sessionId": "c1f3e8a4-7d6b-4f2a-9b1e-5d4a2f3c6e7b",
+  "player1Id": "player1",
+  "player2Id": "player2",
+  "player1Type": "human",
+  "player2Type": "human"
+}

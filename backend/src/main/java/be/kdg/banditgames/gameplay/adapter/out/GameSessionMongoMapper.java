@@ -3,6 +3,8 @@ import org.springframework.stereotype.Component;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
+
+import java.util.ArrayList;
 import java.util.List;
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.SessionId;
@@ -20,7 +22,7 @@ public class GameSessionMongoMapper {
                 gameSession.getStartTime(),
                 gameSession.getEndTime(),
                 gameSession.getWinnerId(),
-                null
+                new ArrayList<>()
         );
     }
 
@@ -50,7 +52,7 @@ public class GameSessionMongoMapper {
                 entity.getStartTime(),
                 entity.getEndTime(),
                 entity.getWinnerId(),
-                null
+                new ArrayList<>()
         );
 
         if (entity.getGameStates() != null) {
