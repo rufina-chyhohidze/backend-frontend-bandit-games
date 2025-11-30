@@ -1,18 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQuery as useQuery2, useQueryClient} from "@tanstack/react-query";
 import {
-    createLobby,
     addPlayerToLobby,
+    chooseGameForLobby,
     closeLobby,
+    createLobby,
+    fetchOpenLobbies,
+    getLobbyById,
+    getLobbyByPlayerId,
     leaveLobby,
     startGame,
-    chooseGameForLobby,
-    getLobbyByPlayerId,
-    getLobbyById,
-    fetchOpenLobbies,
 } from "../services/lobbyService";
-import type { LobbyDto } from "../models/lobby";
-import { useQuery as useQuery2 } from "@tanstack/react-query";
-import { useContext } from "react";
+import type {LobbyDto} from "../models/lobby";
+import {useContext} from "react";
 import SecurityContext from "../context/SecurityContext";
 
 // -----------------------------
@@ -77,11 +76,46 @@ export function useLeaveLobby() {
 // -----------------------------
 // Start Game
 // -----------------------------
-export function useStartGame() {
-    return useMutation<string | null, unknown, string>({
+type StartGameResponse = {
+    hostUrl: string;
+    guestUrl: string;
+    player1Type: string;
+    player2Type: string;
+};
+
+export function useStartGame(
+    loggedInUser: { id?: string; name?: string } | undefined,
+    lobby: { hostPlayerId: string } | undefined
+) {
+    return useMutation<StartGameResponse, unknown, string>({
         mutationFn: (lobbyId: string) => startGame(lobbyId),
+
+        onSuccess: (data) => {
+            if (!data) {
+                console.error("Start Game returned no data.");
+                return;
+            }
+
+            if (!loggedInUser || !lobby) {
+                console.error("Cannot redirect: missing loggedInUser or lobby.");
+                return;
+            }
+
+            const { hostUrl, guestUrl } = data;
+
+            const currentUserId = loggedInUser.id ?? loggedInUser.name;
+
+            window.location.href = currentUserId === lobby.hostPlayerId
+                ? hostUrl
+                : guestUrl;
+        },
+
+        onError: (error) => {
+            console.error("Failed to start game:", error);
+        }
     });
 }
+
 
 // -----------------------------
 // Choose Game
@@ -93,11 +127,11 @@ export function useChooseGame() {
         mutationFn: ({ lobbyId, gameId }) =>
             chooseGameForLobby(lobbyId, gameId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["lobby"] });
+            queryClient.invalidateQueries({ queryKey: ["lobby-by-player"] });
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
         },
     });
 }
-
 // use by id
 export function useLobbyById(lobbyId: string | null) {
     const { isAuthenticated } = useContext(SecurityContext);

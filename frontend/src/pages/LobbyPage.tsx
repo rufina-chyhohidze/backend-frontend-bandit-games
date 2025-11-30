@@ -1,20 +1,22 @@
 import { Box, CircularProgress, Typography, Stack, Button, Grid } from "@mui/material";
 import HubRoundedIcon from "@mui/icons-material/HubRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import { NoLobbyState } from "../components/lobby/NoLobbyState";
 import { LobbyCard } from "../components/lobby/LobbyCard";
-import { useLobby, useAddPlayerToLobby } from "../hooks/useLobby";
+import { useLobby, useAddPlayerToLobby, useChooseGame, useStartGame, useOpenLobbies } from "../hooks/useLobby";
 import { useContext } from "react";
 import SecurityContext from "../context/SecurityContext";
-import { useOpenLobbies } from "../hooks/useLobby";
 import { OpenLobbiesList } from "../components/lobby/OpenLobbyList";
+import { GameSelector } from "../components/lobby/GameSelector";
 
 export function LobbyPage() {
     const { isAuthenticated, loggedInUser, login } = useContext(SecurityContext);
     const { lobby, isLoading, isError, refreshLobby } = useLobby();
     const { openLobbies, isLoadingLobbies, isLobbiesError, refreshOpenLobbies } = useOpenLobbies();
 
-    // Call the hook at the top level
     const addPlayerMutation = useAddPlayerToLobby();
+    const chooseGameMutation = useChooseGame();
+    const startGameMutation = useStartGame(loggedInUser!, lobby!);
 
     const handleJoinLobby = (lobbyId: string) => {
         if (!loggedInUser) return;
@@ -34,6 +36,61 @@ export function LobbyPage() {
                 },
             }
         );
+    };
+
+    const handleSelectGame = (gameId: string) => {
+        if (!lobby || !loggedInUser || lobby.hostPlayerId !== (loggedInUser.id ?? loggedInUser.name)) {
+            console.warn("Cannot select game: Not in a lobby or not the host.");
+            return;
+        }
+
+        chooseGameMutation.mutate(
+            { lobbyId: lobby.lobbyId, gameId },
+            {
+                onSuccess: () => {
+                    console.log(`Successfully set game to ${gameId}`);
+                },
+                onError: (error) => {
+                    console.error("Failed to select game:", error);
+                },
+            }
+        );
+    };
+
+    // Handler for the Start Game button (for HOST)
+    const handleStartGame = () => {
+        if (!lobby || !loggedInUser || lobby.hostPlayerId !== (loggedInUser.id ?? loggedInUser.name)) {
+            console.warn("Cannot start game: Not in a lobby or not the host.");
+            return;
+        }
+        if (!lobby.guestPlayerId || !lobby.gameId) {
+            console.warn("Cannot start game: Waiting for guest or game selection.");
+            return;
+        }
+
+        startGameMutation.mutate(lobby.lobbyId);
+    };
+
+    // Handler for Join Game button (for GUEST)
+    const handleJoinGame = () => {
+        if (!lobby || !loggedInUser) {
+            console.warn("Cannot join game: Not in a lobby.");
+            return;
+        }
+
+        const currentUserId = loggedInUser.id ?? loggedInUser.name;
+        if (lobby.hostPlayerId === currentUserId) {
+            console.warn("Host should use Start Game button instead.");
+            return;
+        }
+
+        if (!lobby.gameId) {
+            console.warn("Cannot join game: No game selected yet.");
+            return;
+        }
+
+        // Guest joins the game - uses the same mutation but will get the guest URL
+        startGameMutation.mutate(lobby.lobbyId);
     };
 
     // --- Authentication Guard ---
@@ -105,10 +162,16 @@ export function LobbyPage() {
     const hasLobby = !isLoading && !isError && !!lobby;
     const showNoLobby = !isLoading && !isError && !lobby;
 
+    // Derived state for the button logic
+    const isHost = hasLobby && lobby && lobby.hostPlayerId === currentUserId;
+    const isGuest = hasLobby && lobby && lobby.guestPlayerId === currentUserId;
+    const isLobbyReady = hasLobby && lobby && !!lobby.guestPlayerId && !!lobby.gameId;
+    const isStarting = startGameMutation.isPending;
+
     return (
         <Box
             sx={{
-                minHeight: "100%",
+                minHeight: "100vh",
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
@@ -149,7 +212,7 @@ export function LobbyPage() {
                 >
                     {/* LEFT/CENTER COLUMN: User's Current Lobby Status */}
                     <Grid
-                        size={{ xs: 12, md: 7, lg: 8 }}
+                        size={{xs: 12, md: 7, lg: 8}}
                     >
                         <Stack spacing={3} alignItems="center" sx={{ textAlign: "center" }}>
                             <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
@@ -195,14 +258,79 @@ export function LobbyPage() {
                                     />
                                 )}
 
-                                {hasLobby && lobby && <LobbyCard lobby={lobby} currentUserId={currentUserId} />}
+                                {hasLobby && lobby && (
+                                    <Stack spacing={3} sx={{ width: "100%" }}>
+                                        <LobbyCard lobby={lobby} currentUserId={currentUserId} />
+
+                                        <GameSelector
+                                            currentGameId={lobby.gameId || null}
+                                            isHost={isHost}
+                                            onSelectGame={handleSelectGame}
+                                            isSelecting={chooseGameMutation.isPending}
+                                        />
+
+                                        {/* START GAME BUTTON (Visible only to Host) */}
+                                        {isHost && (
+                                            <Button
+                                                variant="contained"
+                                                fullWidth
+                                                onClick={handleStartGame}
+                                                disabled={!isLobbyReady || isStarting}
+                                                startIcon={isStarting ? <CircularProgress size={20} color="inherit" /> : <PlayArrowRoundedIcon />}
+                                                sx={{
+                                                    bgcolor: isLobbyReady ? "#28a745" : "#6c757d",
+                                                    '&:hover': { bgcolor: isLobbyReady ? '#218838' : '#5a6268' },
+                                                    textTransform: "none",
+                                                    fontWeight: 600,
+                                                    p: 1.5,
+                                                    transition: 'background-color 0.2s',
+                                                }}
+                                            >
+                                                {isStarting
+                                                    ? "Launching Game..."
+                                                    : !lobby.guestPlayerId
+                                                        ? "Waiting for Guest..."
+                                                        : !lobby.gameId
+                                                            ? "Select Game to Start"
+                                                            : "Start Game!"
+                                                }
+                                            </Button>
+                                        )}
+
+                                        {/* JOIN GAME BUTTON (Visible only to Guest) */}
+                                        {isGuest && (
+                                            <Button
+                                                variant="contained"
+                                                fullWidth
+                                                onClick={handleJoinGame}
+                                                disabled={!lobby.gameId || isStarting}
+                                                startIcon={isStarting ? <CircularProgress size={20} color="inherit" /> : <PlayArrowRoundedIcon />}
+                                                sx={{
+                                                    bgcolor: lobby.gameId ? "#007bff" : "#6c757d",
+                                                    '&:hover': { bgcolor: lobby.gameId ? '#0056b3' : '#5a6268' },
+                                                    textTransform: "none",
+                                                    fontWeight: 600,
+                                                    p: 1.5,
+                                                    transition: 'background-color 0.2s',
+                                                }}
+                                            >
+                                                {isStarting
+                                                    ? "Joining Game..."
+                                                    : !lobby.gameId
+                                                        ? "Waiting for Host to Select Game..."
+                                                        : "Join Game!"
+                                                }
+                                            </Button>
+                                        )}
+                                    </Stack>
+                                )}
                             </Box>
                         </Stack>
                     </Grid>
 
                     {/* RIGHT COLUMN: Open Lobbies List */}
                     <Grid
-                        size={{ xs: 12, md: 5, lg: 4 }}
+                        size={{xs: 12, md: 5, lg: 4}}
                     >
                         <OpenLobbiesList
                             openLobbies={openLobbies}

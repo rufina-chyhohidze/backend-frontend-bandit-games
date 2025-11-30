@@ -42,18 +42,13 @@ export const leaveLobby = async (lobbyId: string, playerId: string): Promise<voi
 // -----------------------------
 // Start Game
 // -----------------------------
-export const startGame = async (lobbyId: string): Promise<string | null> => {
+export const startGame = async (lobbyId: string) => {
     try {
         const response = await axios.post(
             `${LOBBY_API_URL}/${lobbyId}/start-game`,
-            null,
-            {
-                maxRedirects: 0,
-                validateStatus: status => status === 303
-            }
         );
 
-        return response.headers["location"] ?? null;
+        return response.data; // JSON: hostUrl, guestUrl, player1Type, player2Type
     } catch (err) {
         console.error("Failed to start game:", err);
         return null;
