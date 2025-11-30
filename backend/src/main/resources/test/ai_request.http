@@ -1,0 +1,12 @@
+### Get all playable games( for now stored in memory adapter)
+GET http://localhost:8080/api/gameplay/ai-move
+Accept: application/json
+Content-Type: application/json
+
+{
+  "sessionId": "8e7a3cb1-8a9d-4e82-ae5d-0adf7adb1d49",
+  "moveNumber": 3,
+  "AiType": "AI_EASY",
+  "gameState": "o o o o o o o o o o o o o o o a o o o o o o a b o o o o o a b o o o o o a b o o o o",
+  "legalMoves": "1,2,3,4,5,6,7"
+}
