@@ -95,3 +95,17 @@ export const getLobbyByPlayerId = async (): Promise<LobbyDto | null> => {
         throw err;
     }
 };
+
+///----------------------------
+// Fetch Open Lobbies List
+//-----------------------------
+
+export async function fetchOpenLobbies(): Promise<LobbyDto[]> {
+    try {
+        const response = await axios.get<LobbyDto[]>(`${LOBBY_API_URL}/all`);
+        return response.data || [];
+    } catch (error) {
+        console.error("Error fetching open lobbies:", error);
+        throw new Error("Failed to load open lobbies.");
+    }
+}

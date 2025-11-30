@@ -8,9 +8,12 @@ import {
     chooseGameForLobby,
     getLobbyByPlayerId,
     getLobbyById,
+    fetchOpenLobbies,
 } from "../services/lobbyService";
 import type { LobbyDto } from "../models/lobby";
 import { useQuery as useQuery2 } from "@tanstack/react-query";
+import { useContext } from "react";
+import SecurityContext from "../context/SecurityContext";
 
 // -----------------------------
 // Create Lobby (server reads player from JWT)
@@ -36,6 +39,7 @@ export function useAddPlayerToLobby() {
         mutationFn: ({ lobbyId, playerId }) => addPlayerToLobby(lobbyId, playerId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lobby"] });
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
         },
     });
 }
@@ -50,6 +54,7 @@ export function useCloseLobby() {
         mutationFn: (lobbyId: string) => closeLobby(lobbyId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lobby"] });
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
         },
     });
 }
@@ -64,6 +69,7 @@ export function useLeaveLobby() {
         mutationFn: ({ lobbyId, playerId }) => leaveLobby(lobbyId, playerId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lobby"] });
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
         },
     });
 }
@@ -94,21 +100,26 @@ export function useChooseGame() {
 
 // use by id
 export function useLobbyById(lobbyId: string | null) {
+    const { isAuthenticated } = useContext(SecurityContext);
+
     return useQuery2<LobbyDto>({
         queryKey: ["lobby-by-id", lobbyId],
         queryFn: () => getLobbyById(lobbyId!),
-        enabled: !!lobbyId,
-        refetchInterval: 30_000,
+        enabled: !!lobbyId && isAuthenticated(),
+        refetchInterval: 5000, // Reduced to 5 seconds for faster updates
     });
 }
 
 // low-level: fetches the lobby for the authenticated player (server reads JWT)
 export function useLobbyByPlayerId() {
+    const { isAuthenticated } = useContext(SecurityContext);
+
     return useQuery<LobbyDto | null>({
         queryKey: ["lobby-by-player"],
         queryFn: () => getLobbyByPlayerId(),
-        enabled: true, // caller should guard authentication
-        refetchInterval: 30_000,
+        enabled: isAuthenticated(), // Only run when authenticated
+        refetchInterval: 5000, // Reduced to 5 seconds for faster updates
+        retry: false, // Don't retry on 401 errors
     });
 }
 
@@ -121,5 +132,28 @@ export function useLobby() {
         isLoading: query.isLoading,
         isError: !!query.error,
         refreshLobby: query.refetch,
+    };
+}
+
+export function useOpenLobbies() {
+    const { isAuthenticated } = useContext(SecurityContext);
+    const queryClient = useQueryClient();
+
+    // Use React Query instead of manual state management
+    const query = useQuery<LobbyDto[]>({
+        queryKey: ["open-lobbies"],
+        queryFn: fetchOpenLobbies,
+        enabled: isAuthenticated(), // Only run when authenticated
+        refetchInterval: 3000, // Refresh every 3 seconds for real-time updates
+        retry: false, // Don't retry on 401 errors
+    });
+
+    return {
+        openLobbies: query.data ?? [],
+        isLoadingLobbies: query.isLoading,
+        isLobbiesError: !!query.error,
+        refreshOpenLobbies: () => {
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
+        },
     };
 }
