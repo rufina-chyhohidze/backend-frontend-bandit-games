@@ -26,6 +26,7 @@ variables:
   TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE: "/var/run/docker.sock"
   TESTCONTAINERS_HOST_OVERRIDE: "docker"
   TESTCONTAINERS_RYUK_DISABLED: "true"
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 build_job:
   stage: build
