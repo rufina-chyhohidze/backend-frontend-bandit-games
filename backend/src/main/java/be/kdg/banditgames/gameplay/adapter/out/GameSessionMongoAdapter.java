@@ -58,7 +58,7 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         boolean exists = mongoGameplayRepository.existsById(idValue);
         logger.info("Exists? {}", exists);
 
-        Query query = new Query(Criteria.where("session_id").is(idValue));
+        Query query = new Query(Criteria.where("_id").is(idValue));
         AiMetadataEmbedded aiMetadata = null;
 
 
