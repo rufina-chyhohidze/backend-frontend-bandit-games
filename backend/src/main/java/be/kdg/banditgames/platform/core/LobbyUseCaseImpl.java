@@ -3,6 +3,7 @@ package be.kdg.banditgames.platform.core;
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.platform.adapter.in.response.StartGameResponse;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.Lobby;
 import be.kdg.banditgames.platform.domain.exception.PlayerAlreadyInLobbyException;
@@ -17,6 +18,7 @@ import be.kdg.banditgames.platform.port.out.lobby.LobbyLookupPort;
 import be.kdg.banditgames.platform.port.out.lobby.PersistLobbyPort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -78,7 +80,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
     }
 
     @Override
-    public String startGameInLobby(LobbyId lobbyId) {
+    public StartGameResponse startGameInLobby(LobbyId lobbyId) {
         Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
                 .orElseThrow();
 
@@ -87,7 +89,28 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         
         lobby.startGame();
         persistLobbyPort.saveLobby(lobby);
-        return game.getUrlGameSession();
+
+
+        String hostUrl = String.format(
+                "%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(),
+                lobbyId.lobbyID(),
+                lobby.getHostPlayer().playerId()
+        );
+
+        String guestUrl = String.format(
+                "%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(),
+                lobbyId.lobbyID(),
+                lobby.getGuestPlayer().playerId()
+        );
+        
+        return new StartGameResponse(
+                hostUrl,
+                guestUrl,
+                lobby.getHostType().name(),
+                lobby.getGuestType().name()
+        );
     }
 
     @Override
@@ -109,4 +132,8 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         return loadLobbyPort.loadLobbyByPlayerId(PlayerId.of(playerId));
     }
 
+    @Override
+    public List<Lobby> findLobbies() {
+        return loadLobbyPort.loadAll();
+    }
 }

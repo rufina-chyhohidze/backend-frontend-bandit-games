@@ -1,5 +1,6 @@
 package be.kdg.banditgames.platform.adapter.out.game;
 
+import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.GameStatus;
 import be.kdg.banditgames.platform.port.out.LoadPlayableGamesPort;
@@ -35,7 +36,7 @@ public class GameJpaAdapter implements LoadPlayableGamesPort, UpdateGamesPort {
 
     private Game toDomain(GameJpaEntity e) {
         return new Game(
-                e.getId(),
+                GameId.of(e.getId()),
                 e.getName(),
                 e.getDescription(),
                 e.getRules(),

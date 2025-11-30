@@ -7,6 +7,7 @@ public record LobbyDto(
         UUID hostPlayerId,
         String hostType,
         UUID guestPlayerId,
-        String guestType
+        String guestType,
+        UUID gameId
 ) {
 }

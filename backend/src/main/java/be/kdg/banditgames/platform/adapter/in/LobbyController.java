@@ -5,6 +5,7 @@ import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.requests.CreateLobbyRequest;
 import be.kdg.banditgames.platform.adapter.in.response.LobbyDto;
 import be.kdg.banditgames.platform.adapter.in.response.LobbyDtoMapper;
+import be.kdg.banditgames.platform.adapter.in.response.StartGameResponse;
 import be.kdg.banditgames.platform.domain.Lobby;
 import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.in.lobby.CreateLobbyCommand;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +37,15 @@ public class LobbyController {
         this.lobbyCreationUseCase = lobbyCreationUseCase;
         this.managingLobbyUseCase = managingLobbyUseCase;
         this.findLobbyUseCase = findLobbyUseCase;
+    }
+    
+    @GetMapping("/all")
+    public ResponseEntity<List<LobbyDto>> getAllLobbies() {
+        List<Lobby> lobbies = findLobbyUseCase.findLobbies();
+        List<LobbyDto> lobbyDtos = lobbies.stream()
+                .map(LobbyDtoMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(lobbyDtos);
     }
 
     @GetMapping("/by-id")
@@ -106,14 +117,14 @@ public class LobbyController {
     }
 
     @PostMapping("/{lobbyId}/start-game")
-    public ResponseEntity<Void> startGame(
+    public ResponseEntity<StartGameResponse> startGame(
             @PathVariable UUID lobbyId
     ) {
-        String redirectUrl = managingLobbyUseCase.startGameInLobby(LobbyId.of(lobbyId));
+        StartGameResponse response = managingLobbyUseCase.startGameInLobby(LobbyId.of(lobbyId));
 
-        return ResponseEntity.status(HttpStatus.SEE_OTHER)
-                .location(URI.create(redirectUrl))
-                .build();
+        return ResponseEntity
+                .ok()
+                .body(response);
     }
 
     @PostMapping("/{lobbyId}/choose-game")
