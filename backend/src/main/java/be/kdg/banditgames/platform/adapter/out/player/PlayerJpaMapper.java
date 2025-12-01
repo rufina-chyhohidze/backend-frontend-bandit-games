@@ -12,7 +12,7 @@ public final class PlayerJpaMapper {
     public static Player toDomain(PlayerJpaEntity entity) {
         if (entity == null) return null;
         PlayerId playerId = PlayerId.of(entity.getId());
-        return Player.rehydrate(playerId, entity.getUsername(), null, null, null);
+        return Player.rehydrate(playerId, entity.getUsername(), null, null);
     }
 
     public static PlayerJpaEntity toEntity(Player player) {
