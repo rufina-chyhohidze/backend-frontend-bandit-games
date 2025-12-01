@@ -27,7 +27,6 @@ public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<Gra
         return roleList.stream()
                 .filter(String.class::isInstance)
                 .map(String.class::cast)
-                // roles: "admin", "player", ...
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

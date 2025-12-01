@@ -2,8 +2,8 @@ package be.kdg.banditgames.platform.adapter.out.player;
 
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.domain.Player;
-import be.kdg.banditgames.platform.port.out.LoadPlayerPort;
-import be.kdg.banditgames.platform.port.out.SavePlayerPort;
+import be.kdg.banditgames.platform.port.out.player.LoadPlayerPort;
+import be.kdg.banditgames.platform.port.out.player.SavePlayerPort;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
