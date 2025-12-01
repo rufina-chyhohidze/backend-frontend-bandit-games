@@ -1,7 +1,48 @@
-import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import { TopNavBar } from "../components/layout/TopNavBar";
+import { fetchPendingGames, approveGame, rejectGame } from "../services/adminGameService";
+import type { AdminGame } from "../models/adminGame";
+import { AdminGameCard } from "../components/admin/AdminGameCard";
 
 export function AdminPage() {
+    const [games, setGames] = useState<AdminGame[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    async function loadGames() {
+        setLoading(true);
+        try {
+            const pending = await fetchPendingGames();
+            setGames(pending);
+        } catch (e) {
+            console.error("Failed to load pending games", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleApprove(gameId: string) {
+        try {
+            await approveGame(gameId);
+            await loadGames();
+        } catch (e) {
+            console.error("Failed to approve game", e);
+        }
+    }
+
+    async function handleReject(gameId: string) {
+        try {
+            await rejectGame(gameId);
+            await loadGames();
+        } catch (e) {
+            console.error("Failed to reject game", e);
+        }
+    }
+
+    useEffect(() => {
+        loadGames();
+    }, []);
+
     return (
         <Box
             sx={{
@@ -74,16 +115,41 @@ export function AdminPage() {
                             border: "1px solid rgba(255,255,255,0.15)",
                             color: "#cfd7ff",
                             boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
+                            mb: 3,
                         }}
                     >
                         <Typography variant="body1">
-                            This is the admin area where you will review and approve new games.
+                            This is the admin area where you review and approve new games added to the platform.
                         </Typography>
                         <Typography variant="body2" sx={{ mt: 1.5, color: "#9db3ff" }}>
-                            Later you can add a list of submitted games, actions to approve or reject,
-                            and filters for status, creator, and date.
+                            Below you’ll see all pending games. Approve to publish them or reject to keep them off the platform.
                         </Typography>
                     </Box>
+
+                    {loading && (
+                        <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                            <CircularProgress sx={{ color: "#7bb7ff" }} />
+                        </Box>
+                    )}
+
+                    {!loading &&
+                        games.map((game) => (
+                            <AdminGameCard
+                                key={game.gameId}
+                                game={game}
+                                onApprove={() => handleApprove(game.gameId)}
+                                onReject={() => handleReject(game.gameId)}
+                            />
+                        ))}
+
+                    {!loading && games.length === 0 && (
+                        <Typography
+                            variant="body2"
+                            sx={{ mt: 2, color: "#9db3ff", fontStyle: "italic" }}
+                        >
+                            No pending games right now. 🎮
+                        </Typography>
+                    )}
                 </Box>
             </Box>
         </Box>

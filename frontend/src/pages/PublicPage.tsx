@@ -4,20 +4,21 @@ import {
     Typography,
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
+import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function PublicPage() {
 
     return (
         <Box
             sx={{
-                minHeight: "100%",
-                width: "100%",
+                minHeight: "100vh",
+                width: "100vw",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
                 position: "relative",
-                py: 4,
+                overflow: "hidden",
             }}
         >
             <Box
@@ -29,6 +30,7 @@ export function PublicPage() {
                     zIndex: 2,
                 }}
             >
+                <TopNavBar />
             </Box>
 
             <Box
