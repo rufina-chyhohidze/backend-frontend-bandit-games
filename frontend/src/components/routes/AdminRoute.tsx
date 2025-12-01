@@ -23,7 +23,7 @@ export function AdminRoute({ children }: PropsWithChildren) {
     const isAdmin = roles.includes('admin')
 
     if (!isAdmin) {
-        return <Navigate to="/player" replace />
+        return <Navigate to="/public" replace />
     }
 
     return children

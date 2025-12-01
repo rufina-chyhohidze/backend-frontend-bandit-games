@@ -7,6 +7,7 @@ import { AdminRoute } from "../components/routes/AdminRoute";
 import { PlayerRoute } from "../components/routes/PlayerRoute";
 import { RootRedirect } from "../components/RootRedirect";
 import {FullScreenFrame} from "../components/connect4/FullScreenFrame.tsx";
+import {LobbyPage} from "../pages/LobbyPage.tsx";
 
 export function AppRoutes() {
     return (
@@ -48,6 +49,7 @@ export function AppRoutes() {
                     </PlayerRoute>
                 }
             />
+            <Route path="/lobby" element={<LobbyPage />} />
 
             <Route path="*" element={<p>Not found</p>} />
         </Routes>
