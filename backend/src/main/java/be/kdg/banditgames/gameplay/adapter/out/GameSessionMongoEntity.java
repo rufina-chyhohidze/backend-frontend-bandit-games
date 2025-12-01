@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.out;
 
+import be.kdg.banditgames.gameplay.domain.GameResult;
 import be.kdg.banditgames.gameplay.domain.GameSessionState;
-import be.kdg.banditgames.common.shared.PlayerSide;
 import be.kdg.banditgames.common.shared.PlayerType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -40,7 +40,7 @@ public class GameSessionMongoEntity {
     private LocalDateTime endTime;
 
     @Field("winner_id")
-    private PlayerSide winnerId;
+    private GameResult gameResult;
 
     // Embedded move snapshots with AI annotations
     @Field("game_states")
@@ -55,7 +55,7 @@ public class GameSessionMongoEntity {
                                   GameSessionState gameSessionState,
                                   LocalDateTime startTime,
                                   LocalDateTime endTime,
-                                  PlayerSide winnerId,
+                                  GameResult gameResult,
                                   List<GameStateMongoEmbedded> gameStates) {
         this.sessionId = sessionId;
         this.gameId = gameId;
@@ -65,7 +65,7 @@ public class GameSessionMongoEntity {
         this.gameSessionState = gameSessionState;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.winnerId = winnerId;
+        this.gameResult = gameResult;
         this.gameStates = gameStates;
     }
 
@@ -76,6 +76,6 @@ public class GameSessionMongoEntity {
     public GameSessionState getGameSessionState() { return gameSessionState; }
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
-    public PlayerSide getWinnerId() { return winnerId; }
+    public GameResult getGameResult() { return gameResult; }
     public List<GameStateMongoEmbedded> getGameStates() { return gameStates; }
 }
