@@ -6,6 +6,7 @@ import be.kdg.banditgames.platform.port.out.LoadPlayerPort;
 import be.kdg.banditgames.platform.port.out.SavePlayerPort;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,4 +31,10 @@ public class PlayerJpaAdapter implements LoadPlayerPort, SavePlayerPort {
         repo.save(entity);
     }
 
+    @Override
+    public List<Player> findByUsernameContainingIgnoreCase(String usernamePart) {
+        return repo.findByUsernameContainingIgnoreCase(usernamePart).stream()
+                .map(PlayerJpaMapper::toDomain)
+                .toList();
+    }
 }

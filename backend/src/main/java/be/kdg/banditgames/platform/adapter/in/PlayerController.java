@@ -1,18 +1,16 @@
 package be.kdg.banditgames.platform.adapter.in;
 
 import be.kdg.banditgames.common.shared.PlayerId;
-import be.kdg.banditgames.platform.adapter.in.dto.PlayerDto;
+import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.out.LoadPlayerPort;
 import be.kdg.banditgames.platform.port.out.SavePlayerPort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,4 +71,13 @@ public class PlayerController {
 
         return PlayerDto.fromDomain(player);
     }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('player')")
+    public List<PlayerDto> searchByUsername(@RequestParam String username) {
+        return loadPlayerPort.findByUsernameContainingIgnoreCase(username).stream()
+                .map(PlayerDto::fromDomain)
+                .toList();
+    }
+
 }

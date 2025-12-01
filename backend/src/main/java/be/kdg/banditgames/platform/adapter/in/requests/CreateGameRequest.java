@@ -1,4 +1,4 @@
-package be.kdg.banditgames.platform.adapter.in.request;
+package be.kdg.banditgames.platform.adapter.in.requests;
 
 public record CreateGameRequest(
     String name,

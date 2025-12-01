@@ -11,14 +11,12 @@ import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.in.lobby.CreateLobbyCommand;
 import be.kdg.banditgames.platform.port.in.lobby.LobbyCreationUseCase;
 import be.kdg.banditgames.platform.port.in.lobby.ManagingLobbyUseCase;
-import be.kdg.banditgames.platform.port.out.lobby.FindLobbyPort;
-import org.springframework.http.HttpStatus;
+import be.kdg.banditgames.platform.port.in.lobby.FindLobbyPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

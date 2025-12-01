@@ -1,4 +1,8 @@
 package be.kdg.banditgames.platform.adapter.in.requests.friendship;
 
-public record RemoveFriendDto() {
-}
+import java.util.UUID;
+
+public record RemoveFriendDto(
+        UUID playerAId,
+        UUID playerBId
+) {}
