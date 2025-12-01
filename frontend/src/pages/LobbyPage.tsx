@@ -17,9 +17,15 @@ import { GameSelector } from "../components/lobby/GameSelector";
 import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function LobbyPage() {
-    const { isAuthenticated, loggedInUser, login } = useContext(SecurityContext);
+    const { loggedInUser } = useContext(SecurityContext);
+
     const { lobby, isLoading, isError, refreshLobby } = useLobby();
-    const { openLobbies, isLoadingLobbies, isLobbiesError, refreshOpenLobbies } = useOpenLobbies();
+    const {
+        openLobbies,
+        isLoadingLobbies,
+        isLobbiesError,
+        refreshOpenLobbies,
+    } = useOpenLobbies();
 
     const addPlayerMutation = useAddPlayerToLobby();
     const chooseGameMutation = useChooseGame();
@@ -105,54 +111,6 @@ export function LobbyPage() {
         startGameMutation.mutate(lobby.lobbyId);
     };
 
-    // --- Authentication Guard ---
-    if (!isAuthenticated()) {
-        return (
-            <>
-                <TopNavBar />
-                <Box
-                    className="scrollable-container"
-                    sx={{
-                        minHeight: "calc(100vh - 64px)",
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
-                        color: "#fff",
-                        textAlign: "center",
-                        p: 4,
-                    }}
-                >
-                    <HubRoundedIcon sx={{ fontSize: 48, color: "#9d7dff", mb: 2 }} />
-                    <Typography variant="h5" gutterBottom sx={{ color: "#fff", fontWeight: 600 }}>
-                        Access Denied
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: "#d0d0e5", mb: 3 }}>
-                        You must be logged in to view the Game Lobby.
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        onClick={login}
-                        sx={{
-                            bgcolor: "#9d7dff",
-                            "&:hover": { bgcolor: "#7f5aff" },
-                            color: "white",
-                            textTransform: "none",
-                            borderRadius: 999,
-                            px: 4,
-                            py: 1.5,
-                        }}
-                    >
-                        Log In to Continue
-                    </Button>
-                </Box>
-            </>
-        );
-    }
-
-    // --- User Profile Loading Guard ---
     if (!loggedInUser) {
         return (
             <>

@@ -1,35 +1,23 @@
-import { type PropsWithChildren, useContext, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
-import SecurityContext from '../../context/SecurityContext.ts'
+import { type PropsWithChildren, useContext } from "react";
+import { Navigate } from "react-router-dom";
+import SecurityContext from "../../context/SecurityContext";
 
 export function PlayerRoute({ children }: PropsWithChildren) {
-    const { isInitialised, isAuthenticated, loggedInUser, login } = useContext(SecurityContext)
-
-    useEffect(() => {
-        if (isInitialised && !isAuthenticated()) {
-            login()
-        }
-    }, [isInitialised, isAuthenticated, login])
-
-    if (!isInitialised) {
-        return <div>Initialising authentication...</div>
+    const { loggedInUser } = useContext(SecurityContext);
+    if (!loggedInUser) {
+        return <Navigate to="/public" replace />;
     }
 
-    if (!isAuthenticated()) {
-        return <div>Authenticating...</div>
+    const roles = loggedInUser.roles ?? [];
+    const isAdmin = roles.includes("admin");
+    const isPlayer = roles.includes("player");
+
+    if (isAdmin) {
+        return <Navigate to="/admin" replace />;
     }
 
-    const roles = loggedInUser?.roles ?? []
-    const isAdmin = roles.includes('admin')
-    const isPlayer = roles.includes('player')
-
-    if (isAdmin && !isPlayer) {
-        return <Navigate to="/admin" replace />
+    if (!isPlayer) {
+        return <Navigate to="/public" replace />;
     }
-
-    if (!isAdmin && !isPlayer) {
-        return <Navigate to="/public" replace />
-    }
-
-    return children
+    return <>{children}</>;
 }
