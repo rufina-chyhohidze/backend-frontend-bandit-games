@@ -10,7 +10,8 @@ public class LobbyDtoMapper {
                 lobby.getHostPlayer() != null ? lobby.getHostPlayer().playerId() : null,
                 lobby.getHostType() != null ? lobby.getHostType().name() : null,
                 lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : null,
-                lobby.getGuestType() != null ? lobby.getGuestType().name() : null
+                lobby.getGuestType() != null ? lobby.getGuestType().name() : null,
+                lobby.getGameId() != null ? lobby.getGameId().gameId() : null
         );
     }
 }

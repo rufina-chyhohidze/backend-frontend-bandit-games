@@ -11,7 +11,10 @@ import be.kdg.banditgames.platform.port.out.lobby.LobbyLookupPort;
 import be.kdg.banditgames.platform.port.out.lobby.PersistLobbyPort;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.Arrays.stream;
 
 @Repository
 public class LobbyJpaAdapter implements LoadLobbyPort, PersistLobbyPort, LobbyLookupPort {
@@ -58,5 +61,19 @@ public class LobbyJpaAdapter implements LoadLobbyPort, PersistLobbyPort, LobbyLo
     @Override
     public boolean isPlayerInAnyLobby(PlayerId playerId) {
         return lobbyJpaRepository.existsByHostPlayerIdOrGuestPlayerId(playerId.playerId(), playerId.playerId());
+    }
+
+    @Override
+    public Optional<Lobby> loadLobbyByPlayerId(PlayerId playerId) {
+        return lobbyJpaRepository.findByHostPlayerIdOrGuestPlayerId(playerId.playerId(), playerId.playerId())
+                .map(LobbyJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Lobby> loadAll() {
+        return lobbyJpaRepository.findAll()
+                .stream()
+                .map(LobbyJpaMapper::toDomain)
+                .toList();
     }
 }

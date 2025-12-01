@@ -1,6 +1,5 @@
-package be.kdg.banditgames.platform.adapter.out.mapper;
+package be.kdg.banditgames.platform.adapter.out.admin;
 
-import be.kdg.banditgames.platform.adapter.out.admin.AdminJpaEntity;
 import be.kdg.banditgames.platform.domain.Admin;
 import be.kdg.banditgames.platform.domain.vo.AdminId;
 

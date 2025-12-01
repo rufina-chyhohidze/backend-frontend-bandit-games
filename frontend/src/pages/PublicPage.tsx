@@ -1,27 +1,23 @@
-import { useContext } from "react";
 import {
     Box,
     Stack,
     Typography,
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
-import SecurityContext from "../context/SecurityContext";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function PublicPage() {
-    const {login} = useContext(SecurityContext);
 
     return (
         <Box
             sx={{
-                minHeight: "100vh",
-                width: "100vw",
+                minHeight: "100%",
+                width: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
                 position: "relative",
-                overflow: "hidden",
+                py: 4,
             }}
         >
             <Box
@@ -33,7 +29,6 @@ export function PublicPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             <Box

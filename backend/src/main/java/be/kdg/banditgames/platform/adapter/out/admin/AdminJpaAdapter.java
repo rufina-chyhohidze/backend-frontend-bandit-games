@@ -1,6 +1,5 @@
 package be.kdg.banditgames.platform.adapter.out.admin;
 
-import be.kdg.banditgames.platform.adapter.out.mapper.AdminJpaMapper;
 import be.kdg.banditgames.platform.domain.Admin;
 import be.kdg.banditgames.platform.domain.vo.AdminId;
 import be.kdg.banditgames.platform.port.out.LoadAdminPort;

@@ -45,10 +45,19 @@ export function TopNavBar() {
         logout?.();
     };
 
-    const activeStyle = (path: string) =>
-        location.pathname.startsWith(path)
+    const activeStyle = (path: string) => {
+        // Check for exact match if the path is the root ("/")
+        if (path === "/") {
+            return location.pathname === "/"
+                ? { borderBottom: "2px solid black", fontWeight: 600 }
+                : { color: "#555" };
+        }
+
+        // For all other paths, continue to use startsWith (good for nested routes)
+        return location.pathname.startsWith(path)
             ? { borderBottom: "2px solid black", fontWeight: 600 }
             : { color: "#555" };
+    };
 
     const initials =
         loggedInUser?.name
@@ -87,8 +96,8 @@ export function TopNavBar() {
                     }}
                 >
                     <Button
-                        onClick={() => handleNavClick("/public")}
-                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/public") }}
+                        onClick={() => handleNavClick("/")}
+                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/") }}
                     >
                         Home
                     </Button>
@@ -111,8 +120,8 @@ export function TopNavBar() {
                         Achievements
                     </Button>
                     <Button
-                        disabled
-                        sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
+                        onClick={() => handleNavClick("/lobby")}
                     >
                         Lobby
                     </Button>

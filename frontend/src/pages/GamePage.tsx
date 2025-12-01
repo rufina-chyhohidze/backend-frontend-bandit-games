@@ -55,12 +55,13 @@ export function GamesPage() {
     return (
         <Box
             sx={{
-                minHeight: "100vh",
-                width: "100vw",
+                minHeight: "100%",
+                width: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
+                py: 4,
             }}
         >
             <Box
@@ -114,7 +115,7 @@ export function GamesPage() {
                     >
                         Pick a game to start playing or explore its achievements.
                     </Typography>
-                    <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
+                    <Stack direction="row" spacing={1} mt={2} flexWrap="wrap" justifyContent="center">
                         <Chip
                             label="All platforms"
                             size="small"

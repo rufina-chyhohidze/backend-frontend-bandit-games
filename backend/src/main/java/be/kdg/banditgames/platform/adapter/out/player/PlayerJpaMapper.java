@@ -1,7 +1,6 @@
-package be.kdg.banditgames.platform.adapter.out.mapper;
+package be.kdg.banditgames.platform.adapter.out.player;
 
 import be.kdg.banditgames.common.shared.PlayerId;
-import be.kdg.banditgames.platform.adapter.out.player.PlayerJpaEntity;
 import be.kdg.banditgames.platform.domain.Player;
 
 import java.util.UUID;

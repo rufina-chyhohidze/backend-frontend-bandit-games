@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { GamesPage } from "../pages/GamePage";
-import { ConnectFourPage } from "../pages/ConnectFourPage";
 import GameAchievementsPage from "../pages/GameAchievementsPage";
 import { AdminPage } from "../pages/AdminPage";
 import { PublicPage } from "../pages/PublicPage";

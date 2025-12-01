@@ -20,6 +20,10 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
     useEffect(() => {
         keycloak.onReady = () => {
             setIsInitialised(true)
+            if (keycloak.authenticated && keycloak.token) {
+                addAccessTokenToAuthHeader(keycloak.token)
+                updateUserFromToken()
+            }
         }
 
         keycloak.onAuthSuccess = () => {
@@ -42,6 +46,13 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
                 addAccessTokenToAuthHeader(keycloak.token)
                 updateUserFromToken()
             })
+                // Fix 2: Add catch block for failed token refresh (best practice)
+                .catch((err) => {
+                    console.error('Token refresh failed', err)
+                    keycloak.clearToken()
+                    removeAccessTokenFromAuthHeader()
+                    setLoggedInUser(undefined)
+                })
         }
 
         keycloak
@@ -65,7 +76,8 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
     }
 
     function isAuthenticated() {
-        if (keycloak.token) return !isExpired(keycloak.token)
+        // Use keycloak.authenticated as the primary check
+        if (keycloak.authenticated && keycloak.token) return !isExpired(keycloak.token)
         return false
     }
 
@@ -74,6 +86,10 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
 
         const idToken: any = keycloak.idTokenParsed
         const token: any = keycloak.tokenParsed
+
+        // FIX: Extract the unique User ID (Subject) from the token.
+        // The 'sub' claim is the correct user ID.
+        const id = idToken.sub || token.sub
 
         const name =
             idToken.given_name ||
@@ -84,6 +100,7 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
         const realmRoles: string[] = token.realm_access?.roles ?? []
 
         setLoggedInUser({
+            id, // Use the corrected 'sub' claim for the ID
             name,
             roles: realmRoles,
         })

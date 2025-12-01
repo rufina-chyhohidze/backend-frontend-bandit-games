@@ -115,4 +115,8 @@ public class Lobby {
     public void chooseGame(GameId gameId) {
         this.gameId = gameId;
     }
+
+    public boolean hasStartedGame() {
+        return lobbyStatus == LobbyStatus.IN_GAME;
+    }
 }
