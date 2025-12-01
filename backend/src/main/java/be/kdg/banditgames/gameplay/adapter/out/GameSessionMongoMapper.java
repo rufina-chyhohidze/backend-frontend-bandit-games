@@ -21,7 +21,7 @@ public class GameSessionMongoMapper {
                 gameSession.getGameSessionState(),
                 gameSession.getStartTime(),
                 gameSession.getEndTime(),
-                gameSession.getWinnerId(),
+                gameSession.getGameResult(),
                 new ArrayList<>()
         );
     }
@@ -36,7 +36,7 @@ public class GameSessionMongoMapper {
                 gameSession.getGameSessionState(),
                 gameSession.getStartTime(),
                 gameSession.getEndTime(),
-                gameSession.getWinnerId(),
+                gameSession.getGameResult(),
                 embeddedStates
         );
     }
@@ -51,7 +51,7 @@ public class GameSessionMongoMapper {
                 entity.getGameSessionState(),
                 entity.getStartTime(),
                 entity.getEndTime(),
-                entity.getWinnerId(),
+                entity.getGameResult(),
                 new ArrayList<>()
         );
 

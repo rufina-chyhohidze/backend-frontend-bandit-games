@@ -19,7 +19,7 @@ public class GameSession {
     private GameSessionState gameSessionState;
     private final LocalDateTime startTime;
     private LocalDateTime endTime;
-    private PlayerSide winnerId;
+    private GameResult gameResult;
 
     private GameSession(GameId gameId,
                         SessionId sessionId,
@@ -50,11 +50,11 @@ public class GameSession {
                                         GameSessionState gameSessionState,
                                         LocalDateTime startTime,
                                         LocalDateTime endTime,
-                                        PlayerSide winnerId,
+                                        GameResult gameResult,
                                         List<GameState> states) {
         GameSession session = new GameSession(gameId, sessionId, playerType, player2Type, gameSessionState, startTime);
         session.endTime = endTime;
-        session.winnerId = winnerId;
+        session.gameResult = gameResult;
         if (states != null) session.gameStates.addAll(states);
         return session;
     }
@@ -66,15 +66,15 @@ public class GameSession {
         this.gameStates.add(gameState);
     }
 
-    public void finishGame(PlayerSide winnerId){
-        this.winnerId = winnerId;
+    public void finishGame(GameResult result){
+        this.gameResult = result;
         this.endTime = LocalDateTime.now();
         this.gameSessionState = GameSessionState.COMPLETED;
     }
 
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
-    public PlayerSide getWinnerId() { return winnerId; }
+    public GameResult getGameResult() { return gameResult; }
     public GameId getGameId() { return gameId; }
     public SessionId getSessionsId() { return sessionId; }
     public PlayerType getPlayerType() { return playerType; }
