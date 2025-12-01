@@ -46,7 +46,6 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
                 addAccessTokenToAuthHeader(keycloak.token)
                 updateUserFromToken()
             })
-                // Fix 2: Add catch block for failed token refresh (best practice)
                 .catch((err) => {
                     console.error('Token refresh failed', err)
                     keycloak.clearToken()
@@ -76,7 +75,6 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
     }
 
     function isAuthenticated() {
-        // Use keycloak.authenticated as the primary check
         if (keycloak.authenticated && keycloak.token) return !isExpired(keycloak.token)
         return false
     }
@@ -87,8 +85,6 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
         const idToken: any = keycloak.idTokenParsed
         const token: any = keycloak.tokenParsed
 
-        // FIX: Extract the unique User ID (Subject) from the token.
-        // The 'sub' claim is the correct user ID.
         const id = idToken.sub || token.sub
 
         const name =
@@ -97,12 +93,27 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
             idToken.name ||
             'Unknown'
 
+        // Extract roles from multiple sources
         const realmRoles: string[] = token.realm_access?.roles ?? []
 
+        // FIXED: Extract client roles for your specific client
+        const clientId = import.meta.env.VITE_KC_CLIENT_ID
+        const clientRoles: string[] = token.resource_access?.[clientId]?.roles ?? []
+
+        // Combine both realm and client roles
+        const allRoles = [...realmRoles, ...clientRoles]
+
+        console.log('=== TOKEN ROLES DEBUG ===')
+        console.log('Realm roles:', realmRoles)
+        console.log('Client roles:', clientRoles)
+        console.log('All roles:', allRoles)
+        console.log('Token resource_access:', token.resource_access)
+        console.log('========================')
+
         setLoggedInUser({
-            id, // Use the corrected 'sub' claim for the ID
+            id,
             name,
-            roles: realmRoles,
+            roles: allRoles, // Use combined roles
         })
     }
 
