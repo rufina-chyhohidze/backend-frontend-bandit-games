@@ -24,10 +24,14 @@ export function TopNavBar() {
 
     const roles = loggedInUser?.roles ?? [];
     const isAdmin = roles.includes("admin");
-    const isLoggedIn = isAuthenticated();
 
     const handleNavClick = (path: string) => {
         navigate(path);
+    };
+
+    const handleBrandClick = () => {
+        // Navigate to root, which will redirect appropriately
+        navigate("/");
     };
 
     const handleUserClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,10 +50,11 @@ export function TopNavBar() {
         logout?.();
     };
 
-    const activeStyle = (path: string) =>
-        location.pathname.startsWith(path)
+    const activeStyle = (path: string) => {
+        return location.pathname.startsWith(path)
             ? { borderBottom: "2px solid black", fontWeight: 600 }
             : { color: "#555" };
+    };
 
     const initials =
         loggedInUser?.name
@@ -72,12 +77,11 @@ export function TopNavBar() {
                 <Typography
                     variant="h6"
                     sx={{ fontWeight: 700, letterSpacing: 0.3, cursor: "pointer" }}
-                    onClick={() => handleNavClick("/public")}
+                    onClick={handleBrandClick}
                 >
                     BanditGames
                 </Typography>
 
-                {/* Nav buttons – vary by auth / role */}
                 <Box
                     sx={{
                         display: "flex",
@@ -88,26 +92,7 @@ export function TopNavBar() {
                         fontSize: 14,
                     }}
                 >
-                    {/* Home is always visible */}
-                    <Button
-                        onClick={() => handleNavClick("/public")}
-                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/public") }}
-                    >
-                        Home
-                    </Button>
-
-                    {/* Logged-in admin: ONLY Home + Admin */}
-                    {isLoggedIn && isAdmin && (
-                        <Button
-                            onClick={() => handleNavClick("/admin")}
-                            sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
-                        >
-                            Admin
-                        </Button>
-                    )}
-
-                    {/* Logged-in non-admin (player): Home + all original buttons except Admin */}
-                    {isLoggedIn && !isAdmin && (
+                    {isAuthenticated() ? (
                         <>
                             <Button
                                 onClick={() => handleNavClick("/games")}
@@ -116,8 +101,8 @@ export function TopNavBar() {
                                 Games
                             </Button>
                             <Button
-                                disabled
-                                sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                                onClick={() => handleNavClick("/friends")}
+                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
                             >
                                 Friends
                             </Button>
@@ -128,19 +113,23 @@ export function TopNavBar() {
                                 Achievements
                             </Button>
                             <Button
-                                onClick={() => handleNavClick("/lobby")}
                                 sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
+                                onClick={() => handleNavClick("/lobby")}
                             >
                                 Lobby
                             </Button>
-
+                            {isAdmin && (
+                                <Button
+                                    onClick={() => handleNavClick("/admin")}
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
+                                >
+                                    Admin
+                                </Button>
+                            )}
                         </>
-                    )}
-
-                    {/* Unlogged user: nothing extra (just Home above) */}
+                    ) : null}
                 </Box>
 
-                {/* Search – leave as-is */}
                 <Box
                     sx={{
                         display: { xs: "none", md: "flex" },
@@ -161,8 +150,7 @@ export function TopNavBar() {
                     <SearchIcon sx={{ fontSize: 18, color: "#9e9e9e" }} />
                 </Box>
 
-                {/* Right side: user or login */}
-                {isLoggedIn ? (
+                {isAuthenticated() ? (
                     <Box sx={{ display: "flex", alignItems: "center", ml: 3, gap: 1.5 }}>
                         <IconButton size="small">
                             <NotificationsNoneIcon fontSize="small" />

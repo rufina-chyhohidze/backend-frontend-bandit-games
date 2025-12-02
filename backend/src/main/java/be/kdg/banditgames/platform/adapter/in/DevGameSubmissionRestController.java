@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
-import be.kdg.banditgames.platform.adapter.in.request.CreateGameRequest;
+import be.kdg.banditgames.platform.adapter.in.requests.CreateGameRequest;
 import be.kdg.banditgames.platform.adapter.in.response.GameDto;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.port.in.game.GameSubmissionCommand;

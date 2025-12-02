@@ -1,9 +1,10 @@
-import { type PropsWithChildren, useEffect, useState } from 'react'
+import { type PropsWithChildren, useEffect, useState, useRef } from 'react'
 import Keycloak, { type KeycloakConfig } from 'keycloak-js'
 import { isExpired } from 'react-jwt'
 import SecurityContext from './SecurityContext'
 import type { User } from '../models/user'
 import { addAccessTokenToAuthHeader, removeAccessTokenFromAuthHeader } from '../services/auth'
+import { registerPlayer } from '../services/playerService'
 
 const keycloakConfig: KeycloakConfig = {
     url: import.meta.env.VITE_KC_URL,
@@ -16,20 +17,23 @@ const keycloak = new Keycloak(keycloakConfig)
 export default function SecurityContextProvider({ children }: PropsWithChildren) {
     const [loggedInUser, setLoggedInUser] = useState<User | undefined>(undefined)
     const [isInitialised, setIsInitialised] = useState(false)
+    const hasRegisteredPlayer = useRef(false) // <- ref avoids re-renders
 
     useEffect(() => {
-        keycloak.onReady = () => {
-            setIsInitialised(true)
+        const handleUserUpdate = () => {
             if (keycloak.authenticated && keycloak.token) {
                 addAccessTokenToAuthHeader(keycloak.token)
                 updateUserFromToken()
             }
         }
 
-        keycloak.onAuthSuccess = () => {
-            addAccessTokenToAuthHeader(keycloak.token)
-            updateUserFromToken()
+        keycloak.onReady = () => {
+            setIsInitialised(true)
+            handleUserUpdate()
         }
+
+        // Removed onAuthSuccess to avoid double call
+        // keycloak.onAuthSuccess = handleUserUpdate
 
         keycloak.onAuthLogout = () => {
             removeAccessTokenFromAuthHeader()
@@ -42,11 +46,11 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
         }
 
         keycloak.onTokenExpired = () => {
-            keycloak.updateToken(-1).then(() => {
-                addAccessTokenToAuthHeader(keycloak.token)
-                updateUserFromToken()
-            })
-                // Fix 2: Add catch block for failed token refresh (best practice)
+            keycloak.updateToken(-1)
+                .then(() => {
+                    addAccessTokenToAuthHeader(keycloak.token)
+                    updateUserFromToken()
+                })
                 .catch((err) => {
                     console.error('Token refresh failed', err)
                     keycloak.clearToken()
@@ -55,16 +59,14 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
                 })
         }
 
-        keycloak
-            .init({
-                onLoad: 'check-sso',
-                pkceMethod: 'S256',
-                checkLoginIframe: false,
-            })
-            .catch((err) => {
-                console.error('Keycloak init error', err)
-                setIsInitialised(true)
-            })
+        keycloak.init({
+            onLoad: 'check-sso',
+            pkceMethod: 'S256',
+            checkLoginIframe: false,
+        }).catch((err) => {
+            console.error('Keycloak init error', err)
+            setIsInitialised(true)
+        })
     }, [])
 
     function login() {
@@ -76,34 +78,35 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
     }
 
     function isAuthenticated() {
-        // Use keycloak.authenticated as the primary check
-        if (keycloak.authenticated && keycloak.token) return !isExpired(keycloak.token)
-        return false
+        return keycloak.authenticated && keycloak.token ? !isExpired(keycloak.token) : false
     }
 
-    function updateUserFromToken() {
+    async function updateUserFromToken() {
         if (!keycloak.idTokenParsed || !keycloak.tokenParsed) return
 
         const idToken: any = keycloak.idTokenParsed
         const token: any = keycloak.tokenParsed
 
-        // FIX: Extract the unique User ID (Subject) from the token.
-        // The 'sub' claim is the correct user ID.
         const id = idToken.sub || token.sub
-
-        const name =
-            idToken.given_name ||
-            idToken.preferred_username ||
-            idToken.name ||
-            'Unknown'
+        const name = idToken.given_name || idToken.preferred_username || idToken.name || 'Unknown'
 
         const realmRoles: string[] = token.realm_access?.roles ?? []
+        const clientId = import.meta.env.VITE_KC_CLIENT_ID
+        const clientRoles: string[] = token.resource_access?.[clientId]?.roles ?? []
+        const allRoles = [...realmRoles, ...clientRoles]
 
-        setLoggedInUser({
-            id, // Use the corrected 'sub' claim for the ID
-            name,
-            roles: realmRoles,
-        })
+        setLoggedInUser({ id, name, roles: allRoles })
+
+        // Only register once
+        if (!hasRegisteredPlayer.current) {
+            hasRegisteredPlayer.current = true // set before awaiting
+            try {
+                const backendPlayer = await registerPlayer()
+                console.log('Backend player registered / fetched:', backendPlayer)
+            } catch (err) {
+                console.error('Failed to register backend player', err)
+            }
+        }
     }
 
     return (

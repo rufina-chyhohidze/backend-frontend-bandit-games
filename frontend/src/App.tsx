@@ -5,6 +5,7 @@ import SecurityContextProvider from "./context/SecurityContextProvider";
 import { AppRoutes } from "./router/AppRoutes";
 import {ChatProvider} from "./context/ChatProvider.tsx";
 import ChatbotWidget from "./components/Chatbot/ChatbotWidget";
+import {TopNavBar} from "./components/layout/TopNavBar.tsx";
 
 const queryClient = new QueryClient();
 
@@ -13,10 +14,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <SecurityContextProvider>
                 <ChatProvider>
-                <BrowserRouter>
-                    <AppRoutes/>
-                    <ChatbotWidget />
-                </BrowserRouter>
+                    <BrowserRouter>
+                        <TopNavBar/>
+                        <AppRoutes/>
+                        <ChatbotWidget />
+                    </BrowserRouter>
                 </ChatProvider>
             </SecurityContextProvider>
         </QueryClientProvider>
@@ -24,4 +26,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,76 +1,61 @@
 package be.kdg.banditgames.platform.adapter.in;
 
-import be.kdg.banditgames.common.shared.PlayerId;
-import be.kdg.banditgames.platform.adapter.in.dto.PlayerDto;
+import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
-import be.kdg.banditgames.platform.port.out.player.LoadPlayerPort;
-import be.kdg.banditgames.platform.port.out.player.SavePlayerPort;
+import be.kdg.banditgames.platform.port.in.player.CreatePlayerCommand;
+import be.kdg.banditgames.platform.port.in.player.FindPlayerPort;
+import be.kdg.banditgames.platform.port.in.player.PlayerCreationUseCase;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/player")
 public class PlayerController {
-    private final LoadPlayerPort loadPlayerPort;
-    private final SavePlayerPort savePlayerPort;
+    private final PlayerCreationUseCase playerCreationUseCase;
+    private final FindPlayerPort findPlayerPort;
 
-    public PlayerController(LoadPlayerPort loadPlayerPort, SavePlayerPort savePlayerPort) {
-        this.loadPlayerPort = loadPlayerPort;
-        this.savePlayerPort = savePlayerPort;
+    public PlayerController(PlayerCreationUseCase playerCreationUseCase,
+                            FindPlayerPort findPlayerPort) {
+        this.playerCreationUseCase = playerCreationUseCase;
+        this.findPlayerPort = findPlayerPort;
     }
 
-    /**
-     * First call for a user with Keycloak role "player".
-     * If a Player with this ID exists, returns it.
-     * Otherwise creates and saves a new Player.
-     */
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('player')")
     public PlayerDto register(@AuthenticationPrincipal Jwt jwt) {
-        UUID keycloakId = UUID.fromString(jwt.getSubject());
-        String username = Optional.ofNullable(jwt.getClaimAsString("preferred_username"))
-                .orElse(jwt.getClaimAsString("email"));
-
-        PlayerId playerId = PlayerId.of(keycloakId);
-
-        Player player = loadPlayerPort.loadById(playerId)
-                .orElseGet(() -> {
-                    Player newPlayer = Player.createNew(username);
-                    savePlayerPort.save(newPlayer);
-                    return newPlayer;
-                });
-
+        Player player = getOrCreatePlayer(jwt);
         return PlayerDto.fromDomain(player);
     }
 
-    /**
-     * Returns the current player's info.
-     * Also ensures there is a Player in the DB (same as register).
-     */
     @GetMapping("/me")
     @PreAuthorize("hasAuthority('player')")
     public PlayerDto me(@AuthenticationPrincipal Jwt jwt) {
+        Player player = getOrCreatePlayer(jwt);
+        return PlayerDto.fromDomain(player);
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('player')")
+    public List<PlayerDto> searchByUsername(@RequestParam String username) {
+        return findPlayerPort.findByUsername(username).stream()
+                .map(PlayerDto::fromDomain)
+                .toList();
+    }
+
+    private Player getOrCreatePlayer(Jwt jwt) {
         UUID keycloakId = UUID.fromString(jwt.getSubject());
         String username = Optional.ofNullable(jwt.getClaimAsString("preferred_username"))
                 .orElse(jwt.getClaimAsString("email"));
 
-        PlayerId playerId = PlayerId.of(keycloakId);
+        CreatePlayerCommand command = new CreatePlayerCommand(keycloakId, username);
 
-        Player player = loadPlayerPort.loadById(playerId)
-                .orElseGet(() -> {
-                    Player newPlayer = Player.createNew(username);
-                    savePlayerPort.save(newPlayer);
-                    return newPlayer;
-                });
-
-        return PlayerDto.fromDomain(player);
+        return findPlayerPort.findById(keycloakId)
+                .orElseGet(() -> playerCreationUseCase.createPlayer(command));
     }
 }

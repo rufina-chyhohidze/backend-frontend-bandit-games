@@ -1,4 +1,4 @@
-package be.kdg.banditgames.platform.port.out.lobby;
+package be.kdg.banditgames.platform.port.in.lobby;
 
 import be.kdg.banditgames.platform.domain.Lobby;
 

@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
-import be.kdg.banditgames.platform.adapter.in.dto.AdminDto;
+import be.kdg.banditgames.platform.adapter.in.response.AdminDto;
 import be.kdg.banditgames.platform.domain.Admin;
 import be.kdg.banditgames.platform.domain.vo.AdminId;
 import be.kdg.banditgames.platform.port.out.admin.LoadAdminPort;

@@ -1,7 +1,6 @@
-package be.kdg.banditgames.platform.adapter.in.dto;
+package be.kdg.banditgames.platform.adapter.in.response;
 
 import be.kdg.banditgames.platform.domain.Player;
-import be.kdg.banditgames.platform.domain.vo.AdminId;
 
 import java.util.UUID;
 

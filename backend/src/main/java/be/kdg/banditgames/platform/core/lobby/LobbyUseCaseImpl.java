@@ -8,10 +8,7 @@ import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.Lobby;
 import be.kdg.banditgames.platform.domain.exception.lobby.PlayerAlreadyInLobbyException;
 import be.kdg.banditgames.platform.domain.vo.LobbyId;
-import be.kdg.banditgames.platform.port.in.lobby.CreateGameCommand;
-import be.kdg.banditgames.platform.port.in.lobby.CreateLobbyCommand;
-import be.kdg.banditgames.platform.port.in.lobby.LobbyCreationUseCase;
-import be.kdg.banditgames.platform.port.in.lobby.ManagingLobbyUseCase;
+import be.kdg.banditgames.platform.port.in.lobby.*;
 import be.kdg.banditgames.platform.port.out.game.LoadPlayableGamesPort;
 import be.kdg.banditgames.platform.port.out.lobby.*;
 import org.springframework.stereotype.Service;
@@ -24,15 +21,15 @@ import java.util.UUID;
 @Service
 @Transactional
 public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseCase, FindLobbyPort {
-    
+
     private final LoadLobbyPort loadLobbyPort;
     private final PersistLobbyPort persistLobbyPort;
     private final LobbyLookupPort lobbyLookupPort;
     private final LoadPlayableGamesPort loadPlayableGamesPort;
     private final CreateGameService createGameService;
-    
-    public LobbyUseCaseImpl(LoadLobbyPort loadLobbyPort, 
-                            PersistLobbyPort persistLobbyPort, 
+
+    public LobbyUseCaseImpl(LoadLobbyPort loadLobbyPort,
+                            PersistLobbyPort persistLobbyPort,
                             LobbyLookupPort lobbyLookup,
                             LoadPlayableGamesPort loadPlayableGamesPort,
                             CreateGameService createGameService) {
@@ -50,7 +47,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         if (lobbyLookupPort.isPlayerInAnyLobby(playerId)) {
             throw new PlayerAlreadyInLobbyException(playerId);
         }
-        
+
         Lobby lobby = Lobby.createNew(playerId);
         persistLobbyPort.saveLobby(lobby);
         return lobby;
@@ -89,8 +86,8 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
 
         Game game = loadPlayableGamesPort.loadGameById(
                 lobby.getGameId().gameId()).orElseThrow();
-        
-        
+
+
         if(!lobby.hasStartedGame()){
             createGameService.createGameForLobby(
                     new CreateGameCommand(
@@ -105,7 +102,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
 
         lobby.startGame();
         persistLobbyPort.saveLobby(lobby);
-        
+
         String hostUrl = String.format(
                 "%s?sessionId=%s&playerId=%s",
                 game.getUrlGameSession(),
@@ -119,7 +116,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 lobbyId.lobbyID(),
                 lobby.getGuestPlayer().playerId()
         );
-        
+
         return new StartGameResponse(
                 hostUrl,
                 guestUrl,

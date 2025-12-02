@@ -1,43 +1,36 @@
 package be.kdg.banditgames.platform.adapter.out.player;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "players")
 public class PlayerJpaEntity {
+
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @ElementCollection
-    @CollectionTable(
-            name = "player_favorite_games",
-            joinColumns = @JoinColumn(name = "player_id")
-    )
-    @Column(name = "game_id", nullable = false)
-    private List<UUID> favoriteGameIds = new ArrayList<>();
+    @CollectionTable(name = "player_favorite_games", joinColumns = @JoinColumn(name = "player_id"))
+    @Column(name = "game_id")
+    private List<UUID> favoriteGames;
 
     @ElementCollection
-    @CollectionTable(
-            name = "player_achievements",
-            joinColumns = @JoinColumn(name = "player_id")
-    )
-    @Column(name = "achievement_id", nullable = false)
-    private List<UUID> achievementIds = new ArrayList<>();
+    @CollectionTable(name = "player_achievements", joinColumns = @JoinColumn(name = "player_id"))
+    @Column(name = "achievement_id")
+    private List<UUID> achievements;
 
     protected PlayerJpaEntity() {
     }
 
-    public PlayerJpaEntity(UUID id, String username) {
+    public PlayerJpaEntity(UUID id, String username, List<UUID> favoriteGames, List<UUID> achievements) {
         this.id = id;
         this.username = username;
+        this.favoriteGames = favoriteGames;
+        this.achievements = achievements;
     }
 
     public UUID getId() {
@@ -48,12 +41,23 @@ public class PlayerJpaEntity {
         return username;
     }
 
-    public List<UUID> getFavoriteGameIds() {
-        return favoriteGameIds;
+    public List<UUID> getFavoriteGames() {
+        return favoriteGames;
     }
 
-    public List<UUID> getAchievementIds() {
-        return achievementIds;
+    public List<UUID> getAchievements() {
+        return achievements;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFavoriteGames(List<UUID> favoriteGames) {
+        this.favoriteGames = favoriteGames;
+    }
+
+    public void setAchievements(List<UUID> achievements) {
+        this.achievements = achievements;
+    }
 }

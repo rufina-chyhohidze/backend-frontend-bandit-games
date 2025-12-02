@@ -1,4 +1,4 @@
-package be.kdg.banditgames.platform.adapter.in.dto;
+package be.kdg.banditgames.platform.adapter.in.response;
 
 import be.kdg.banditgames.platform.domain.Admin;
 

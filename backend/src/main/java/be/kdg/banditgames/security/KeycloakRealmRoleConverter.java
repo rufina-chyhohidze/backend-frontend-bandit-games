@@ -5,29 +5,50 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class KeycloakRealmRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
+    private static final String CLIENT_NAME = "banditgames-frontend";
+
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
         Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-        if (realmAccess == null) {
-            return List.of();
+        if (realmAccess != null) {
+            Object roles = realmAccess.get("roles");
+            if (roles instanceof List<?> roleList) {
+                authorities.addAll(
+                        roleList.stream()
+                                .filter(String.class::isInstance)
+                                .map(String.class::cast)
+                                .map(SimpleGrantedAuthority::new)
+                                .toList()
+                );
+            }
         }
 
-        Object roles = realmAccess.get("roles");
-        if (!(roles instanceof List<?> roleList)) {
-            return List.of();
+        Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+        if (resourceAccess != null) {
+            Object client = resourceAccess.get(CLIENT_NAME);
+            if (client instanceof Map<?, ?> clientMap) {
+                Object clientRoles = clientMap.get("roles");
+                if (clientRoles instanceof List<?> roleList) {
+                    authorities.addAll(
+                            roleList.stream()
+                                    .filter(String.class::isInstance)
+                                    .map(String.class::cast)
+                                    .map(SimpleGrantedAuthority::new)
+                                    .toList()
+                    );
+                }
+            }
         }
 
-        return roleList.stream()
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return authorities;
     }
 }

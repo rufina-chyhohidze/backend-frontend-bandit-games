@@ -5,16 +5,7 @@ import SecurityContext from "../../context/SecurityContext";
 export function AdminRoute({ children }: PropsWithChildren) {
     const { loggedInUser } = useContext(SecurityContext);
 
-    if (!loggedInUser) {
-        return <Navigate to="/public" replace />;
-    }
-
-    const roles = loggedInUser.roles ?? [];
-    const isAdmin = roles.includes("admin");
-
-    if (!isAdmin) {
-        return <Navigate to="/public" replace />;
-    }
-
-    return <>{children}</>;
+    return loggedInUser?.roles.includes("admin")
+        ? <>{children}</>
+        : <Navigate to="/public" replace />;
 }
