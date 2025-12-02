@@ -9,6 +9,7 @@ import { RouteGuard } from "../components/routes/RouteGuard";
 import { FullScreenFrame } from "../components/connect4/FullScreenFrame";
 import { LobbyPage } from "../pages/LobbyPage";
 import {DefaultRedirect} from "../components/routes/DefaultRedirect.tsx";
+import {FriendsPage} from "../pages/FriendsPage.tsx";
 
 export function AppRoutes() {
     return (
@@ -46,6 +47,12 @@ export function AppRoutes() {
                 <Route path="/lobby" element={
                     <PlayerRoute>
                         <LobbyPage />
+                    </PlayerRoute>
+                } />
+
+                <Route path="/friends" element={
+                    <PlayerRoute>
+                        <FriendsPage />
                     </PlayerRoute>
                 } />
             </Route>
