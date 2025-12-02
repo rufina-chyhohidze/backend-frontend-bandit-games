@@ -1,4 +1,9 @@
 package be.kdg.banditgames.platform.port.in.player;
 
-public record CreatePlayerCommand() {
+import java.util.UUID;
+
+public record CreatePlayerCommand(
+        UUID playerId,
+        String username
+) {
 }

@@ -31,6 +31,12 @@ public class Player {
         return new Player(playerId, username, favoriteGames, achievements);
     }
 
+    // In Player.java
+    public static Player createNewWithId(PlayerId playerId, String username) {
+        return new Player(playerId, username, List.of(), List.of());
+    }
+
+
     public PlayerId getPlayerId() {
         return playerId;
     }

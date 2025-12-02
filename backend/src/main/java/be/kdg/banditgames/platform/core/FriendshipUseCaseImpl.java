@@ -6,7 +6,7 @@ import be.kdg.banditgames.platform.domain.FriendshipStatus;
 import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.in.friendship.FindFriendshipPort;
 import be.kdg.banditgames.platform.port.in.friendship.ManagingFriendshipUseCase;
-import be.kdg.banditgames.platform.port.out.LoadPlayerPort;
+import be.kdg.banditgames.platform.port.out.player.LoadPlayerPort;
 import be.kdg.banditgames.platform.port.out.friendship.LoadFriendshipPort;
 import be.kdg.banditgames.platform.port.out.friendship.PersistFriendshipPort;
 import org.springframework.stereotype.Service;
