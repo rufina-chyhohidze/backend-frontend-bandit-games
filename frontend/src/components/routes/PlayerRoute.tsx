@@ -4,20 +4,8 @@ import SecurityContext from "../../context/SecurityContext";
 
 export function PlayerRoute({ children }: PropsWithChildren) {
     const { loggedInUser } = useContext(SecurityContext);
-    if (!loggedInUser) {
-        return <Navigate to="/public" replace />;
-    }
 
-    const roles = loggedInUser.roles ?? [];
-    const isAdmin = roles.includes("admin");
-    const isPlayer = roles.includes("player");
-
-    if (isAdmin) {
-        return <Navigate to="/admin" replace />;
-    }
-
-    if (!isPlayer) {
-        return <Navigate to="/public" replace />;
-    }
-    return <>{children}</>;
+    return loggedInUser?.roles.includes("player")
+        ? <>{children}</>
+        : <Navigate to="/public" replace />;
 }
