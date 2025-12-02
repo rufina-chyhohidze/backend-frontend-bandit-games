@@ -60,7 +60,7 @@ public class AiAgentMoveAdaptor implements AiAgentMoveService {
         // Save snapshot
         savePendingPort.saveTemporaryMetadata(
                 aiRequest.sessionId(),
-                aiRequest.moveNumber(),
+                (aiRequest.moveNumber()+1),
                 metadata
         );
 

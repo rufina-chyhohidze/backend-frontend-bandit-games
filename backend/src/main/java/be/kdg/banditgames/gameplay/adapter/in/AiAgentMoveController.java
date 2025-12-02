@@ -7,13 +7,15 @@ import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentResponseDto;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
 import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveUseCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/gameplay/ai-move")
 public class AiAgentMoveController {
-    
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AiAgentMoveUseCase aiAgentMoveUseCase;
 
     public AiAgentMoveController(AiAgentMoveUseCase aiAgentMoveUseCase) {
@@ -22,6 +24,7 @@ public class AiAgentMoveController {
 
     @PostMapping
     public ResponseEntity<AiAgentResponseDto> getBestMove(@RequestBody AiRequest aiRequest) {
+        logger.info("getBestMove has been called");
         AiMoveMetadata aiMove = aiAgentMoveUseCase.handleMove(
                 new AiRequestCommand(aiRequest.sessionId(), aiRequest.moveNumber(),
                         PlayerType.valueOf(aiRequest.AiType()),

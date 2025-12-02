@@ -66,9 +66,9 @@ public class GameSession {
         this.gameStates.add(gameState);
     }
 
-    public void finishGame(GameResult result){
+    public void finishGame(GameResult result, LocalDateTime endTime) {
         this.gameResult = result;
-        this.endTime = LocalDateTime.now();
+        this.endTime = endTime;
         this.gameSessionState = GameSessionState.COMPLETED;
     }
 
