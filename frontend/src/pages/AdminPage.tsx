@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { TopNavBar } from "../components/layout/TopNavBar";
 import { fetchPendingGames, approveGame, rejectGame } from "../services/adminGameService";
 import type { AdminGame } from "../models/adminGame";
 import { AdminGameCard } from "../components/admin/AdminGameCard";
@@ -65,7 +64,6 @@ export function AdminPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             <Box

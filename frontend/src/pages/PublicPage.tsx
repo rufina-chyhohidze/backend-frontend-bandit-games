@@ -4,7 +4,6 @@ import {
     Typography,
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function PublicPage() {
 
@@ -30,7 +29,6 @@ export function PublicPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             <Box

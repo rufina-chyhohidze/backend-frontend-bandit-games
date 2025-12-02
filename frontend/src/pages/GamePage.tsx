@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function GamesPage() {
     const [games, setGames] = useState<Game[]>([]);
@@ -76,7 +75,6 @@ export function GamesPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             {/* Main card, centered (same alignment as before) */}

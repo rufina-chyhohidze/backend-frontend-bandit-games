@@ -14,7 +14,6 @@ import { useContext } from "react";
 import SecurityContext from "../context/SecurityContext";
 import { OpenLobbiesList } from "../components/lobby/OpenLobbyList";
 import { GameSelector } from "../components/lobby/GameSelector";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function LobbyPage() {
     const { loggedInUser } = useContext(SecurityContext);
@@ -114,7 +113,6 @@ export function LobbyPage() {
     if (!loggedInUser) {
         return (
             <>
-                <TopNavBar />
                 <Box
                     className="scrollable-container"
                     sx={{
@@ -148,7 +146,6 @@ export function LobbyPage() {
 
     return (
         <>
-            <TopNavBar />
             <Box
                 className="scrollable-container"
                 sx={{

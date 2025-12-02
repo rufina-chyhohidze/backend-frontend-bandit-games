@@ -17,7 +17,6 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import type { Achievement } from "../models/achievement.ts";
 import type { Game } from "../models/game.ts";
 import { fetchAchievements, fetchGames } from "../services/gamesService.ts";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export default function GameAchievementsPage() {
     const { gameId } = useParams<{ gameId: string }>();
@@ -80,7 +79,6 @@ export default function GameAchievementsPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             {/* Glow overlay */}
