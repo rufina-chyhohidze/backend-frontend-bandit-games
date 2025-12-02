@@ -1,18 +1,18 @@
 package be.kdg.banditgames.platform.adapter.out.friendship;
 
-import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.domain.FriendshipStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "friendships",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"player_a_id", "player_b_id"}))
+@Table(name = "friendships", uniqueConstraints = {
+        @UniqueConstraint(name = "ukgyt92a2snt4lnfcl5lg61ald8",
+                columnNames = {"player_a_id", "player_b_id"})
+})
 public class FriendshipJpaEntity {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     @Column(name = "player_a_id", nullable = false)
@@ -21,44 +21,31 @@ public class FriendshipJpaEntity {
     @Column(name = "player_b_id", nullable = false)
     private UUID playerBId;
 
+    @Column(name = "initiator_id", nullable = false) 
+    private UUID initiatorId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FriendshipStatus status;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    protected FriendshipJpaEntity() {
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public FriendshipJpaEntity(PlayerId playerA, PlayerId playerB, FriendshipStatus status) {
-        this.playerAId = playerA.playerId();
-        this.playerBId = playerB.playerId();
-        this.status = status;
-        this.createdAt = LocalDateTime.now();
-    }
+    public UUID getPlayerAId() { return playerAId; }
+    public void setPlayerAId(UUID playerAId) { this.playerAId = playerAId; }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getPlayerBId() { return playerBId; }
+    public void setPlayerBId(UUID playerBId) { this.playerBId = playerBId; }
 
-    public UUID getPlayerAId() {
-        return playerAId;
-    }
+    public UUID getInitiatorId() { return initiatorId; } // <-- NEW GETTER
+    public void setInitiatorId(UUID initiatorId) { this.initiatorId = initiatorId; } // <-- NEW SETTER
 
-    public UUID getPlayerBId() {
-        return playerBId;
-    }
+    public FriendshipStatus getStatus() { return status; }
+    public void setStatus(FriendshipStatus status) { this.status = status; }
 
-    public FriendshipStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(FriendshipStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

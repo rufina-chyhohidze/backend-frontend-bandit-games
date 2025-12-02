@@ -7,15 +7,19 @@ import be.kdg.banditgames.platform.domain.FriendshipStatus;
 public class FriendshipJpaMapper {
 
     public static FriendshipJpaEntity toJpaEntity(Friendship domain) {
-        return new FriendshipJpaEntity(
-                domain.getPlayerA(),
-                domain.getPlayerB(),
-                FriendshipStatus.valueOf(domain.getStatus().name())
-        );
+        FriendshipJpaEntity entity = new FriendshipJpaEntity();
+        entity.setId(domain.getId().friendshipId());
+        entity.setPlayerAId(domain.getPlayerA().playerId());
+        entity.setPlayerBId(domain.getPlayerB().playerId());
+        entity.setInitiatorId(domain.getInitiator().playerId());
+        entity.setStatus(domain.getStatus());
+        entity.setCreatedAt(domain.getCreatedAt());
+        return entity;
     }
 
     public static Friendship toDomain(FriendshipJpaEntity entity) {
         return Friendship.rehydrate(
+                entity.getId(),
                 PlayerId.of(entity.getPlayerAId()),
                 PlayerId.of(entity.getPlayerBId()),
                 switch (entity.getStatus()) {
@@ -24,7 +28,8 @@ public class FriendshipJpaMapper {
                     case REJECTED -> FriendshipStatus.REJECTED;
                     case BLOCKED -> FriendshipStatus.BLOCKED;
                 },
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                PlayerId.of(entity.getInitiatorId()) // MAPPING OUT
         );
     }
 }

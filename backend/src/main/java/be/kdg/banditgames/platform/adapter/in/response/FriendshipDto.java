@@ -9,7 +9,8 @@ public record FriendshipDto(
         UUID playerA,
         UUID playerB,
         FriendshipStatus status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        UUID initiatorId
 
 ) {
 }

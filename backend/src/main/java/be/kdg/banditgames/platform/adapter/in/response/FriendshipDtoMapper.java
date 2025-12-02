@@ -8,7 +8,8 @@ public class FriendshipDtoMapper {
                 friendship.getPlayerA().playerId(),
                 friendship.getPlayerB().playerId(),
                 friendship.getStatus(),
-                friendship.getCreatedAt()
+                friendship.getCreatedAt(),
+                friendship.getInitiator().playerId()
         );
     }
 }

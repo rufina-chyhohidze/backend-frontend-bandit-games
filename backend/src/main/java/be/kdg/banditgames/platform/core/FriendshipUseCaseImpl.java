@@ -24,7 +24,9 @@ public class FriendshipUseCaseImpl implements ManagingFriendshipUseCase, FindFri
     private final LoadFriendshipPort loadFriendshipPort;
     private final LoadPlayerPort loadPlayerPort;
 
-    public FriendshipUseCaseImpl(PersistFriendshipPort persistFriendshipPort, LoadFriendshipPort loadFriendshipPort, LoadPlayerPort loadPlayerPort) {
+    public FriendshipUseCaseImpl(PersistFriendshipPort persistFriendshipPort,
+                                 LoadFriendshipPort loadFriendshipPort,
+                                 LoadPlayerPort loadPlayerPort) {
         this.persistFriendshipPort = persistFriendshipPort;
         this.loadFriendshipPort = loadFriendshipPort;
         this.loadPlayerPort = loadPlayerPort;
@@ -69,6 +71,7 @@ public class FriendshipUseCaseImpl implements ManagingFriendshipUseCase, FindFri
         return loadFriendshipPort.loadFriendshipsForPlayer(playerId).stream()
                 .filter(f -> f.getStatus() == FriendshipStatus.ACCEPTED)
                 .map(f -> {
+                    // Get the OTHER player in the friendship
                     PlayerId friendId = f.getPlayerA().equals(playerId) ? f.getPlayerB() : f.getPlayerA();
                     return loadPlayerPort.loadById(friendId)
                             .orElseThrow(() -> new IllegalStateException("Player not found: " + friendId));
@@ -76,19 +79,35 @@ public class FriendshipUseCaseImpl implements ManagingFriendshipUseCase, FindFri
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<Player> getPendingRequests(PlayerId playerId) {
+        // ✅ FIX: Get requests where YOU are the RECIPIENT (someone sent TO you)
+        // Check if the initiator is NOT you
         return loadFriendshipPort.loadFriendshipsForPlayer(playerId).stream()
-                .filter(f -> f.getStatus() == FriendshipStatus.PENDING && f.getPlayerB().equals(playerId))
+                .filter(f -> f.getStatus() == FriendshipStatus.PENDING &&
+                        !f.getInitiator().equals(playerId)) // Initiator is NOT you
                 .map(f -> {
-                    PlayerId requesterId = f.getPlayerA();
+                    // The requester is the initiator
+                    PlayerId requesterId = f.getInitiator();
                     return loadPlayerPort.loadById(requesterId)
                             .orElseThrow(() -> new IllegalStateException("Player not found: " + requesterId));
                 })
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Player> getSentRequests(PlayerId playerId) {
+        return loadFriendshipPort.loadFriendshipsForPlayer(playerId).stream()
+                .filter(f -> f.getStatus() == FriendshipStatus.PENDING &&
+                        f.getInitiator().equals(playerId)) // Initiator IS you
+                .map(f -> {
+                    PlayerId recipientId = f.getPlayerA().equals(playerId) ?
+                            f.getPlayerB() : f.getPlayerA();
+                    return loadPlayerPort.loadById(recipientId)
+                            .orElseThrow(() -> new IllegalStateException("Player not found: " + recipientId));
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public Optional<Friendship> getFriendshipBetween(PlayerId playerA, PlayerId playerB) {

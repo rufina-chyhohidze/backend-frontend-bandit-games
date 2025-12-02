@@ -14,4 +14,6 @@ public interface FindFriendshipPort {
     List<Player> getPendingRequests(PlayerId playerId);
 
     Optional<Friendship> getFriendshipBetween(PlayerId playerA, PlayerId playerB);
+
+    List<Player> getSentRequests(PlayerId playerId);
 }

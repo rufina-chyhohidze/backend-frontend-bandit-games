@@ -107,4 +107,18 @@ public class FriendshipController {
         Optional<FriendshipDto> friendshipDto = friendship.map(FriendshipDtoMapper::toDto);
         return ResponseEntity.ok(friendshipDto);
     }
+
+
+    @GetMapping("/sent/{playerId}")
+    public ResponseEntity<List<PlayerDtoWithName>> getSentRequests(@PathVariable UUID playerId) {
+        List<Player> sent = findFriendshipPort.getSentRequests(new PlayerId(playerId));
+        List<PlayerDtoWithName> playerDtoWithName = sent.stream()
+                .map(player -> new PlayerDtoWithName(
+                        player.getPlayerId().playerId(),
+                        player.getUsername()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(playerDtoWithName);
+    }
 }
