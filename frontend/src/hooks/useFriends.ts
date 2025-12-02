@@ -6,7 +6,7 @@ import {
     removeFriend,
     getFriends,
     getPendingRequests,
-    getFriendshipBetween,
+    getFriendshipBetween, getSentRequests,
 } from "../services/friendsService.ts";
 import type { FriendshipDto, PlayerDtoWithName } from "../models/friendship";
 
@@ -28,6 +28,11 @@ export function useSendFriendRequest() {
 // -----------------------------
 // Accept Friend Request
 // -----------------------------
+// hooks/useFriends.ts
+
+// -----------------------------
+// Accept Friend Request
+// -----------------------------
 export function useAcceptFriendRequest() {
     const queryClient = useQueryClient();
 
@@ -36,6 +41,7 @@ export function useAcceptFriendRequest() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["friends"] });
             queryClient.invalidateQueries({ queryKey: ["pending-requests"] });
+            queryClient.invalidateQueries({ queryKey: ["sent-requests"] });
         },
     });
 }
@@ -50,10 +56,10 @@ export function useRejectFriendRequest() {
         mutationFn: ({ fromPlayerId, toPlayerId }) => rejectFriendRequest(fromPlayerId, toPlayerId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["pending-requests"] });
+            queryClient.invalidateQueries({ queryKey: ["sent-requests"] });
         },
     });
 }
-
 // -----------------------------
 // Remove Friend
 // -----------------------------
@@ -104,5 +110,19 @@ export function useFriendshipBetween(playerAId: string, playerBId: string) {
             return data ?? null;
         },
         enabled: !!playerAId && !!playerBId,
+    });
+}
+
+// Add to hooks/useFriends.ts
+
+// -----------------------------
+// Get Sent Friend Requests (requests YOU sent to others)
+// -----------------------------
+export function useSentRequests(playerId: string | null) {
+    return useQuery<PlayerDtoWithName[]>({
+        queryKey: ["sent-requests", playerId],
+        queryFn: () => getSentRequests(playerId!),
+        enabled: !!playerId,
+        refetchInterval: 5000,
     });
 }

@@ -84,3 +84,11 @@ export const getFriendshipBetween = async (
     });
     return response.data;
 };
+
+
+// Add to services/friendsService.ts
+
+export async function getSentRequests(playerId: string): Promise<PlayerDtoWithName[]> {
+    const response = await axios.get(`/api/friendships/sent/${playerId}`);
+    return response.data;
+}
