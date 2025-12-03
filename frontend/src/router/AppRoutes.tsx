@@ -8,6 +8,7 @@ import { FullScreenFrame } from "../components/connect4/FullScreenFrame";
 import { LobbyPage } from "../pages/LobbyPage";
 import { DefaultRedirect } from "../components/routes/DefaultRedirect.tsx";
 import { FriendsPage } from "../pages/FriendsPage.tsx";
+import { FavoriteGamesPage } from "../pages/FavoriteGamesPage";
 
 export function AppRoutes() {
     return (
@@ -32,6 +33,15 @@ export function AppRoutes() {
                     element={
                         <RouteGuard role="player">
                             <GamesPage />
+                        </RouteGuard>
+                    }
+                />
+
+                <Route
+                    path="/favorites"
+                    element={
+                        <RouteGuard role="player">
+                            <FavoriteGamesPage />
                         </RouteGuard>
                     }
                 />
@@ -72,6 +82,7 @@ export function AppRoutes() {
                     }
                 />
             </Route>
+
 
             <Route path="*" element={<p>Not found</p>} />
         </Routes>

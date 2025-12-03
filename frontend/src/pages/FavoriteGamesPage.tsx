@@ -1,9 +1,7 @@
-// src/pages/GamesPage.tsx
 import { useNavigate } from "react-router-dom";
 import type { Game } from "../models/game";
 import { GameList } from "../components/games/GameList";
-import { useGames } from "../hooks/useGames";
-import { useCurrentPlayer, useToggleFavoriteGame } from "../hooks/useFavorites";
+import { useFavoriteGames, useToggleFavoriteGame } from "../hooks/useFavorites";
 
 import {
     Box,
@@ -17,15 +15,24 @@ import {
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 
-export function GamesPage() {
+export function FavoriteGamesPage() {
     const navigate = useNavigate();
 
-    const { games, isLoadingGames, isGamesError, refreshGames } = useGames();
-    const { favoriteGameIds, isLoadingPlayer } = useCurrentPlayer();
+    const {
+        favoriteGames,
+        isLoadingFavorites,
+        isFavoritesError,
+        refreshFavorites,
+    } = useFavoriteGames();
+
     const toggleFavoriteMutation = useToggleFavoriteGame();
 
-    const loading = isLoadingGames || isLoadingPlayer;
-    const error = isGamesError ? "Failed to load games. Please try again later." : null;
+    const loading = isLoadingFavorites;
+    const error = isFavoritesError
+        ? "Failed to load favorite games. Please try again later."
+        : null;
+
+    const favoriteGameIds = favoriteGames.map((g) => g.gameId);
 
     const handlePlay = (game: Game) => {
         const url = game.urlGameSession;
@@ -41,9 +48,10 @@ export function GamesPage() {
     };
 
     const handleFavorite = (game: Game) => {
-        const isFavorite = favoriteGameIds.includes(game.gameId);
-        toggleFavoriteMutation.mutate({ gameId: game.gameId, isFavorite });
+        toggleFavoriteMutation.mutate({ gameId: game.gameId, isFavorite: true });
     };
+
+    const hasNoFavorites = !loading && !error && favoriteGames.length === 0;
 
     return (
         <Box
@@ -105,7 +113,7 @@ export function GamesPage() {
                         }}
                     >
                         <Stack direction="row" alignItems="center" spacing={1}>
-                            <SportsEsportsRoundedIcon sx={{ fontSize: 32, color: "#9d7dff" }} />
+                            <SportsEsportsRoundedIcon sx={{ fontSize: 32, color: "#ffc94d" }} />
                             <Typography
                                 variant="h4"
                                 component="h1"
@@ -115,28 +123,35 @@ export function GamesPage() {
                                     color: "#ffffff",
                                 }}
                             >
-                                Games Library
+                                My Favorite Games
                             </Typography>
                         </Stack>
 
                         <Typography
                             variant="body1"
-                            sx={{ color: "#d0d0e5", mt: 1, maxWidth: 600 }}
+                            sx={{
+                                color: "#d0d0e5",
+                                mt: 1,
+                                maxWidth: 600,
+                            }}
                         >
-                            Pick a game to start playing, explore achievements, or star your favorites.
+                            These are the games you starred as favorites. Click the star again to
+                            remove them from this list.
                         </Typography>
 
                         <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
                             <Chip
-                                label="All platforms"
+                                label="Favorites"
                                 size="small"
                                 sx={{
-                                    bgcolor: "rgba(157, 125, 255, 0.12)",
-                                    color: "#e3ddff",
+                                    bgcolor: "rgba(255, 201, 77, 0.18)",
+                                    color: "#ffe9ac",
                                 }}
                             />
                             <Chip
-                                label={`${games.length} game${games.length === 1 ? "" : "s"}`}
+                                label={`${favoriteGames.length} game${
+                                    favoriteGames.length === 1 ? "" : "s"
+                                }`}
                                 size="small"
                                 sx={{
                                     bgcolor: "rgba(0, 220, 130, 0.12)",
@@ -147,7 +162,7 @@ export function GamesPage() {
 
                         <Button
                             variant="outlined"
-                            onClick={() => refreshGames()}
+                            onClick={() => refreshFavorites()}
                             disabled={loading}
                             startIcon={<RefreshRoundedIcon />}
                             sx={{
@@ -162,11 +177,11 @@ export function GamesPage() {
                                 "&:hover": {
                                     borderColor: "#ffffff",
                                     background:
-                                        "linear-gradient(120deg, rgba(157,125,255,0.25), rgba(0,220,130,0.25))",
+                                        "linear-gradient(120deg, rgba(255,201,77,0.25), rgba(0,220,130,0.25))",
                                 },
                             }}
                         >
-                            {loading ? "Loading..." : "Refresh list"}
+                            {loading ? "Loading..." : "Refresh"}
                         </Button>
 
                         {loading && (
@@ -182,7 +197,7 @@ export function GamesPage() {
                                 </Alert>
                                 <Button
                                     variant="contained"
-                                    onClick={() => refreshGames()}
+                                    onClick={() => refreshFavorites()}
                                     startIcon={<RefreshRoundedIcon />}
                                     sx={{
                                         alignSelf: "center",
@@ -196,7 +211,29 @@ export function GamesPage() {
                             </Stack>
                         )}
 
-                        {!loading && !error && (
+                        {hasNoFavorites && (
+                            <Box sx={{ mt: 3 }}>
+                                <Typography
+                                    variant="body1"
+                                    sx={{ color: "#cbd5f5", mb: 1 }}
+                                >
+                                    You don’t have any favorite games yet.
+                                </Typography>
+                                <Button
+                                    variant="text"
+                                    onClick={() => navigate("/games")}
+                                    sx={{
+                                        textTransform: "none",
+                                        color: "#9d7dff",
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    Go to Games Library and star some games ⭐
+                                </Button>
+                            </Box>
+                        )}
+
+                        {!loading && !error && !hasNoFavorites && (
                             <Box
                                 sx={{
                                     mt: 1,
@@ -213,7 +250,7 @@ export function GamesPage() {
                                 }}
                             >
                                 <GameList
-                                    games={games}
+                                    games={favoriteGames}
                                     onPlay={handlePlay}
                                     onViewAchievements={handleViewAchievements}
                                     onFavorite={handleFavorite}
