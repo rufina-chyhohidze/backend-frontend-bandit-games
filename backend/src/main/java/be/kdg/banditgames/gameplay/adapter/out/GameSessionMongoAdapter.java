@@ -61,20 +61,14 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         Query query = new Query(Criteria.where("_id").is(idValue));
         AiMetadataEmbedded aiMetadata = null;
 
+        Optional<AiMetadataPendingEntity> pending =
+                loadAiPendingPort.findAndDelete(sessionId.sessionsId(), gameState.getMoveNumber());
 
-        if (gameState.getPlayerType() != PlayerType.HUMAN) {
-            // Fetch from pending collection
-            Optional<AiMetadataPendingEntity> pending =
-                    loadAiPendingPort.find(
-                            sessionId.sessionsId(),
-                            gameState.getMoveNumber()
-                    );
-
-            if (pending.isPresent()) {
-                aiMetadata = pending.get().getMetadata();
-                deleteAiPendingPort.delete(pending.get());  // Cleanup
-            }
+        if (pending.isPresent()) {
+            aiMetadata = pending.get().getMetadata();
         }
+
+
         GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
 
         Update update = new Update().push("game_states", embedded);
