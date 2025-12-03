@@ -1,18 +1,22 @@
+INSERT INTO games (id, name, description, picture_url, rules, status, url_game_session)
+VALUES (
+           '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+           'Chess',
+           'Classic strategy board game',
+           'https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/ARTy960/phpbTO0Re.jpeg',
+           'check online the rules',
+           'PUBLISHED',
+           'http://localhost:3333'
+       );
+
 INSERT INTO games (id, name, description, rules, picture_url, status, url_game_session)
 VALUES
-    ('00000000-0000-0000-0000-000000000001', 'Connect Four',
+    ('f2b3aaf4-6db0-4a94-9d82-123456789abc', 'Connect Four',
      'Classic 2-player connect four game',
      'Connect 4 of your pieces in a row to win.',
-     'images/connect4.jpeg',
+     'https://thewashingtonote.com/wp-content/uploads/2023/10/Connect-4-Online-scaled.jpg',
      'PUBLISHED',
-     '/games/connect4'),
-
-    ('00000000-0000-0000-0000-000000000002', 'Chess',
-     'External chess game provided by teachers',
-     'Standard chess rules.',
-     'images/chess.jpg',
-     'PUBLISHED',
-     'http://localhost:3333');
+     '/games/connect4');
 
 -- Table for players
 CREATE TABLE IF NOT EXISTS players (
