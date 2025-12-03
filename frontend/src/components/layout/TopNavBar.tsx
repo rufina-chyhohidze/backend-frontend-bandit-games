@@ -108,6 +108,13 @@ export function TopNavBar() {
                                 >
                                     Games
                                 </Button>
+
+                                <Button
+                                    onClick={() => handleNavClick("/favorites")}
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/favorites") }}
+                                >
+                                    Favorites
+                                </Button>
                                 <Button
                                     onClick={() => handleNavClick("/friends")}
                                     sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
