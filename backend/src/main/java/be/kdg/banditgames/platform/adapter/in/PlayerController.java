@@ -1,10 +1,12 @@
 package be.kdg.banditgames.platform.adapter.in;
 
+import be.kdg.banditgames.common.shared.GameId;
+import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
-import be.kdg.banditgames.platform.port.in.player.CreatePlayerCommand;
-import be.kdg.banditgames.platform.port.in.player.FindPlayerPort;
-import be.kdg.banditgames.platform.port.in.player.PlayerCreationUseCase;
+import be.kdg.banditgames.platform.port.in.player.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,11 +21,17 @@ import java.util.UUID;
 public class PlayerController {
     private final PlayerCreationUseCase playerCreationUseCase;
     private final FindPlayerPort findPlayerPort;
+    private final AddFavoriteGameUseCase addFavoriteGameUseCase;
+    private final RemoveFavoriteGameUseCase removeFavoriteGameUseCase;
+
+    private final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     public PlayerController(PlayerCreationUseCase playerCreationUseCase,
-                            FindPlayerPort findPlayerPort) {
+                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase) {
         this.playerCreationUseCase = playerCreationUseCase;
         this.findPlayerPort = findPlayerPort;
+        this.addFavoriteGameUseCase = addFavoriteGameUseCase;
+        this.removeFavoriteGameUseCase = removeFavoriteGameUseCase;
     }
 
     @PostMapping("/register")
@@ -57,5 +65,32 @@ public class PlayerController {
 
         return findPlayerPort.findById(keycloakId)
                 .orElseGet(() -> playerCreationUseCase.createPlayer(command));
+    }
+    @PostMapping("/favorites/{gameId}")
+    @PreAuthorize("hasAuthority('player')")
+    public PlayerDto addFavorite(@PathVariable UUID gameId,
+                                 @AuthenticationPrincipal Jwt jwt) {
+        UUID keycloakId = UUID.fromString(jwt.getSubject());
+        PlayerId playerId = PlayerId.of(keycloakId);
+        GameId gid = GameId.of(gameId);
+        logger.info("Adding favorite game: {}", gid + "for " + playerId);
+
+        AddFavoriteGameCommand command = new AddFavoriteGameCommand(playerId, gid);
+        Player updated = addFavoriteGameUseCase.addToFavorites(command);
+
+        return PlayerDto.fromDomain(updated);
+    }
+    @DeleteMapping("/favorites/{gameId}")
+    @PreAuthorize("hasAuthority('player')")
+    public PlayerDto removeFavorite(@PathVariable UUID gameId,
+                                    @AuthenticationPrincipal Jwt jwt) {
+        UUID keycloakId = UUID.fromString(jwt.getSubject());
+        PlayerId playerId = PlayerId.of(keycloakId);
+        GameId gid = GameId.of(gameId);
+
+        logger.info("Removing favorite game: {}", gid + "for " + playerId);
+        RemoveFavoriteGameCommand command = new RemoveFavoriteGameCommand(playerId, gid);
+        Player updated = removeFavoriteGameUseCase.removeFromFavorites(command);
+        return PlayerDto.fromDomain(updated);
     }
 }

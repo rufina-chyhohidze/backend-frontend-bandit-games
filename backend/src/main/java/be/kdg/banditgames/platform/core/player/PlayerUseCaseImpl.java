@@ -1,4 +1,4 @@
-package be.kdg.banditgames.platform.core;
+package be.kdg.banditgames.platform.core.player;
 
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.domain.Player;

@@ -36,7 +36,19 @@ public class Player {
         return new Player(playerId, username, List.of(), List.of());
     }
 
+    public void addFavoriteGame(GameId gameId) {
+        if (!favoriteGames.contains(gameId)) {
+            favoriteGames.add(gameId);
+        }
+    }
 
+    public void removeFavoriteGame(GameId gameId) {
+        favoriteGames.remove(gameId);
+    }
+
+    public boolean isFavorite(GameId gameId) {
+        return favoriteGames.contains(gameId);
+    }
     public PlayerId getPlayerId() {
         return playerId;
     }
