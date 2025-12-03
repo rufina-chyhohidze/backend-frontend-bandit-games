@@ -4,6 +4,7 @@ import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.GameStatus;
 import be.kdg.banditgames.platform.port.out.game.LoadDraftGamesPort;
+import be.kdg.banditgames.platform.port.out.game.LoadGamesByIdsPort;
 import be.kdg.banditgames.platform.port.out.game.LoadPlayableGamesPort;
 import be.kdg.banditgames.platform.port.out.game.UpdateGamesPort;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class GameJpaAdapter implements LoadPlayableGamesPort, LoadDraftGamesPort, UpdateGamesPort {
+public class GameJpaAdapter implements LoadPlayableGamesPort, LoadDraftGamesPort, UpdateGamesPort, LoadGamesByIdsPort {
 
     private final GameJpaRepository jpa;
 
@@ -21,6 +22,13 @@ public class GameJpaAdapter implements LoadPlayableGamesPort, LoadDraftGamesPort
         this.jpa = jpa;
     }
 
+    @Override
+    public List<Game> loadGamesByIds(List<UUID> ids) {
+        return jpa.findByIdIn(ids)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
     @Override
     public List<Game> loadPlayableGames() {
         return jpa.findByStatus(GameStatus.PUBLISHED)
@@ -76,4 +84,5 @@ public class GameJpaAdapter implements LoadPlayableGamesPort, LoadDraftGamesPort
                     e.getUrlGameSession()
             );
         }
+
     }

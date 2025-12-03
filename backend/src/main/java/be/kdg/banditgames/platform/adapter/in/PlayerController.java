@@ -4,6 +4,7 @@ import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
+import be.kdg.banditgames.platform.port.in.game.PlayableGameResult;
 import be.kdg.banditgames.platform.port.in.player.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +24,17 @@ public class PlayerController {
     private final FindPlayerPort findPlayerPort;
     private final AddFavoriteGameUseCase addFavoriteGameUseCase;
     private final RemoveFavoriteGameUseCase removeFavoriteGameUseCase;
+    private final ListFavoriteGamesUseCase listFavoriteGamesUseCase;
 
     private final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     public PlayerController(PlayerCreationUseCase playerCreationUseCase,
-                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase) {
+                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase,ListFavoriteGamesUseCase listFavoriteGamesUseCase) {
         this.playerCreationUseCase = playerCreationUseCase;
         this.findPlayerPort = findPlayerPort;
         this.addFavoriteGameUseCase = addFavoriteGameUseCase;
         this.removeFavoriteGameUseCase = removeFavoriteGameUseCase;
+        this.listFavoriteGamesUseCase = listFavoriteGamesUseCase;
     }
 
     @PostMapping("/register")
@@ -92,5 +95,14 @@ public class PlayerController {
         RemoveFavoriteGameCommand command = new RemoveFavoriteGameCommand(playerId, gid);
         Player updated = removeFavoriteGameUseCase.removeFromFavorites(command);
         return PlayerDto.fromDomain(updated);
+    }
+
+    @GetMapping("/favorites")
+    @PreAuthorize("hasAuthority('player')")
+    public List<PlayableGameResult> favorites(@AuthenticationPrincipal Jwt jwt) {
+        UUID keycloakId = UUID.fromString(jwt.getSubject());
+        var command = new ListFavoriteGamesCommand(PlayerId.of(keycloakId));
+        logger.info("Listing favorite game: {}", command + "for " + PlayerId.of(keycloakId));
+        return listFavoriteGamesUseCase.list(command);
     }
 }
