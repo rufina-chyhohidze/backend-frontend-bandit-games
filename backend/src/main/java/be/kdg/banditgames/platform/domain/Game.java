@@ -37,6 +37,10 @@
             this.status = GameStatus.PUBLISHED;
         }
 
+        public void rejectGame() {
+            this.status = GameStatus.REJECTED;
+        }
+
         public boolean isPlayable() {
             return status == GameStatus.PUBLISHED;
         }

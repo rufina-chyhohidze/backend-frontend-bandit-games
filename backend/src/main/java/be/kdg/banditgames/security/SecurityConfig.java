@@ -33,9 +33,6 @@ public class SecurityConfig {
                                 "/api/gameplay/ai-move",//CHANGE IT AFTER
                                 "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
                         ).permitAll()
-
-                        .requestMatchers("/api/admin/**").hasAuthority("admin")
-                        .requestMatchers("/api/player/**").hasAuthority("player")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

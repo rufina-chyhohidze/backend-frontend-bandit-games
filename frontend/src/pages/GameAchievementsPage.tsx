@@ -16,7 +16,7 @@ import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import type { Achievement } from "../models/achievement.ts";
 import type { Game } from "../models/game.ts";
-import { fetchAchievements, fetchGames } from "../api/gamesApi";
+import { fetchAchievements, fetchGames } from "../services/gamesService.ts";
 
 export default function GameAchievementsPage() {
     const { gameId } = useParams<{ gameId: string }>();
@@ -29,6 +29,7 @@ export default function GameAchievementsPage() {
 
     useEffect(() => {
         if (!gameId) return;
+
         async function loadData() {
             try {
                 setLoading(true);
@@ -47,6 +48,7 @@ export default function GameAchievementsPage() {
                 setLoading(false);
             }
         }
+
         loadData();
     }, [gameId]);
 
@@ -63,9 +65,23 @@ export default function GameAchievementsPage() {
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
-                bgcolor: "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
+                overflow: "hidden",
+                background: "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
             }}
         >
+            {/* Top navigation bar */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 2,
+                }}
+            >
+            </Box>
+
+            {/* Glow overlay */}
             <Box
                 sx={{
                     position: "absolute",
@@ -79,6 +95,7 @@ export default function GameAchievementsPage() {
                 }}
             />
 
+            {/* Main card */}
             <Box
                 sx={{
                     position: "relative",
@@ -86,7 +103,8 @@ export default function GameAchievementsPage() {
                     width: { xs: "97vw", sm: 600, md: 800 },
                     maxWidth: "97vw",
                     borderRadius: 3,
-                    p: { xs: 2, md: 4 },
+                    p: { xs: 3, md: 4 }, // slightly more padding to compensate for navbar
+                    pt: { xs: 5, md: 6 },
                     bgcolor: "rgba(7, 11, 25, 0.98)",
                     boxShadow: "0 24px 55px rgba(0,0,0,0.85)",
                     color: "white",
@@ -95,7 +113,12 @@ export default function GameAchievementsPage() {
                     gap: 2.5,
                 }}
             >
-                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    gap={2}
+                >
                     <Stack direction="row" alignItems="center" spacing={1.5}>
                         <EmojiEventsRoundedIcon sx={{ fontSize: 32, color: "#ffd54f" }} />
                         <Box>
@@ -135,7 +158,7 @@ export default function GameAchievementsPage() {
                             background:
                                 "linear-gradient(135deg, rgba(124,140,255,0.14), rgba(0,220,130,0.16))",
                             boxShadow: "0 10px 32px rgba(0,0,0,0.65)",
-                            border: "none"
+                            border: "none",
                         }}
                         elevation={0}
                     >
@@ -210,7 +233,12 @@ export default function GameAchievementsPage() {
                                 elevation={0}
                             >
                                 <CardContent>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
+                                    <Stack
+                                        direction="row"
+                                        justifyContent="space-between"
+                                        alignItems="flex-start"
+                                        gap={2}
+                                    >
                                         <Box>
                                             <Typography
                                                 variant="overline"

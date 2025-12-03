@@ -17,7 +17,7 @@ import {
 // Assuming you meant SportsEsportsRoundedIcon again, but HubRoundedIcon is fine too.
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { fetchGames } from "../../api/gamesApi";
+import { fetchGames } from "../../services/gamesService.ts";
 import type { Game } from "../../models/game";
 
 interface GameSelectorProps {

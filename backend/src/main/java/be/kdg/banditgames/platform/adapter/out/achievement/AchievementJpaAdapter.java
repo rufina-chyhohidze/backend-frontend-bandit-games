@@ -2,7 +2,7 @@ package be.kdg.banditgames.platform.adapter.out.achievement;
 
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Achievement;
-import be.kdg.banditgames.platform.port.out.LoadAvailableAchievementsPort;
+import be.kdg.banditgames.platform.port.out.achievement.LoadAvailableAchievementsPort;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
