@@ -1,14 +1,16 @@
 import { Grid } from "@mui/material";
-import type { Game } from "../../models/game.ts";
+import type { Game } from "../../models/game";
 import { GameCard } from "./GameCard";
 
 type Props = {
     games: Game[];
     onPlay: (game: Game) => void;
     onViewAchievements: (game: Game) => void;
+    onFavorite: (game: Game) => void;
+    favoriteGameIds: string[];
 };
 
-export function GameList({ games, onPlay, onViewAchievements }: Props) {
+export function GameList({ games, onPlay, onViewAchievements, onFavorite, favoriteGameIds }: Props) {
     return (
         <Grid container spacing={3}>
             {games.map((game) => (
@@ -17,6 +19,8 @@ export function GameList({ games, onPlay, onViewAchievements }: Props) {
                         game={game}
                         onPlay={() => onPlay(game)}
                         onViewAchievements={() => onViewAchievements(game)}
+                        onFavorite={() => onFavorite(game)}
+                        isFavorite={favoriteGameIds.includes(game.gameId)}
                     />
                 </Grid>
             ))}

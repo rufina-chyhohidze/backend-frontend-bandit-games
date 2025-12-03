@@ -1,4 +1,3 @@
-import type { Game } from "../../models/game.ts";
 import {
     Card,
     CardActionArea,
@@ -7,15 +6,22 @@ import {
     CardActions,
     Button,
     Typography,
+    IconButton,
+    Tooltip,
 } from "@mui/material";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
+import type {Game} from "../../models/game.ts";
 
 interface GameCardProps {
     game: Game;
     onPlay: () => void;
     onViewAchievements: () => void;
+    onFavorite: () => void;
+    isFavorite: boolean;
 }
 
-export function GameCard({ game, onPlay, onViewAchievements }: GameCardProps) {
+export function GameCard({ game, onPlay, onViewAchievements, onFavorite, isFavorite }: GameCardProps) {
     return (
         <Card
             sx={{
@@ -51,6 +57,12 @@ export function GameCard({ game, onPlay, onViewAchievements }: GameCardProps) {
                 <Button size="small" variant="outlined" onClick={onViewAchievements}>
                     Achievements
                 </Button>
+
+                <Tooltip title={isFavorite ? "Favorite" : "Add to favorites"}>
+                    <IconButton onClick={onFavorite} size="small">
+                        {isFavorite ? <StarIcon color="warning" /> : <StarBorderIcon />}
+                    </IconButton>
+                </Tooltip>
             </CardActions>
         </Card>
     );

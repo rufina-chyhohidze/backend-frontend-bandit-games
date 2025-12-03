@@ -39,3 +39,16 @@ export const getPlayerById = async (playerId: string): Promise<PlayerDto> => {
     });
     return response.data;
 };
+export async function addFavoriteGame(gameId: string): Promise<PlayerDto> {
+    const response = await axios.post(`${PLAYER_API_URL}/favorites/${gameId}`);
+    return response.data;
+}
+
+export async function fetchCurrentPlayer(): Promise<PlayerDto> {
+    const response = await axios.get(`${PLAYER_API_URL}/me`);
+    return response.data;
+}
+export async function removeFavoriteGame(gameId: string): Promise<PlayerDto> {
+    const response = await axios.delete(`${PLAYER_API_URL}/favorites/${gameId}`);
+    return response.data;
+}

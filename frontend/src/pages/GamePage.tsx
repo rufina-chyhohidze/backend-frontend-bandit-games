@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import type { Game } from "../models/game.ts";
 import { fetchGames } from "../services/gamesService.ts";
 import { GameList } from "../components/games/GameList";
+import { addFavoriteGame, type PlayerDto, fetchCurrentPlayer, removeFavoriteGame  } from "../services/playerService";
+
 import {
     Box,
     CircularProgress,
@@ -17,6 +19,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 
 export function GamesPage() {
     const [games, setGames] = useState<Game[]>([]);
+    const [favoriteGameIds, setFavoriteGameIds] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -35,9 +38,30 @@ export function GamesPage() {
         }
     };
 
+    const loadInitial = async () => {
+        try {
+            setLoading(true);
+            // Load games and current player in parallel
+            const [gamesResult, player]: [Game[], PlayerDto] = await Promise.all([
+                fetchGames(),
+                fetchCurrentPlayer(),
+            ]);
+
+            setGames(gamesResult);
+            setFavoriteGameIds(player.favoriteGameIds);
+            setError(null);
+        } catch (err) {
+            console.error(err);
+            setError("Failed to load games. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        loadGames();
+        void loadInitial();
     }, []);
+
 
     const handlePlay = (game: Game) => {
         const url = game.urlGameSession;
@@ -51,6 +75,24 @@ export function GamesPage() {
     const handleViewAchievements = (game: Game) => {
         navigate(`/games/${game.gameId}/achievements`);
     };
+
+    const handleFavorite = async (game: Game) => {
+        try {
+            const isAlreadyFavorite = favoriteGameIds.includes(game.gameId);
+
+            let player: PlayerDto;
+            if (isAlreadyFavorite) {
+                player = await removeFavoriteGame(game.gameId);
+            } else {
+                player = await addFavoriteGame(game.gameId);
+            }
+
+            setFavoriteGameIds(player.favoriteGameIds);
+        } catch (e) {
+            console.error("Failed to toggle favorite", e);
+        }
+    };
+
 
     return (
         <Box
@@ -233,6 +275,8 @@ export function GamesPage() {
                                 games={games}
                                 onPlay={handlePlay}
                                 onViewAchievements={handleViewAchievements}
+                                onFavorite={handleFavorite}
+                                favoriteGameIds={favoriteGameIds}
                             />
                         </Box>
                     )}
