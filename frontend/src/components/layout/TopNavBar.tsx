@@ -93,42 +93,44 @@ export function TopNavBar() {
                     }}
                 >
                     {isAuthenticated() ? (
-                        <>
+                        isAdmin ? (
                             <Button
-                                onClick={() => handleNavClick("/games")}
-                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/games") }}
+                                onClick={() => handleNavClick("/admin")}
+                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
                             >
-                                Games
+                                Admin
                             </Button>
-                            <Button
-                                onClick={() => handleNavClick("/friends")}
-                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
-                            >
-                                Friends
-                            </Button>
-                            <Button
-                                disabled
-                                sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
-                            >
-                                Achievements
-                            </Button>
-                            <Button
-                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
-                                onClick={() => handleNavClick("/lobby")}
-                            >
-                                Lobby
-                            </Button>
-                            {isAdmin && (
+                        ) : (
+                            <>
                                 <Button
-                                    onClick={() => handleNavClick("/admin")}
-                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
+                                    onClick={() => handleNavClick("/games")}
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/games") }}
                                 >
-                                    Admin
+                                    Games
                                 </Button>
-                            )}
-                        </>
+                                <Button
+                                    onClick={() => handleNavClick("/friends")}
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
+                                >
+                                    Friends
+                                </Button>
+                                <Button
+                                    disabled
+                                    sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                                >
+                                    Achievements
+                                </Button>
+                                <Button
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
+                                    onClick={() => handleNavClick("/lobby")}
+                                >
+                                    Lobby
+                                </Button>
+                            </>
+                        )
                     ) : null}
                 </Box>
+
 
                 <Box
                     sx={{

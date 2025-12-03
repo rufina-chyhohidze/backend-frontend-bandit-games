@@ -3,13 +3,11 @@ import { GamesPage } from "../pages/GamePage";
 import GameAchievementsPage from "../pages/GameAchievementsPage";
 import { AdminPage } from "../pages/AdminPage";
 import { PublicPage } from "../pages/PublicPage";
-import { AdminRoute } from "../components/routes/AdminRoute";
-import { PlayerRoute } from "../components/routes/PlayerRoute";
 import { RouteGuard } from "../components/routes/RouteGuard";
 import { FullScreenFrame } from "../components/connect4/FullScreenFrame";
 import { LobbyPage } from "../pages/LobbyPage";
-import {DefaultRedirect} from "../components/routes/DefaultRedirect.tsx";
-import {FriendsPage} from "../pages/FriendsPage.tsx";
+import { DefaultRedirect } from "../components/routes/DefaultRedirect.tsx";
+import { FriendsPage } from "../pages/FriendsPage.tsx";
 
 export function AppRoutes() {
     return (
@@ -20,41 +18,59 @@ export function AppRoutes() {
 
             <Route element={<RouteGuard><Outlet /></RouteGuard>}>
 
-                <Route path="/admin" element={
-                    <AdminRoute>
-                        <AdminPage />
-                    </AdminRoute>
-                } />
+                <Route
+                    path="/admin"
+                    element={
+                        <RouteGuard role="admin">
+                            <AdminPage />
+                        </RouteGuard>
+                    }
+                />
 
-                <Route path="/games" element={
-                    <PlayerRoute>
-                        <GamesPage />
-                    </PlayerRoute>
-                } />
+                <Route
+                    path="/games"
+                    element={
+                        <RouteGuard role="player">
+                            <GamesPage />
+                        </RouteGuard>
+                    }
+                />
 
-                <Route path="/games/connect4" element={
-                    <PlayerRoute>
-                        <FullScreenFrame src="/connect4/index.html" />
-                    </PlayerRoute>
-                } />
+                <Route
+                    path="/games/connect4"
+                    element={
+                        <RouteGuard role="player">
+                            <FullScreenFrame src="/connect4/index.html" />
+                        </RouteGuard>
+                    }
+                />
 
-                <Route path="/games/:gameId/achievements" element={
-                    <PlayerRoute>
-                        <GameAchievementsPage />
-                    </PlayerRoute>
-                } />
+                <Route
+                    path="/games/:gameId/achievements"
+                    element={
+                        <RouteGuard role="player">
+                            <GameAchievementsPage />
+                        </RouteGuard>
+                    }
+                />
 
-                <Route path="/lobby" element={
-                    <PlayerRoute>
-                        <LobbyPage />
-                    </PlayerRoute>
-                } />
+                <Route
+                    path="/lobby"
+                    element={
+                        <RouteGuard role="player">
+                            <LobbyPage />
+                        </RouteGuard>
+                    }
+                />
 
-                <Route path="/friends" element={
-                    <PlayerRoute>
-                        <FriendsPage />
-                    </PlayerRoute>
-                } />
+                <Route
+                    path="/friends"
+                    element={
+                        <RouteGuard role="player">
+                            <FriendsPage />
+                        </RouteGuard>
+                    }
+                />
             </Route>
 
             <Route path="*" element={<p>Not found</p>} />
