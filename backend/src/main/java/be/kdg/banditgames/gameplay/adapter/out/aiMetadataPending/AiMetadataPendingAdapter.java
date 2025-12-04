@@ -50,10 +50,6 @@ public class AiMetadataPendingAdapter
         repository.delete(entity);
     }
 
-    /**
-     * Atomically finds AND deletes a pending metadata record in a single database operation.
-     * Guarantees no concurrency collisions even with double-AI turns.
-     */
     @Override
     public Optional<AiMetadataPendingEntity> findAndDelete(UUID sessionId, int moveNumber) {
         Query query = new Query()
