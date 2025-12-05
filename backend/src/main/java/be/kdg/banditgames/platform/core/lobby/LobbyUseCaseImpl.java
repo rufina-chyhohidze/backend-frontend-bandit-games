@@ -6,6 +6,7 @@ import be.kdg.banditgames.common.shared.PlayerType;
 import be.kdg.banditgames.platform.adapter.in.response.StartGameResponse;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.Lobby;
+import be.kdg.banditgames.platform.domain.exception.lobby.LobbyNotFoundException;
 import be.kdg.banditgames.platform.domain.exception.lobby.PlayerAlreadyInLobbyException;
 import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.in.lobby.*;
@@ -87,13 +88,23 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         Game game = loadPlayableGamesPort.loadGameById(
                 lobby.getGameId().gameId()).orElseThrow();
 
+        if (!lobby.hasStartedGame()) {
 
-        if(!lobby.hasStartedGame()){
+            var hostId = lobby.getHostPlayer().playerId();
+
+            UUID guestId;
+            if (lobby.getGuestPlayer() != null) {
+                guestId = lobby.getGuestPlayer().playerId();
+            } else {
+                // AI opponent: we still need an ID for player2.
+                guestId = UUID.randomUUID();
+            }
+
             createGameService.createGameForLobby(
                     new CreateGameCommand(
                             lobbyId.lobbyID(),
-                            lobby.getHostPlayer().playerId(),
-                            lobby.getGuestPlayer().playerId(),
+                            hostId,
+                            guestId,
                             lobby.getHostType(),
                             lobby.getGuestType()
                     )
@@ -114,7 +125,9 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 "%s?sessionId=%s&playerId=%s",
                 game.getUrlGameSession(),
                 lobbyId.lobbyID(),
-                lobby.getGuestPlayer().playerId()
+                lobby.getGuestPlayer() != null
+                        ? lobby.getGuestPlayer().playerId()
+                        : "AI"
         );
 
         return new StartGameResponse(
@@ -124,6 +137,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 lobby.getGuestType().name()
         );
     }
+
 
     @Override
     public void chooseGameForLobby(LobbyId lobbyId, GameId gameId) {
@@ -147,5 +161,27 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
     @Override
     public List<Lobby> findLobbies() {
         return loadLobbyPort.loadAll();
+    }
+
+    @Override
+    public void chooseAiOpponent(LobbyId lobbyId, PlayerId requestingPlayer, PlayerType aiType) {
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+                .orElseThrow(() -> new RuntimeException("Lobby not found: " + lobbyId.lobbyID()));
+
+        // Only host allowed to choose AI
+        if (!lobby.getHostPlayer().equals(requestingPlayer)) {
+            throw new IllegalStateException("Only the host can choose an AI opponent.");
+        }
+
+        // Optional: block override of human guest
+        if (lobby.getGuestPlayer() != null && lobby.getGuestType() == PlayerType.HUMAN) {
+            throw new IllegalStateException("Cannot set AI: lobby already has a human guest.");
+        }
+
+        // Domain: set AI guest
+        lobby.changeGuestToAI(aiType);
+
+        // Persist
+        persistLobbyPort.saveLobby(lobby);
     }
 }

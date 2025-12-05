@@ -2,6 +2,7 @@ package be.kdg.banditgames.platform.adapter.in;
 
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
+import be.kdg.banditgames.common.shared.PlayerType;
 import be.kdg.banditgames.platform.adapter.in.requests.CreateLobbyRequest;
 import be.kdg.banditgames.platform.adapter.in.response.LobbyDto;
 import be.kdg.banditgames.platform.adapter.in.response.LobbyDtoMapper;
@@ -135,5 +136,30 @@ public class LobbyController {
                 GameId.of(gameId)
         );
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{lobbyId}/choose-ai")
+    public ResponseEntity<LobbyDto> chooseAiOpponent(
+            @PathVariable UUID lobbyId,
+            @RequestParam("difficulty") String difficulty,
+            @AuthenticationPrincipal Jwt principal
+    ) {
+        UUID playerId = UUID.fromString(principal.getSubject());
+
+        PlayerType aiType = switch (difficulty.toUpperCase()) {
+            case "EASY" -> PlayerType.AI_EASY;
+            case "MEDIUM" -> PlayerType.AI_MEDIUM;
+            case "HARD" -> PlayerType.AI_HARD;
+            default -> throw new IllegalArgumentException("Unknown AI difficulty: " + difficulty);
+        };
+
+        managingLobbyUseCase.chooseAiOpponent(
+                LobbyId.of(lobbyId),
+                PlayerId.of(playerId),
+                aiType
+        );
+
+        Lobby updated = findLobbyUseCase.findLobbyById(lobbyId);
+        return ResponseEntity.ok(LobbyDtoMapper.toDto(updated));
     }
 }
