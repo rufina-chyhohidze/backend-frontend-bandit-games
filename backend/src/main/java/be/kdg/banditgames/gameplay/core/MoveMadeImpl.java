@@ -1,7 +1,9 @@
 package be.kdg.banditgames.gameplay.core;
 
+import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.common.shared.SessionId;
+import be.kdg.banditgames.gameplay.domain.exceptions.GameSesssionNotFound;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
@@ -35,8 +37,9 @@ public class MoveMadeImpl implements MoveMadePort {
                 moveMadeCommand.serializedBoard(),
                 moveMadeCommand.serializedLegalMoves());
 
-        SessionId sessionId = SessionId.of(moveMadeCommand.sessionId());
-        persistGameSessionPort.addGameState(sessionId, gameState);
+        GameSession gameSession = loadGameSessionPort.loadGameSessionById(SessionId.of(moveMadeCommand.sessionId())).orElseThrow(() -> new GameSesssionNotFound("Game session not found: " +  SessionId.of(moveMadeCommand.sessionId())));
+
+        persistGameSessionPort.appendMove(gameSession.getSessionsId(), gameState);
 
     }
 }

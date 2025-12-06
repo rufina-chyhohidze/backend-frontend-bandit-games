@@ -3,6 +3,7 @@ package be.kdg.banditgames.gameplay.adapter.out;
 import be.kdg.banditgames.common.shared.PlayerType;
 import be.kdg.banditgames.gameplay.adapter.out.aiMetadataPending.AiMetadataPendingEntity;
 import be.kdg.banditgames.gameplay.adapter.out.aiMetadataPending.MongoAiMetadataPendingRepository;
+import be.kdg.banditgames.gameplay.domain.GameResult;
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.GameState;
 import be.kdg.banditgames.common.shared.SessionId;
@@ -18,6 +19,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +55,8 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
     }
 
     @Override
-    public void addGameState(SessionId sessionId, GameState gameState) {
+    public void appendMove(SessionId sessionId, GameState gameState) {
+
         UUID idValue = sessionId.sessionsId();
 
         boolean exists = mongoGameplayRepository.existsById(idValue);
@@ -61,18 +65,12 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         Query query = new Query(Criteria.where("_id").is(idValue));
         AiMetadataEmbedded aiMetadata = null;
 
-
         if (gameState.getPlayerType() != PlayerType.HUMAN) {
-            // Fetch from pending collection
             Optional<AiMetadataPendingEntity> pending =
-                    loadAiPendingPort.find(
-                            sessionId.sessionsId(),
-                            gameState.getMoveNumber()
-                    );
+                    loadAiPendingPort.findAndDelete(sessionId.sessionsId(), gameState.getMoveNumber());
 
             if (pending.isPresent()) {
                 aiMetadata = pending.get().getMetadata();
-                deleteAiPendingPort.delete(pending.get());  // Cleanup
             }
         }
         GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
@@ -80,6 +78,21 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         Update update = new Update().push("game_states", embedded);
         var result = mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
         logger.info("Matched: {}, Modified: {}", result.getMatchedCount(), result.getModifiedCount());
+    }
 
+    @Override
+    public void markCompleted(SessionId id, GameResult result, LocalDateTime endTime) {
+
+        Query query = new Query(Criteria.where("_id").is(id.sessionsId()));
+
+        Update update = new Update()
+                .set("game_result", result.name())
+                .set("end_time", endTime)
+                .set("session_state", "COMPLETED");
+
+        var dbResult = mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
+
+        logger.info("markCompleted: Matched={}, Modified={}",
+                dbResult.getMatchedCount(), dbResult.getModifiedCount());
     }
 }

@@ -1,9 +1,8 @@
 package be.kdg.banditgames.gameplay.adapter.out.aiAgentMove;
 
-import be.kdg.banditgames.gameplay.adapter.in.response.AiAgentResponseDto;
 import be.kdg.banditgames.gameplay.port.in.AiMoveMetadata;
 import be.kdg.banditgames.gameplay.port.in.AiRequestCommand;
-import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgenteMoveService;
+import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveService;
 import be.kdg.banditgames.gameplay.port.out.aiMetadataPending.SaveAiMetadataPendingPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class AiAgentMoveAdaptor implements AiAgenteMoveService {
+public class AiAgentMoveAdaptor implements AiAgentMoveService {
     private static final Logger logger = LoggerFactory.getLogger(AiAgentMoveAdaptor.class);
     private final RestTemplate restTemplate = new RestTemplate();
     private final SaveAiMetadataPendingPort savePendingPort;
@@ -61,7 +60,7 @@ public class AiAgentMoveAdaptor implements AiAgenteMoveService {
         // Save snapshot
         savePendingPort.saveTemporaryMetadata(
                 aiRequest.sessionId(),
-                aiRequest.moveNumber(),
+                (aiRequest.moveNumber()+1),
                 metadata
         );
 

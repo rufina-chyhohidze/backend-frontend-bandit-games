@@ -46,6 +46,13 @@
       "durable": true,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "connect4.game.result",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
   "bindings": [
@@ -63,6 +70,14 @@
       "destination": "connect4.move.made",
       "destination_type": "queue",
       "routing_key": "connect4.move.made.*",
+      "arguments": {}
+    },
+    {
+      "vhost": "/",
+      "source": "connect4.events",
+      "destination": "connect4.game.created",
+      "destination_type": "queue",
+      "routing_key": "connect4.game.created.*",
       "arguments": {}
     }
   ]
