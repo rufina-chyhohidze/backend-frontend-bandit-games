@@ -16,6 +16,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/milestone")
 }
 
 
@@ -45,12 +46,22 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-security")
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
+    // WebClient
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
 
     // TESTING
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.springframework.modulith:spring-modulith-starter-test")
+    testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.1.4")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
+    
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:rabbitmq")
+    testImplementation("org.testcontainers:mongodb")
+    testImplementation("org.testcontainers:postgresql")
+    
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.testcontainers:junit-jupiter:1.20.0")

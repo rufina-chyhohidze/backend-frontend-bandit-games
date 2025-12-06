@@ -1,15 +1,11 @@
-import { useContext } from "react";
 import {
     Box,
     Stack,
     Typography,
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
-import SecurityContext from "../context/SecurityContext";
-import { TopNavBar } from "../components/layout/TopNavBar";
 
 export function PublicPage() {
-    const {login} = useContext(SecurityContext);
 
     return (
         <Box
@@ -33,7 +29,6 @@ export function PublicPage() {
                     zIndex: 2,
                 }}
             >
-                <TopNavBar />
             </Box>
 
             <Box

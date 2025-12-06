@@ -59,30 +59,25 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
 
         UUID idValue = sessionId.sessionsId();
 
+        boolean exists = mongoGameplayRepository.existsById(idValue);
+        logger.info("Exists? {}", exists);
+
         Query query = new Query(Criteria.where("_id").is(idValue));
         AiMetadataEmbedded aiMetadata = null;
 
-        // If AI move, attach metadata
         if (gameState.getPlayerType() != PlayerType.HUMAN) {
-            Optional<AiMetadataPendingEntity> pending = loadAiPendingPort.find(
-                    idValue,
-                    gameState.getMoveNumber()
-            );
+            Optional<AiMetadataPendingEntity> pending =
+                    loadAiPendingPort.findAndDelete(sessionId.sessionsId(), gameState.getMoveNumber());
+
             if (pending.isPresent()) {
                 aiMetadata = pending.get().getMetadata();
-                deleteAiPendingPort.delete(pending.get());
             }
         }
-
-        GameStateMongoEmbedded embedded =
-                GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
+        GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
 
         Update update = new Update().push("game_states", embedded);
         var result = mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
-
-        logger.info("appendMove: Matched={}, Modified={}",
-                result.getMatchedCount(), result.getModifiedCount());
-    }
+        logger.info("Matched: {}, Modified: {}", result.getMatchedCount(), result.getModifiedCount());
 
     @Override
     public void markCompleted(SessionId id, GameResult result, LocalDateTime endTime) {

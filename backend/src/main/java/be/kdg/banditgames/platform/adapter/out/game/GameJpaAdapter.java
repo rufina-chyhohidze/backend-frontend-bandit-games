@@ -1,10 +1,11 @@
 package be.kdg.banditgames.platform.adapter.out.game;
 
+import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.GameStatus;
-import be.kdg.banditgames.platform.port.out.LoadPlayableGamesPort;
-import be.kdg.banditgames.platform.port.out.UpdateGamesPort;
-import jakarta.transaction.Transactional;
+import be.kdg.banditgames.platform.port.out.game.LoadDraftGamesPort;
+import be.kdg.banditgames.platform.port.out.game.LoadPlayableGamesPort;
+import be.kdg.banditgames.platform.port.out.game.UpdateGamesPort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-@Transactional
-public class GameJpaAdapter implements LoadPlayableGamesPort, UpdateGamesPort {
+public class GameJpaAdapter implements LoadPlayableGamesPort, LoadDraftGamesPort, UpdateGamesPort {
+
     private final GameJpaRepository jpa;
 
     public GameJpaAdapter(GameJpaRepository jpa) {
@@ -22,7 +23,8 @@ public class GameJpaAdapter implements LoadPlayableGamesPort, UpdateGamesPort {
 
     @Override
     public List<Game> loadPlayableGames() {
-        return jpa.findByStatus(GameStatus.PUBLISHED).stream()
+        return jpa.findByStatus(GameStatus.PUBLISHED)
+                .stream()
                 .map(this::toDomain)
                 .toList();
     }
@@ -33,30 +35,45 @@ public class GameJpaAdapter implements LoadPlayableGamesPort, UpdateGamesPort {
                 .map(this::toDomain);
     }
 
-    private Game toDomain(GameJpaEntity e) {
-        return new Game(
-                e.getId(),
-                e.getName(),
-                e.getDescription(),
-                e.getRules(),
-                e.getPictureUrl(),
-                e.getStatus(),
-                e.getUrlGameSession()
-        );
-    }
 
     @Override
-    public Game updateGames(Game game) {
-        GameJpaEntity entity = new GameJpaEntity(
-                game.getGameId().gameId(),
-                game.getName(),
-                game.getDescription(),
-                game.getRules(),
-                game.getPictureUrl(),
-                game.getStatus(),
-                game.getUrlGameSession()
-        );
-        jpa.save(entity);
-        return game;
+        public Optional<Game> findById (GameId id){
+            return jpa.findById(id.gameId())
+                    .map(this::toDomain);
+        }
+
+        @Override
+        public List<Game> findByStatusPendingApproval () {
+            return jpa.findByStatus(GameStatus.DRAFT)
+                    .stream()
+                    .map(this::toDomain)
+                    .toList();
+        }
+
+        @Override
+        public Game updateGames (Game game){
+            GameJpaEntity entity = new GameJpaEntity(
+                    game.getGameId().gameId(),
+                    game.getName(),
+                    game.getDescription(),
+                    game.getRules(),
+                    game.getPictureUrl(),
+                    game.getStatus(),
+                    game.getUrlGameSession()
+            );
+            jpa.save(entity);
+            return game;
+        }
+
+        private Game toDomain (GameJpaEntity e){
+            return new Game(
+                    GameId.of(e.getId()),
+                    e.getName(),
+                    e.getDescription(),
+                    e.getRules(),
+                    e.getPictureUrl(),
+                    e.getStatus(),
+                    e.getUrlGameSession()
+            );
+        }
     }
-}

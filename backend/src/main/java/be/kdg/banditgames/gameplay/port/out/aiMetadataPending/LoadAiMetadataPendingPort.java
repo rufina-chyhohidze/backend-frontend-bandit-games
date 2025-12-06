@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface LoadAiMetadataPendingPort {
     Optional<AiMetadataPendingEntity> find(UUID sessionId, int moveNumber);
+    Optional<AiMetadataPendingEntity> findAndDelete(UUID sessionId, int moveNumber);
+
 }

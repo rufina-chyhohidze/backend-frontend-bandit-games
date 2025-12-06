@@ -1,22 +1,17 @@
-import { type PropsWithChildren, useContext, useEffect } from 'react'
+import { type PropsWithChildren, useContext } from 'react'
 import SecurityContext from '../../context/SecurityContext.ts'
+import {Navigate} from "react-router-dom";
 
 export function RouteGuard({ children }: PropsWithChildren) {
-    const { isInitialised, isAuthenticated, login } = useContext(SecurityContext)
-
-    useEffect(() => {
-        if (isInitialised && !isAuthenticated()) {
-            login()
-        }
-    }, [isInitialised, isAuthenticated, login])
+    const { isInitialised, isAuthenticated } = useContext(SecurityContext);
 
     if (!isInitialised) {
-        return <div>Initialising authentication...</div>
+        return <div>Loading authentication...</div>;
     }
 
     if (!isAuthenticated()) {
-        return <div>Authenticating...</div>
+        return <Navigate to="/public" replace />;
     }
 
-    return children
+    return <>{children}</>;
 }

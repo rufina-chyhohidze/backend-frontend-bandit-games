@@ -29,6 +29,11 @@ export function TopNavBar() {
         navigate(path);
     };
 
+    const handleBrandClick = () => {
+        // Navigate to root, which will redirect appropriately
+        navigate("/");
+    };
+
     const handleUserClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -45,10 +50,11 @@ export function TopNavBar() {
         logout?.();
     };
 
-    const activeStyle = (path: string) =>
-        location.pathname.startsWith(path)
+    const activeStyle = (path: string) => {
+        return location.pathname.startsWith(path)
             ? { borderBottom: "2px solid black", fontWeight: 600 }
             : { color: "#555" };
+    };
 
     const initials =
         loggedInUser?.name
@@ -71,7 +77,7 @@ export function TopNavBar() {
                 <Typography
                     variant="h6"
                     sx={{ fontWeight: 700, letterSpacing: 0.3, cursor: "pointer" }}
-                    onClick={() => handleNavClick("/public")}
+                    onClick={handleBrandClick}
                 >
                     BanditGames
                 </Typography>
@@ -86,44 +92,42 @@ export function TopNavBar() {
                         fontSize: 14,
                     }}
                 >
-                    <Button
-                        onClick={() => handleNavClick("/public")}
-                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/public") }}
-                    >
-                        Home
-                    </Button>
-                    <Button
-                        onClick={() => handleNavClick("/games")}
-                        sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/games") }}
-                    >
-                        Games
-                    </Button>
-                    <Button
-                        disabled
-                        sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
-                    >
-                        Friends
-                    </Button>
-                    <Button
-                        disabled
-                        sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
-                    >
-                        Achievements
-                    </Button>
-                    <Button
-                        disabled
-                        sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
-                    >
-                        Lobby
-                    </Button>
-                    {isAdmin && (
-                        <Button
-                            onClick={() => handleNavClick("/admin")}
-                            sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
-                        >
-                            Admin
-                        </Button>
-                    )}
+                    {isAuthenticated() ? (
+                        <>
+                            <Button
+                                onClick={() => handleNavClick("/games")}
+                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/games") }}
+                            >
+                                Games
+                            </Button>
+                            <Button
+                                onClick={() => handleNavClick("/friends")}
+                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
+                            >
+                                Friends
+                            </Button>
+                            <Button
+                                disabled
+                                sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                            >
+                                Achievements
+                            </Button>
+                            <Button
+                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
+                                onClick={() => handleNavClick("/lobby")}
+                            >
+                                Lobby
+                            </Button>
+                            {isAdmin && (
+                                <Button
+                                    onClick={() => handleNavClick("/admin")}
+                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
+                                >
+                                    Admin
+                                </Button>
+                            )}
+                        </>
+                    ) : null}
                 </Box>
 
                 <Box

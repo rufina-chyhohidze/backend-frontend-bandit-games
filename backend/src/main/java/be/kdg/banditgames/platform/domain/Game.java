@@ -13,8 +13,8 @@
         private GameStatus status;
         private String urlGameSession;
 
-        public Game(UUID gameId, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
-            this.gameId = GameId.create();
+        public Game(GameId gameId, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
+            this.gameId = gameId;
             this.name = name;
             this.description = description;
             this.rules = rules;
@@ -35,6 +35,10 @@
 
         public void acceptGame() {
             this.status = GameStatus.PUBLISHED;
+        }
+
+        public void rejectGame() {
+            this.status = GameStatus.REJECTED;
         }
 
         public boolean isPlayable() {
