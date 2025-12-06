@@ -78,6 +78,7 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         Update update = new Update().push("game_states", embedded);
         var result = mongoTemplate.updateFirst(query, update, GameSessionMongoEntity.class);
         logger.info("Matched: {}, Modified: {}", result.getMatchedCount(), result.getModifiedCount());
+    }
 
     @Override
     public void markCompleted(SessionId id, GameResult result, LocalDateTime endTime) {
