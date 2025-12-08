@@ -8,10 +8,12 @@ import be.kdg.banditgames.platform.port.in.game.PlayableGameResult;
 import be.kdg.banditgames.platform.port.in.player.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,5 +106,13 @@ public class PlayerController {
         var command = new ListFavoriteGamesCommand(PlayerId.of(keycloakId));
         logger.info("Listing favorite game: {}", command + "for " + PlayerId.of(keycloakId));
         return listFavoriteGamesUseCase.list(command);
+    }
+
+    @GetMapping("/by-id")
+    @PreAuthorize("hasAuthority('player')")
+    public PlayerDto getById(@RequestParam UUID playerId) {
+        return findPlayerPort.findById(playerId)
+                .map(PlayerDto::fromDomain)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }
