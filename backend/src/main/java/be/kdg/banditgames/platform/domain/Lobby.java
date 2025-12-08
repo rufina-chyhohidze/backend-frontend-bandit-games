@@ -119,4 +119,18 @@ public class Lobby {
     public boolean hasStartedGame() {
         return lobbyStatus == LobbyStatus.IN_GAME;
     }
+
+    public void changeGuestToAI(PlayerType aiType) {
+        if (aiType == null) {
+            throw new IllegalArgumentException("AI type cannot be null");
+        }
+
+        switch (aiType) {
+            case AI_EASY -> changeGuestToAIPlayerEasy();
+            case AI_MEDIUM -> changeGuestToAIPlayerMedium();
+            case AI_HARD -> changeGuestToAIPlayerHard();
+            default -> throw new IllegalArgumentException("Invalid AI type: " + aiType);
+        }
+    }
+
 }

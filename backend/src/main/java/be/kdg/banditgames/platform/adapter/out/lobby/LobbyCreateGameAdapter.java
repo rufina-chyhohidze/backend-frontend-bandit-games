@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Duration;
 
@@ -25,20 +26,25 @@ public class LobbyCreateGameAdapter implements CreateGameService {
     @Override
     public void createGameForLobby(CreateGameCommand createGameCommand) {
 
-        logger.info("Sending POST request to FastAPI with sessionId {}", createGameCommand.sessionId());
+        logger.info("Sending POST request to FastAPI /games/create with sessionId {}", createGameCommand.sessionId());
 
         try {
             webClient.post()
-                    .uri("/lobby/create-game")
+                    .uri("/games/create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(createGameCommand)
                     .retrieve()
-                    .bodyToMono(Void.class)
+                    .bodyToMono(String.class)
                     .timeout(Duration.ofSeconds(5))
-                    .doOnSuccess(v -> logger.info("FastAPI: Game created successfully!"))
+                    .doOnNext(body -> logger.info("FastAPI: Game created successfully, response: {}", body))
                     .block();
+        } catch (WebClientResponseException e) {
+            logger.error("FastAPI returned {} {} for /games/create",
+                    e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw e;
         } catch (Exception e) {
             logger.error("Failed to send POST request to FastAPI", e);
+            throw e;
         }
     }
 }
