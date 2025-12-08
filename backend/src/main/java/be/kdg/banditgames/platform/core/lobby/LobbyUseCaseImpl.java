@@ -109,10 +109,10 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                             lobby.getGuestType()
                     )
             );
+            lobby.startGame();
+            persistLobbyPort.saveLobby(lobby);
         }
 
-        lobby.startGame();
-        persistLobbyPort.saveLobby(lobby);
 
         String hostUrl = String.format(
                 "%s?sessionId=%s&playerId=%s",

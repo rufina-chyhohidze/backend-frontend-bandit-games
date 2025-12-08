@@ -30,7 +30,7 @@ public class LobbyCreateGameAdapter implements CreateGameService {
 
         try {
             webClient.post()
-                    .uri("/games/create")
+                    .uri("/game/create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(createGameCommand)
                     .retrieve()
