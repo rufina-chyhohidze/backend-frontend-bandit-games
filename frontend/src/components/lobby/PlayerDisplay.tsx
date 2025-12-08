@@ -1,5 +1,6 @@
 import { Stack, Avatar, Typography, Chip } from "@mui/material";
 import PersonIcon from "@mui/icons-material/PersonRounded";
+import { usePlayerById } from "../../hooks/usePlayer";
 
 interface PlayerDisplayProps {
     playerId?: string | null;
@@ -13,7 +14,8 @@ export function PlayerDisplay({ playerId, playerType, isHost, isYou }: PlayerDis
         !!playerType &&
         (playerType === "AI_EASY" || playerType === "AI_MEDIUM" || playerType === "AI_HARD");
 
-    // AI opponent slot
+    const { data: player } = usePlayerById(playerId && !isAi ? playerId : null);
+
     if (!playerId && isAi) {
         const label =
             playerType === "AI_EASY"
@@ -57,13 +59,31 @@ export function PlayerDisplay({ playerId, playerType, isHost, isYou }: PlayerDis
         );
     }
 
+    const displayName = isYou
+        ? "You"
+        : player?.username ?? playerId;
+
+    const initials = (player?.username ?? playerId)
+        .split(" ")
+        .map((p) => p[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+
     return (
         <Stack alignItems="center" spacing={1} sx={{ width: 100 }}>
-            <Avatar sx={{ bgcolor: isYou ? "#00dccc" : "#9d7dff", width: 60, height: 60, fontSize: "1.5rem" }}>
-                {playerId[1]}
+            <Avatar
+                sx={{
+                    bgcolor: isYou ? "#00dccc" : "#9d7dff",
+                    width: 60,
+                    height: 60,
+                    fontSize: "1.5rem",
+                }}
+            >
+                {initials}
             </Avatar>
             <Typography variant="body1" fontWeight={isYou ? 700 : 500} sx={{ color: "#fff" }}>
-                {isYou ? "You" : playerId}
+                {displayName}
             </Typography>
             <Chip label={isHost ? "Host" : "Guest"} size="small" sx={{ fontSize: "0.7rem" }} />
             {playerType && (

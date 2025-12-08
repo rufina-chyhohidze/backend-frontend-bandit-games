@@ -1,5 +1,3 @@
-// src/components/lobby/OpenLobbiesList.tsx
-
 import {
     Box,
     Typography,
@@ -14,15 +12,26 @@ import GamepadRoundedIcon from '@mui/icons-material/GamepadRounded';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import { type LobbyDto } from "../../models/lobby";
+import { usePlayerById } from "../../hooks/usePlayer";
 
 interface OpenLobbiesListProps {
     openLobbies: LobbyDto[];
     isLoading: boolean;
     isError: boolean;
     onJoinLobby: (lobbyId: string) => void;
+    currentUserId?: string;
 }
 
-export function OpenLobbiesList({ openLobbies, isLoading, isError, onJoinLobby }: OpenLobbiesListProps) {
+function HostName({ playerId }: { playerId: string }) {
+    const { data: player } = usePlayerById(playerId);
+    return (
+        <Typography variant="caption" sx={{ color: "#fff", fontWeight: 500 }}>
+            {player?.username ?? playerId}
+        </Typography>
+    );
+}
+
+export function OpenLobbiesList({ openLobbies, isLoading, isError, onJoinLobby, currentUserId }: OpenLobbiesListProps) {
 
     const renderContent = () => {
         if (isLoading) {
@@ -65,97 +74,120 @@ export function OpenLobbiesList({ openLobbies, isLoading, isError, onJoinLobby }
 
         return (
             <Stack spacing={2} sx={{maxHeight: 450, overflowY: 'auto', pr: 1}}>
-                {openLobbies.map((lobby) => (
-                    <Card
-                        key={lobby.lobbyId}
-                        sx={{
-                            bgcolor: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid rgba(255, 255, 255, 0.1)",
-                            borderRadius: 2,
-                            transition: "all 0.2s ease",
-                            '&:hover': {
-                                bgcolor: "rgba(255, 255, 255, 0.08)",
-                                borderColor: "rgba(157, 125, 255, 0.4)",
-                                transform: "translateY(-2px)",
-                            }
-                        }}
-                    >
-                        <CardContent sx={{p: 2, '&:last-child': {pb: 2}}}>
-                            <Stack spacing={1.5}>
-                                {/* Header with Lobby ID and Status */}
-                                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                    <Stack direction="row" spacing={1} alignItems="center">
-                                        <GamepadRoundedIcon sx={{fontSize: 20, color: "#9d7dff"}}/>
-                                        <Typography
-                                            variant="subtitle2"
+                {openLobbies.map((lobby) => {
+                    const isInThisLobby =
+                        !!currentUserId &&
+                        (lobby.hostPlayerId === currentUserId ||
+                            lobby.guestPlayerId === currentUserId);
+
+                    const playersCount =
+                        lobby.guestPlayerId || (lobby.guestType && lobby.guestType.startsWith("AI_"))
+                            ? 2
+                            : 1;
+
+                    return (
+                        <Card
+                            key={lobby.lobbyId}
+                            sx={{
+                                bgcolor: "rgba(255, 255, 255, 0.05)",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                borderRadius: 2,
+                                transition: "all 0.2s ease",
+                                '&:hover': {
+                                    bgcolor: "rgba(255, 255, 255, 0.08)",
+                                    borderColor: "rgba(157, 125, 255, 0.4)",
+                                    transform: "translateY(-2px)",
+                                }
+                            }}
+                        >
+                            <CardContent sx={{p: 2, '&:last-child': {pb: 2}}}>
+                                <Stack spacing={1.5}>
+                                    {/* Header with Lobby ID and Status */}
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <GamepadRoundedIcon sx={{fontSize: 20, color: "#9d7dff"}}/>
+                                            <Typography
+                                                variant="subtitle2"
+                                                sx={{
+                                                    color: "#fff",
+                                                    fontWeight: 600,
+                                                    fontFamily: 'monospace'
+                                                }}
+                                            >
+                                                #{lobby.lobbyId.substring(0, 8).toUpperCase()}
+                                            </Typography>
+                                        </Stack>
+                                        <Chip
+                                            label="Open"
+                                            size="small"
                                             sx={{
-                                                color: "#fff",
+                                                bgcolor: "rgba(56, 161, 105, 0.2)",
+                                                color: "#68d391",
                                                 fontWeight: 600,
-                                                fontFamily: 'monospace'
+                                                fontSize: "0.7rem",
+                                                height: 20,
+                                                borderRadius: 1,
                                             }}
-                                        >
-                                            #{lobby.lobbyId.substring(0, 8).toUpperCase()}
+                                        />
+                                    </Stack>
+
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <PersonIcon sx={{fontSize: 16, color: "#9d7dff"}}/>
+                                        <Typography variant="caption" sx={{color: "#d0d0e5"}}>
+                                            Host:
+                                        </Typography>
+                                        <HostName playerId={lobby.hostPlayerId} />
+                                    </Stack>
+
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <GroupIcon sx={{fontSize: 16, color: "#9d7dff"}}/>
+                                        <Typography variant="caption" sx={{color: "#d0d0e5"}}>
+                                            Players:
+                                        </Typography>
+                                        <Typography variant="caption" sx={{color: "#fff", fontWeight: 500}}>
+                                            {playersCount} / 2
                                         </Typography>
                                     </Stack>
-                                    <Chip
-                                        label="Open"
-                                        size="small"
-                                        sx={{
-                                            bgcolor: "rgba(56, 161, 105, 0.2)",
-                                            color: "#68d391",
-                                            fontWeight: 600,
-                                            fontSize: "0.7rem",
-                                            height: 20,
-                                            borderRadius: 1,
-                                        }}
-                                    />
-                                </Stack>
 
-                                {/* Host Info */}
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                    <PersonIcon sx={{fontSize: 16, color: "#9d7dff"}}/>
-                                    <Typography variant="caption" sx={{color: "#d0d0e5"}}>
-                                        Host:
-                                    </Typography>
-                                    <Typography variant="caption" sx={{color: "#fff", fontWeight: 500}}>
-                                        {lobby.hostPlayerId}
-                                    </Typography>
+                                    {!isInThisLobby ? (
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            size="small"
+                                            onClick={() => onJoinLobby(lobby.lobbyId)}
+                                            sx={{
+                                                mt: 1,
+                                                bgcolor: "#9d7dff",
+                                                '&:hover': {bgcolor: '#7f5aff'},
+                                                textTransform: 'none',
+                                                fontWeight: 600,
+                                                py: 1,
+                                                borderRadius: 1.5,
+                                            }}
+                                        >
+                                            Join Lobby
+                                        </Button>
+                                    ) : (
+                                        <Chip
+                                            label={
+                                                lobby.hostPlayerId === currentUserId
+                                                    ? "You are the host"
+                                                    : "You are in this lobby"
+                                            }
+                                            size="small"
+                                            sx={{
+                                                mt: 1,
+                                                bgcolor: "rgba(157, 125, 255, 0.2)",
+                                                color: "#e3ddff",
+                                                fontWeight: 600,
+                                            }}
+                                        />
+                                    )}
                                 </Stack>
-
-                                {/* Players Count */}
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                    <GroupIcon sx={{fontSize: 16, color: "#9d7dff"}}/>
-                                    <Typography variant="caption" sx={{color: "#d0d0e5"}}>
-                                        Players:
-                                    </Typography>
-                                    <Typography variant="caption" sx={{color: "#fff", fontWeight: 500}}>
-                                        {lobby.guestPlayerId?.length || 1} / 2
-                                        {lobby.hostType?.length || 1} / 2
-                                    </Typography>
-                                </Stack>
-
-                                {/* Join Button */}
-                                <Button
-                                    variant="contained"
-                                    fullWidth
-                                    size="small"
-                                    onClick={() => onJoinLobby(lobby.lobbyId)}
-                                    sx={{
-                                        mt: 1,
-                                        bgcolor: "#9d7dff",
-                                        '&:hover': {bgcolor: '#7f5aff'},
-                                        textTransform: 'none',
-                                        fontWeight: 600,
-                                        py: 1,
-                                        borderRadius: 1.5,
-                                    }}
-                                >
-                                    Join Lobby
-                                </Button>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    );
+                })}
             </Stack>
         );
     };
