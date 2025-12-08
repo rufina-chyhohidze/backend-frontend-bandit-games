@@ -370,6 +370,7 @@ export function LobbyPage() {
                                 isLoading={isLoadingLobbies}
                                 isError={isLobbiesError}
                                 onJoinLobby={handleJoinLobby}
+                                currentUserId={currentUserId}
                             />
                         </Grid>
                     </Grid>
