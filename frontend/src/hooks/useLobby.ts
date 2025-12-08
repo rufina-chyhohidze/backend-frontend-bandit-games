@@ -9,6 +9,7 @@ import {
     getLobbyByPlayerId,
     leaveLobby,
     startGame,
+    chooseAiOpponent
 } from "../services/lobbyService";
 import type {LobbyDto} from "../models/lobby";
 import {useContext} from "react";
@@ -190,4 +191,16 @@ export function useOpenLobbies() {
             queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
         },
     };
+}
+
+export function useChooseAiOpponent() {
+    const queryClient = useQueryClient();
+
+    return useMutation<void, unknown, { lobbyId: string; difficulty: "EASY" | "MEDIUM" | "HARD" }>({
+        mutationFn: ({ lobbyId, difficulty }) => chooseAiOpponent(lobbyId, difficulty),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["lobby-by-player"] });
+            queryClient.invalidateQueries({ queryKey: ["open-lobbies"] });
+        },
+    });
 }

@@ -3,17 +3,20 @@ import HubRoundedIcon from "@mui/icons-material/HubRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import { NoLobbyState } from "../components/lobby/NoLobbyState";
 import { LobbyCard } from "../components/lobby/LobbyCard";
+
 import {
     useLobby,
     useAddPlayerToLobby,
     useChooseGame,
     useStartGame,
     useOpenLobbies,
+    useChooseAiOpponent
 } from "../hooks/useLobby";
 import { useContext } from "react";
 import SecurityContext from "../context/SecurityContext";
 import { OpenLobbiesList } from "../components/lobby/OpenLobbyList";
 import { GameSelector } from "../components/lobby/GameSelector";
+import {AiOpponentSelector} from "../components/lobby/AiOpponentSelector.tsx";
 
 export function LobbyPage() {
     const { loggedInUser } = useContext(SecurityContext);
@@ -29,6 +32,8 @@ export function LobbyPage() {
     const addPlayerMutation = useAddPlayerToLobby();
     const chooseGameMutation = useChooseGame();
     const startGameMutation = useStartGame(loggedInUser!, lobby!);
+    const chooseAiMutation = useChooseAiOpponent();
+
 
     const handleJoinLobby = (lobbyId: string) => {
         if (!loggedInUser) return;
@@ -82,7 +87,13 @@ export function LobbyPage() {
             console.warn("Cannot start game: Not in a lobby or not the host.");
             return;
         }
-        if (!lobby.guestPlayerId || !lobby.gameId) {
+        const hasAiGuest =
+            !!lobby.guestType &&
+            (lobby.guestType === "AI_EASY" ||
+                lobby.guestType === "AI_MEDIUM" ||
+                lobby.guestType === "AI_HARD");
+
+        if ((!lobby.guestPlayerId && !hasAiGuest) || !lobby.gameId) {
             console.warn("Cannot start game: Waiting for guest or game selection.");
             return;
         }
@@ -141,7 +152,16 @@ export function LobbyPage() {
 
     const isHost = hasLobby && lobby && lobby.hostPlayerId === currentUserId;
     const isGuest = hasLobby && lobby && lobby.guestPlayerId === currentUserId;
-    const isLobbyReady = hasLobby && lobby && !!lobby.guestPlayerId && !!lobby.gameId;
+    const isAiGuest =
+        hasLobby &&
+        lobby &&
+        (lobby.guestType === "AI_EASY" ||
+            lobby.guestType === "AI_MEDIUM" ||
+            lobby.guestType === "AI_HARD");
+
+    const isLobbyReady =
+        hasLobby && lobby && (lobby.guestPlayerId || isAiGuest) && !!lobby.gameId;
+
     const isStarting = startGameMutation.isPending;
 
     return (
@@ -184,7 +204,6 @@ export function LobbyPage() {
                     />
 
                     <Grid container spacing={4} sx={{ position: "relative", zIndex: 1 }}>
-                        {/* LEFT/CENTER COLUMN */}
                         <Grid size={{ xs: 12, md: 7, lg: 8 }}>
                             <Stack spacing={3} alignItems="center" sx={{ textAlign: "center" }}>
                                 <Stack
@@ -254,6 +273,19 @@ export function LobbyPage() {
                                                 currentUserId={currentUserId}
                                             />
 
+                                            <AiOpponentSelector
+                                                lobby={lobby}
+                                                isHost={isHost}
+                                                isChoosing={chooseAiMutation.isPending}
+                                                onChooseAi={(difficulty) => {
+                                                    if (!lobby) return;
+                                                    chooseAiMutation.mutate({
+                                                        lobbyId: lobby.lobbyId,
+                                                        difficulty,
+                                                    });
+                                                }}
+                                            />
+
                                             <GameSelector
                                                 currentGameId={lobby.gameId || null}
                                                 isHost={isHost}
@@ -269,33 +301,25 @@ export function LobbyPage() {
                                                     disabled={!isLobbyReady || isStarting}
                                                     startIcon={
                                                         isStarting ? (
-                                                            <CircularProgress
-                                                                size={20}
-                                                                color="inherit"
-                                                            />
+                                                            <CircularProgress size={20} color="inherit" />
                                                         ) : (
                                                             <PlayArrowRoundedIcon />
                                                         )
                                                     }
                                                     sx={{
-                                                        bgcolor: isLobbyReady
-                                                            ? "#28a745"
-                                                            : "#6c757d",
+                                                        bgcolor: isLobbyReady ? "#28a745" : "#6c757d",
                                                         "&:hover": {
-                                                            bgcolor: isLobbyReady
-                                                                ? "#218838"
-                                                                : "#5a6268",
+                                                            bgcolor: isLobbyReady ? "#218838" : "#5a6268",
                                                         },
                                                         textTransform: "none",
                                                         fontWeight: 600,
                                                         p: 1.5,
-                                                        transition:
-                                                            "background-color 0.2s",
+                                                        transition: "background-color 0.2s",
                                                     }}
                                                 >
                                                     {isStarting
                                                         ? "Launching Game..."
-                                                        : !lobby.guestPlayerId
+                                                        : !lobby.guestPlayerId && !isAiGuest
                                                             ? "Waiting for Guest..."
                                                             : !lobby.gameId
                                                                 ? "Select Game to Start"
@@ -311,28 +335,20 @@ export function LobbyPage() {
                                                     disabled={!lobby.gameId || isStarting}
                                                     startIcon={
                                                         isStarting ? (
-                                                            <CircularProgress
-                                                                size={20}
-                                                                color="inherit"
-                                                            />
+                                                            <CircularProgress size={20} color="inherit" />
                                                         ) : (
                                                             <PlayArrowRoundedIcon />
                                                         )
                                                     }
                                                     sx={{
-                                                        bgcolor: lobby.gameId
-                                                            ? "#007bff"
-                                                            : "#6c757d",
+                                                        bgcolor: lobby.gameId ? "#007bff" : "#6c757d",
                                                         "&:hover": {
-                                                            bgcolor: lobby.gameId
-                                                                ? "#0056b3"
-                                                                : "#5a6268",
+                                                            bgcolor: lobby.gameId ? "#0056b3" : "#5a6268",
                                                         },
                                                         textTransform: "none",
                                                         fontWeight: 600,
                                                         p: 1.5,
-                                                        transition:
-                                                            "background-color 0.2s",
+                                                        transition: "background-color 0.2s",
                                                     }}
                                                 >
                                                     {isStarting

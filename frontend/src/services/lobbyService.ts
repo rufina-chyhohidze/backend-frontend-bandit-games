@@ -104,3 +104,12 @@ export async function fetchOpenLobbies(): Promise<LobbyDto[]> {
         throw new Error("Failed to load open lobbies.");
     }
 }
+
+export const chooseAiOpponent = async (
+    lobbyId: string,
+    difficulty: "EASY" | "MEDIUM" | "HARD"
+): Promise<void> => {
+    await axios.post(`${LOBBY_API_URL}/${lobbyId}/choose-ai`, null, {
+        params: { difficulty },
+    });
+};
