@@ -120,29 +120,28 @@ export function LobbyPage() {
 
         startGameMutation.mutate(lobby.lobbyId);
     };
-
     if (!loggedInUser) {
         return (
-            <>
-                <Box
-                    className="scrollable-container"
-                    sx={{
-                        minHeight: "calc(100vh - 64px)",
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
-                    }}
-                >
-                    <CircularProgress sx={{ color: "#fff" }} />
-                    <Typography variant="body1" sx={{ color: "#d0d0e5", ml: 2 }}>
-                        Loading user profile...
-                    </Typography>
-                </Box>
-            </>
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
+                    py: 4,
+                }}
+            >
+                <CircularProgress sx={{ color: "#fff" }} />
+                <Typography variant="body1" sx={{ color: "#d0d0e5", ml: 2 }}>
+                    Loading user profile...
+                </Typography>
+            </Box>
         );
     }
+
+
 
     const currentUserId: string = loggedInUser.id ?? loggedInUser.name;
 
@@ -167,15 +166,15 @@ export function LobbyPage() {
     return (
         <>
             <Box
-                className="scrollable-container"
                 sx={{
-                    minHeight: "calc(100vh - 64px)",
+                    minHeight: "100vh",
                     width: "100%",
                     display: "flex",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     justifyContent: "center",
                     background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
                     py: 4,
+                    pt: { xs: 9, sm: 10 },
                 }}
             >
                 <Box

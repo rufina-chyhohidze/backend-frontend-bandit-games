@@ -7,19 +7,20 @@
 
 html, body {
     width: 100%;
-    height: 100%;
-    overflow: hidden; /* Prevent scrolling on body */
+    min-height: 100%;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #root {
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100%;
+    /* no overflow: hidden here */
 }
 
-/* If you need scrolling within specific containers, add it there */
+/* You can keep this, but it no longer needs a fixed height */
 .scrollable-container {
     overflow-y: auto;
     overflow-x: hidden;

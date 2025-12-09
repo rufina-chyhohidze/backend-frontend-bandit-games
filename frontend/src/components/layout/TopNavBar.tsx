@@ -5,32 +5,42 @@ import {
     Box,
     Button,
     IconButton,
-    InputBase,
     Avatar,
     Menu,
     MenuItem,
 } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import SearchIcon from "@mui/icons-material/Search";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import SecurityContext from "../../context/SecurityContext";
+import {useNavigate} from "react-router-dom";
+
+const FONT_FAMILY =
+    '"Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
 export function TopNavBar() {
-    const { isAuthenticated, loggedInUser, login, logout } = useContext(SecurityContext);
-    const location = useLocation();
+    const { isAuthenticated, loggedInUser, login, logout } =
+        useContext(SecurityContext);
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
     const roles = loggedInUser?.roles ?? [];
     const isAdmin = roles.includes("admin");
 
+    const isMdUp = useMediaQuery("(min-width:960px)");
+
+
+
     const handleNavClick = (path: string) => {
+        setMobileNavOpen(false);
         navigate(path);
     };
 
     const handleBrandClick = () => {
-        // Navigate to root, which will redirect appropriately
+        setMobileNavOpen(false);
         navigate("/");
     };
 
@@ -50,11 +60,27 @@ export function TopNavBar() {
         logout?.();
     };
 
-    const activeStyle = (path: string) => {
-        return location.pathname.startsWith(path)
-            ? { borderBottom: "2px solid black", fontWeight: 600 }
-            : { color: "#555" };
-    };
+    const activeStyle = (path: string) =>
+        location.pathname.startsWith(path)
+            ? {
+                color: "#f9fafb",
+                fontWeight: 600,
+                "&::after": {
+                    content: '""',
+                    display: "block",
+                    height: 2,
+                    borderRadius: 999,
+                    background:
+                        "linear-gradient(90deg, #6366f1, #22c55e, #facc15)",
+                    mt: 0.5,
+                },
+            }
+            : {
+                color: "#cbd5f5",
+                "&:hover": {
+                    color: "#ffffff",
+                },
+            };
 
     const initials =
         loggedInUser?.name
@@ -62,41 +88,93 @@ export function TopNavBar() {
             .map((p) => p[0])
             .join("") || "U";
 
+    const commonButtonSx = {
+        textTransform: "none",
+        fontSize: 14,
+        fontWeight: 500,
+        minWidth: "auto",
+        px: 1,
+        fontFamily: FONT_FAMILY,
+    } as const;
+
     return (
         <AppBar
-            position="static"
+            position="fixed"
             elevation={0}
             sx={{
-                bgcolor: "white",
-                color: "black",
-                borderBottom: "1px solid #e5e5e5",
+                top: 0,
+                left: 0,
+                right: 0,
+                background:
+                    "linear-gradient(120deg, rgba(15,23,42,0.95), rgba(15,23,42,0.88))",
+                backdropFilter: "blur(16px)",
+                borderBottom: "1px solid rgba(148,163,184,0.25)",
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+                boxShadow: "0 12px 40px rgba(15,23,42,0.65)",
+                fontFamily: FONT_FAMILY,
             }}
         >
-            <Toolbar sx={{ px: { xs: 2, md: 6 }, gap: 3 }}>
-                {/* Brand */}
-                <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 700, letterSpacing: 0.3, cursor: "pointer" }}
-                    onClick={handleBrandClick}
-                >
-                    BanditGames
-                </Typography>
-
+            <Toolbar
+                sx={{
+                    px: { xs: 2, md: 6 },
+                    gap: 2,
+                    minHeight: 64,
+                    fontFamily: FONT_FAMILY,
+                }}
+            >
+                {/* Brand / Logo */}
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 3,
-                        flexGrow: 1,
-                        ml: 4,
-                        fontSize: 14,
+                        gap: 1,
+                        cursor: "pointer",
                     }}
+                    onClick={handleBrandClick}
                 >
-                    {isAuthenticated() ? (
-                        isAdmin ? (
+                    <Box
+                        sx={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 2,
+                            background:
+                                "radial-gradient(circle at 0% 0%, #6366f1, transparent 60%), " +
+                                "radial-gradient(circle at 100% 100%, #22c55e, transparent 60%)",
+                            boxShadow: "0 0 16px rgba(129,140,248,0.7)",
+                        }}
+                    />
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 700,
+                            letterSpacing: 0.5,
+                            color: "#f9fafb",
+                            fontFamily: FONT_FAMILY,
+                        }}
+                    >
+                        BanditGames
+                    </Typography>
+                </Box>
+
+                {/* Desktop nav links */}
+                {isAuthenticated() && isMdUp && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2.5,
+                            flexGrow: 1,
+                            ml: 4,
+                            fontSize: 14,
+                        }}
+                    >
+                        {isAdmin ? (
                             <Button
                                 onClick={() => handleNavClick("/admin")}
-                                sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/admin") }}
+                                sx={{
+                                    ...commonButtonSx,
+                                    ...activeStyle("/admin"),
+                                }}
                             >
                                 Admin
                             </Button>
@@ -104,121 +182,270 @@ export function TopNavBar() {
                             <>
                                 <Button
                                     onClick={() => handleNavClick("/games")}
-                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/games") }}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/games"),
+                                    }}
                                 >
                                     Games
                                 </Button>
 
                                 <Button
                                     onClick={() => handleNavClick("/favorites")}
-                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/favorites") }}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/favorites"),
+                                    }}
                                 >
                                     Favorites
                                 </Button>
+
                                 <Button
                                     onClick={() => handleNavClick("/friends")}
-                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/friends") }}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/friends"),
+                                    }}
                                 >
                                     Friends
                                 </Button>
+
                                 <Button
                                     disabled
-                                    sx={{ textTransform: "none", minWidth: "auto", color: "#aaa" }}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        color: "#64748b",
+                                    }}
                                 >
                                     Achievements
                                 </Button>
+
                                 <Button
-                                    sx={{ textTransform: "none", minWidth: "auto", ...activeStyle("/lobby") }}
                                     onClick={() => handleNavClick("/lobby")}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/lobby"),
+                                    }}
                                 >
                                     Lobby
                                 </Button>
                             </>
-                        )
-                    ) : null}
-                </Box>
+                        )}
+                    </Box>
+                )}
+
+                {/* Spacer when nav hidden */}
+                {(!isAuthenticated() || !isMdUp) && (
+                    <Box sx={{ flexGrow: 1 }} />
+                )}
 
 
-                <Box
-                    sx={{
-                        display: { xs: "none", md: "flex" },
-                        alignItems: "center",
-                        bgcolor: "#fafafa",
-                        borderRadius: 2,
-                        px: 1.5,
-                        py: 0.5,
-                        border: "1px solid #e0e0e0",
-                        minWidth: 220,
-                    }}
-                >
-                    <InputBase
-                        placeholder="Search..."
-                        sx={{ fontSize: 14, flexGrow: 1 }}
-                        disabled
-                    />
-                    <SearchIcon sx={{ fontSize: 18, color: "#9e9e9e" }} />
-                </Box>
-
+                {/* User section OR Login */}
                 {isAuthenticated() ? (
-                    <Box sx={{ display: "flex", alignItems: "center", ml: 3, gap: 1.5 }}>
-                        <IconButton size="small">
-                            <NotificationsNoneIcon fontSize="small" />
-                        </IconButton>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            ml: 2,
+                            gap: 1,
+                        }}
+                    >
+                        {isMdUp && (
+                            <IconButton size="small" sx={{ color: "#e5e7eb" }}>
+                                <NotificationsNoneIcon fontSize="small" />
+                            </IconButton>
+                        )}
+
                         <Button
                             onClick={handleUserClick}
                             sx={{
                                 textTransform: "none",
-                                color: "black",
+                                color: "#f9fafb",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 1,
                                 px: 0,
+                                fontFamily: FONT_FAMILY,
                             }}
                         >
                             <Avatar
                                 sx={{
-                                    width: 28,
-                                    height: 28,
+                                    width: 30,
+                                    height: 30,
                                     fontSize: 13,
-                                    bgcolor: "#111827",
+                                    bgcolor: "linear-gradient(135deg,#6366f1,#22c55e)",
                                 }}
                             >
                                 {initials}
                             </Avatar>
-                            <Typography variant="body2">
-                                {loggedInUser?.name || "User"}
-                            </Typography>
+                            {isMdUp && (
+                                <Typography
+                                    variant="body2"
+                                    sx={{ fontFamily: FONT_FAMILY }}
+                                >
+                                    {loggedInUser?.name || "User"}
+                                </Typography>
+                            )}
                         </Button>
 
                         <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
-                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                            transformOrigin={{ vertical: "top", horizontal: "right" }}
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                            transformOrigin={{
+                                vertical: "top",
+                                horizontal: "right",
+                            }}
                         >
                             {isAdmin && (
-                                <MenuItem onClick={handleAdminClick}>Go to Admin page</MenuItem>
+                                <MenuItem onClick={handleAdminClick}>
+                                    Go to Admin page
+                                </MenuItem>
                             )}
-                            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+                            <MenuItem onClick={handleLogoutClick}>
+                                Logout
+                            </MenuItem>
                         </Menu>
+
+                        {/* Mobile nav toggle */}
+                        {!isMdUp && (
+                            <IconButton
+                                sx={{ color: "#e5e7eb", ml: 1 }}
+                                onClick={() =>
+                                    setMobileNavOpen((prev) => !prev)
+                                }
+                            >
+                                {mobileNavOpen ? (
+                                    <CloseIcon />
+                                ) : (
+                                    <MenuIcon />
+                                )}
+                            </IconButton>
+                        )}
                     </Box>
                 ) : (
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={login}
-                        sx={{
-                            ml: 3,
-                            textTransform: "none",
-                            borderRadius: 999,
-                            px: 3,
-                        }}
-                    >
-                        Login
-                    </Button>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {!isMdUp && (
+                            <IconButton
+                                sx={{ color: "#e5e7eb" }}
+                                onClick={() =>
+                                    setMobileNavOpen((prev) => !prev)
+                                }
+                            >
+                                {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+                            </IconButton>
+                        )}
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={login}
+                            sx={{
+                                textTransform: "none",
+                                borderRadius: 999,
+                                px: 2.5,
+                                fontFamily: FONT_FAMILY,
+                                borderColor: "rgba(148,163,184,0.9)",
+                                color: "#e5e7eb",
+                                "&:hover": {
+                                    borderColor: "#e5e7eb",
+                                    background:
+                                        "linear-gradient(120deg, rgba(129,140,248,0.2), rgba(45,212,191,0.2))",
+                                },
+                            }}
+                        >
+                            Login
+                        </Button>
+                    </Box>
                 )}
             </Toolbar>
+
+            {/* Mobile dropdown nav */}
+            {!isMdUp && mobileNavOpen && isAuthenticated() && (
+                <Box
+                    sx={{
+                        px: 2,
+                        pb: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        bgcolor: "rgba(15,23,42,0.97)",
+                        borderTop: "1px solid rgba(148,163,184,0.3)",
+                    }}
+                >
+
+                    {isAdmin ? (
+                        <Button
+                            onClick={() => handleNavClick("/admin")}
+                            sx={{
+                                ...commonButtonSx,
+                                justifyContent: "flex-start",
+                                mt: 1,
+                                ...activeStyle("/admin"),
+                            }}
+                        >
+                            Admin
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                onClick={() => handleNavClick("/games")}
+                                sx={{
+                                    ...commonButtonSx,
+                                    justifyContent: "flex-start",
+                                    mt: 1,
+                                    ...activeStyle("/games"),
+                                }}
+                            >
+                                Games
+                            </Button>
+                            <Button
+                                onClick={() => handleNavClick("/favorites")}
+                                sx={{
+                                    ...commonButtonSx,
+                                    justifyContent: "flex-start",
+                                    ...activeStyle("/favorites"),
+                                }}
+                            >
+                                Favorites
+                            </Button>
+                            <Button
+                                onClick={() => handleNavClick("/friends")}
+                                sx={{
+                                    ...commonButtonSx,
+                                    justifyContent: "flex-start",
+                                    ...activeStyle("/friends"),
+                                }}
+                            >
+                                Friends
+                            </Button>
+                            <Button
+                                disabled
+                                sx={{
+                                    ...commonButtonSx,
+                                    justifyContent: "flex-start",
+                                    color: "#64748b",
+                                }}
+                            >
+                                Achievements
+                            </Button>
+                            <Button
+                                onClick={() => handleNavClick("/lobby")}
+                                sx={{
+                                    ...commonButtonSx,
+                                    justifyContent: "flex-start",
+                                    ...activeStyle("/lobby"),
+                                }}
+                            >
+                                Lobby
+                            </Button>
+                        </>
+                    )}
+                </Box>
+            )}
         </AppBar>
     );
 }
