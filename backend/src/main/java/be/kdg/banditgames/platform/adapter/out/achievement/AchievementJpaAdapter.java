@@ -21,17 +21,7 @@ public class AchievementJpaAdapter implements LoadAvailableAchievementsPort {
     public List<Achievement> loadAvailableAchievements(GameId gameId) {
         return repo.findByGameId(gameId.gameId())
                 .stream()
-                .map(this::toDomain)
+                .map(AchievementJpaMapper::toDomain)
                 .toList();
-    }
-
-    private Achievement toDomain(AchievementJpaEntity e) {
-        return new Achievement(
-                e.toAchievementId(),
-                e.toGameId(),
-                e.getName(),
-                e.getDescription(),
-                e.getUnlockHint()
-        );
     }
 }

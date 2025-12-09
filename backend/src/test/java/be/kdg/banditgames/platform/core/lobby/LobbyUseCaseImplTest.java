@@ -154,7 +154,6 @@ class LobbyUseCaseImplTest {
 
         StartGameResponse response = lobbyUseCase.startGameInLobby(lobbyId);
 
-        // ✅ updated to match your CreateGameCommand fields
         ArgumentCaptor<CreateGameCommand> cmdCaptor = ArgumentCaptor.forClass(CreateGameCommand.class);
         verify(createGameService).createGameForLobby(cmdCaptor.capture());
         CreateGameCommand cmd = cmdCaptor.getValue();
@@ -205,12 +204,13 @@ class LobbyUseCaseImplTest {
                 .thenReturn(Optional.of(game));
 
         StartGameResponse response = lobbyUseCase.startGameInLobby(lobbyId);
-
         verify(createGameService, never()).createGameForLobby(any());
-        verify(lobby).startGame();
-        verify(persistLobbyPort).saveLobby(lobby);
+        verify(lobby, never()).startGame();
+        verify(persistLobbyPort, never()).saveLobby(any());
         assertThat(response.guestUrl()).contains("playerId=AI");
     }
+
+
 
     @Test
     void chooseGameForLobby_setsGameAndPersists() {

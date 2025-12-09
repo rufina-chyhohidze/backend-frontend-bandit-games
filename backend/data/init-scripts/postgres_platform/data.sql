@@ -16,7 +16,49 @@ VALUES
      'Connect 4 of your pieces in a row to win.',
      'https://thewashingtonote.com/wp-content/uploads/2023/10/Connect-4-Online-scaled.jpg',
      'PUBLISHED',
-     '/games/connect4');
+     'http://localhost:8000/connect4/index.html');
+
+--STATIC ACHIEVEMENTS FOR CHESS AND CONNECT 4
+INSERT INTO achievements (achievement_id, game_id, name, description, unlock_hint)
+VALUES
+    ('00000000-0000-0000-0000-000000000001',
+     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+     'First Blood',
+     'Win your first chess game on the platform.',
+     'Win any rated chess game once.'),
+
+    ('00000000-0000-0000-0000-000000000002',
+     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+     'Speed Demon',
+     'Win a chess game in under 20 moves.',
+     'Checkmate your opponent before move 20.'),
+
+    ('00000000-0000-0000-0000-000000000003',
+     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+     'Comeback King',
+     'Win a chess game after being down in material.',
+     'Be behind in material at some point and still win.');
+
+INSERT INTO achievements (achievement_id, game_id, name, description, unlock_hint)
+VALUES
+    ('00000000-0000-0000-0000-000000000011',
+     'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+     'First Connect',
+     'Win your first Connect 4 match on the platform.',
+     'Win any Connect 4 match.'),
+
+    ('00000000-0000-0000-0000-000000000012',
+     'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+     'Vertical Master',
+     'Win with a vertical line of four.',
+     'Place four of your discs vertically.'),
+
+    ('00000000-0000-0000-0000-000000000013',
+     'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+     'Diagonal Genius',
+     'Win with a diagonal line of four.',
+     'Create a diagonal line of four discs.');
+
 
 -- Table for players
 CREATE TABLE IF NOT EXISTS players (

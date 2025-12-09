@@ -1,7 +1,5 @@
 package be.kdg.banditgames.platform.adapter.out.achievement;
 
-
-import be.kdg.banditgames.common.shared.AchievementId;
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Achievement;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AchievementJpaAdapterTest {
@@ -32,13 +31,12 @@ class AchievementJpaAdapterTest {
         UUID gameUuid = UUID.randomUUID();
         UUID achievementUuid = UUID.randomUUID();
 
-        AchievementJpaEntity entity = mock(AchievementJpaEntity.class);
-
-        when(entity.toAchievementId()).thenReturn(AchievementId.of(achievementUuid));
-        when(entity.toGameId()).thenReturn(GameId.of(gameUuid));
-        when(entity.getName()).thenReturn("First Win");
-        when(entity.getDescription()).thenReturn("Win your first game");
-        when(entity.getUnlockHint()).thenReturn("Just win once!");
+        AchievementJpaEntity entity = new AchievementJpaEntity();
+        entity.setAchievementId(achievementUuid);
+        entity.setGameId(gameUuid);
+        entity.setName("First Win");
+        entity.setDescription("Win your first game");
+        entity.setUnlockHint("Just win once!");
 
         when(repo.findByGameId(eq(gameUuid)))
                 .thenReturn(List.of(entity));
