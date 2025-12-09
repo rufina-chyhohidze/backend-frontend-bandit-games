@@ -57,7 +57,25 @@ VALUES
      'f2b3aaf4-6db0-4a94-9d82-123456789abc',
      'Diagonal Genius',
      'Win with a diagonal line of four.',
-     'Create a diagonal line of four discs.');
+     'Create a diagonal line of four discs.'),
+
+    ('00000000-0000-0000-0000-000000000014',
+    'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+    'Horizontal Hero',
+    'Win with a horizontal line of four.',
+    'Place four of your discs horizontally.'),
+
+    ('00000000-0000-0000-0000-000000000015',
+     'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+     'Speedster',
+     'Win the game in under 10 moves.',
+     'Achieve victory before either player has placed 10 discs.'),
+
+    ('00000000-0000-0000-0000-000000000016',
+     'f2b3aaf4-6db0-4a94-9d82-123456789abc',
+     'Late Game Legend',
+     'Win after the board is almost full.',
+     'Achieve victory when 38 or more discs have been placed.');
 
 
 -- Table for players
