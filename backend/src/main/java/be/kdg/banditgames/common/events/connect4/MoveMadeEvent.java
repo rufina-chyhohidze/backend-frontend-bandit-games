@@ -1,4 +1,5 @@
-package be.kdg.banditgames.common.events;
+package be.kdg.banditgames.common.events.connect4;
+import be.kdg.banditgames.common.events.DomainEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.modulith.events.Externalized;

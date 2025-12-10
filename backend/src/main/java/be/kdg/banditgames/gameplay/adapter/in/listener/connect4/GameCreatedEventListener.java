@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
-import be.kdg.banditgames.common.events.GameCreatedEvent;
+import be.kdg.banditgames.common.events.connect4.GameCreatedEvent;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedCommand;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedPort;
 import org.slf4j.Logger;

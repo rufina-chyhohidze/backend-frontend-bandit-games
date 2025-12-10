@@ -13,6 +13,7 @@ public class RabbitMQTopology {
     public static final String CONNECT4_GAME_CREATED_QUEUE = "connect4.game.created";
     public static final String CONNECT4_MOVE_MADE_QUEUE = "connect4.move.made";
     public static final String CONNECT4_GAME_RESULT_QUEUE = "connect4.game.result";
+    public static final String CONNECT4_ACHIEVEMENT_QUEUE = "connect4.achievement";
 
     @Bean
     TopicExchange connect4Exchange() {
@@ -21,6 +22,9 @@ public class RabbitMQTopology {
                 .durable(true)
                 .build();
     }
+
+    @Bean
+    Queue connect4AchievementQueue() {return QueueBuilder.durable(CONNECT4_ACHIEVEMENT_QUEUE).build();}
 
     @Bean
     Queue connect4GameCreatedQueue() {
@@ -59,5 +63,13 @@ public class RabbitMQTopology {
                 .bind(connect4GameResultQueue())
                 .to(connect4Exchange())
                 .with("connect4.game.result.*");
+    }
+
+    @Bean
+    Binding bindAchievement() {
+        return BindingBuilder
+                .bind(connect4AchievementQueue())
+                .to(connect4Exchange())
+                .with("connect4.achievement.*");
     }
 }

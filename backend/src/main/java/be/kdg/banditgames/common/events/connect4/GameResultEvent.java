@@ -1,6 +1,6 @@
-package be.kdg.banditgames.common.events;
+package be.kdg.banditgames.common.events.connect4;
 
-import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.common.events.DomainEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.modulith.events.Externalized;
@@ -9,27 +9,23 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Externalized("connect4.events::#{'connect4.game.created.' + #this.sessionId()}")
-public record GameCreatedEvent(
+public record GameResultEvent(
         UUID eventId,
         LocalDateTime occurredAt,
         String sessionId,
-        PlayerType player1,
-        PlayerType player2
+        String gameResult
 ) implements DomainEvent {
 
     @JsonCreator
-    public GameCreatedEvent(
+    public GameResultEvent(
             @JsonProperty("sessionId") String sessionId,
-            @JsonProperty("player1") PlayerType player1,
-            @JsonProperty("player2") PlayerType player2
+            @JsonProperty("gameResult") String gameResult
     ) {
-        this(UUID.randomUUID(), LocalDateTime.now(), sessionId, player1, player2);
+        this(UUID.randomUUID(), LocalDateTime.now(), sessionId, gameResult);
     }
 
-
-    
     @Override
     public LocalDateTime eventPit() {
-        return occurredAt;
+        return null;
     }
 }

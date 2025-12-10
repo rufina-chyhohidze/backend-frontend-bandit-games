@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
-import be.kdg.banditgames.common.events.GameResultEvent;
+import be.kdg.banditgames.common.events.connect4.GameResultEvent;
 import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.domain.GameResult;
 import be.kdg.banditgames.gameplay.port.in.GameResultsCommand;

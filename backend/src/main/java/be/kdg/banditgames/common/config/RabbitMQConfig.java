@@ -1,7 +1,7 @@
 package be.kdg.banditgames.common.config;
 
-import be.kdg.banditgames.common.events.GameCreatedEvent;
-import be.kdg.banditgames.common.events.MoveMadeEvent;
+import be.kdg.banditgames.common.events.connect4.GameCreatedEvent;
+import be.kdg.banditgames.common.events.connect4.MoveMadeEvent;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
