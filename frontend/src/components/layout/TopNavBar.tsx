@@ -210,15 +210,15 @@ export function TopNavBar() {
                                     Friends
                                 </Button>
 
-                                <Button
-                                    disabled
-                                    sx={{
-                                        ...commonButtonSx,
-                                        color: "#64748b",
-                                    }}
-                                >
-                                    Achievements
-                                </Button>
+                                {/*<Button*/}
+                                {/*    disabled*/}
+                                {/*    sx={{*/}
+                                {/*        ...commonButtonSx,*/}
+                                {/*        color: "#64748b",*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    Achievements*/}
+                                {/*</Button>*/}
 
                                 <Button
                                     onClick={() => handleNavClick("/lobby")}
@@ -422,16 +422,16 @@ export function TopNavBar() {
                             >
                                 Friends
                             </Button>
-                            <Button
-                                disabled
-                                sx={{
-                                    ...commonButtonSx,
-                                    justifyContent: "flex-start",
-                                    color: "#64748b",
-                                }}
-                            >
-                                Achievements
-                            </Button>
+                            {/*<Button*/}
+                            {/*    disabled*/}
+                            {/*    sx={{*/}
+                            {/*        ...commonButtonSx,*/}
+                            {/*        justifyContent: "flex-start",*/}
+                            {/*        color: "#64748b",*/}
+                            {/*    }}*/}
+                            {/*>*/}
+                            {/*    Achievements*/}
+                            {/*</Button>*/}
                             <Button
                                 onClick={() => handleNavClick("/lobby")}
                                 sx={{
