@@ -14,9 +14,15 @@ import {
 } from "@mui/material";
 import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import type { Achievement } from "../models/achievement.ts";
-import type { Game } from "../models/game.ts";
-import { fetchAchievements, fetchGames } from "../services/gamesService.ts";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
+
+import type { Achievement } from "../models/achievement";
+import type { Game } from "../models/game";
+import type { PlayerDto } from "../models/player";
+
+import { fetchAchievements, fetchGames } from "../services/gamesService";
+import { useCurrentPlayer } from "../hooks/useFavorites";
 
 export default function GameAchievementsPage() {
     const { gameId } = useParams<{ gameId: string }>();
@@ -26,6 +32,11 @@ export default function GameAchievementsPage() {
     const [game, setGame] = useState<Game | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const { player, isLoadingPlayer } = useCurrentPlayer() as {
+        player: PlayerDto | null;
+        isLoadingPlayer: boolean;
+    };
 
     useEffect(() => {
         if (!gameId) return;
@@ -56,32 +67,29 @@ export default function GameAchievementsPage() {
         return <Alert severity="error">Missing game id.</Alert>;
     }
 
+    const isLoading = loading || isLoadingPlayer;
+
+    const unlockedSet = new Set(player?.achievements?? []);
+    const total = achievements.length;
+    const unlockedCount = achievements.filter((a) =>
+        unlockedSet.has(a.achievementId)
+    ).length;
+
     return (
         <Box
             sx={{
                 minHeight: "100vh",
                 width: "100vw",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-start",
                 justifyContent: "center",
                 position: "relative",
                 overflow: "hidden",
                 background: "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
+                pt: { xs: 9, sm: 10 },
+                pb: 4,
             }}
         >
-            {/* Top navigation bar */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 2,
-                }}
-            >
-            </Box>
-
-            {/* Glow overlay */}
             <Box
                 sx={{
                     position: "absolute",
@@ -95,7 +103,6 @@ export default function GameAchievementsPage() {
                 }}
             />
 
-            {/* Main card */}
             <Box
                 sx={{
                     position: "relative",
@@ -103,7 +110,7 @@ export default function GameAchievementsPage() {
                     width: { xs: "97vw", sm: 600, md: 800 },
                     maxWidth: "97vw",
                     borderRadius: 3,
-                    p: { xs: 3, md: 4 }, // slightly more padding to compensate for navbar
+                    p: { xs: 3, md: 4 },
                     pt: { xs: 5, md: 6 },
                     bgcolor: "rgba(7, 11, 25, 0.98)",
                     boxShadow: "0 24px 55px rgba(0,0,0,0.85)",
@@ -177,19 +184,40 @@ export default function GameAchievementsPage() {
                                         {game.description}
                                     </Typography>
                                 </Box>
-                                <Chip
-                                    size="small"
-                                    icon={<EmojiEventsRoundedIcon />}
-                                    label={`${achievements.length} achievement${achievements.length === 1 ? "" : "s"}`}
-                                    sx={{
-                                        bgcolor: "rgba(0, 0, 0, 0.35)",
-                                        color: "#ffecb3",
-                                        border: "1px solid rgba(255, 236, 179, 0.7)",
-                                        "& .MuiChip-icon": {
+                                <Stack direction="row" spacing={1}>
+                                    <Chip
+                                        size="small"
+                                        icon={<EmojiEventsRoundedIcon />}
+                                        label={`${achievements.length} achievement${
+                                            achievements.length === 1 ? "" : "s"
+                                        }`}
+                                        sx={{
+                                            bgcolor: "rgba(0, 0, 0, 0.35)",
                                             color: "#ffecb3",
-                                        },
-                                    }}
-                                />
+                                            border: "1px solid rgba(255, 236, 179, 0.7)",
+                                            "& .MuiChip-icon": {
+                                                color: "#ffecb3",
+                                            },
+                                        }}
+                                    />
+                                    <Chip
+                                        size="small"
+                                        icon={<CheckCircleRoundedIcon />}
+                                        label={
+                                            total > 0
+                                                ? `${unlockedCount}/${total} unlocked`
+                                                : "No achievements"
+                                        }
+                                        sx={{
+                                            bgcolor: "rgba(0, 0, 0, 0.35)",
+                                            color: "#c8ffe9",
+                                            border: "1px solid rgba(200, 255, 233, 0.7)",
+                                            "& .MuiChip-icon": {
+                                                color: "#c8ffe9",
+                                            },
+                                        }}
+                                    />
+                                </Stack>
                             </Stack>
                         </CardContent>
                     </Card>
@@ -197,82 +225,119 @@ export default function GameAchievementsPage() {
 
                 <Divider sx={{ borderColor: "rgba(255,255,255,0.11)" }} />
 
-                {loading && (
+                {isLoading && (
                     <Box display="flex" justifyContent="center" mt={3}>
                         <CircularProgress sx={{ color: "white" }} />
                     </Box>
                 )}
 
-                {error && !loading && (
+                {error && !isLoading && (
                     <Alert severity="error" sx={{ mt: 1 }}>
                         {error}
                     </Alert>
                 )}
 
-                {!loading && !error && achievements.length === 0 && (
+                {!isLoading && !error && achievements.length === 0 && (
                     <Typography variant="body2" sx={{ color: "#cccccc", mt: 1 }}>
                         No achievements defined for this game yet.
                     </Typography>
                 )}
 
-                {!loading && !error && achievements.length > 0 && (
+                {!isLoading && !error && achievements.length > 0 && (
                     <Stack spacing={2.0} mt={1}>
-                        {achievements.map((a, index) => (
-                            <Card
-                                key={a.achievementId}
-                                sx={{
-                                    backgroundColor: "rgba(8, 12, 32, 0.99)",
-                                    borderRadius: 2,
-                                    boxShadow: "0 10px 26px rgba(0,0,0,0.45)",
-                                    border: "none",
-                                    "&:hover": {
-                                        transform: "translateY(-2px)",
-                                        boxShadow: "0 18px 38px rgba(124,140,255,0.16)",
-                                    },
-                                }}
-                                elevation={0}
-                            >
-                                <CardContent>
-                                    <Stack
-                                        direction="row"
-                                        justifyContent="space-between"
-                                        alignItems="flex-start"
-                                        gap={2}
-                                    >
-                                        <Box>
-                                            <Typography
-                                                variant="overline"
+                        {achievements.map((a, index) => {
+                            const unlocked = unlockedSet.has(a.achievementId);
+
+                            return (
+                                <Card
+                                    key={a.achievementId}
+                                    sx={{
+                                        backgroundColor: unlocked
+                                            ? "rgba(8, 32, 32, 0.99)"
+                                            : "rgba(8, 12, 32, 0.99)",
+                                        borderRadius: 2,
+                                        boxShadow: unlocked
+                                            ? "0 10px 26px rgba(0,255,180,0.35)"
+                                            : "0 10px 26px rgba(0,0,0,0.45)",
+                                        border: unlocked
+                                            ? "1px solid rgba(0,255,180,0.5)"
+                                            : "none",
+                                        "&:hover": {
+                                            transform: "translateY(-2px)",
+                                            boxShadow: unlocked
+                                                ? "0 18px 38px rgba(0,255,180,0.4)"
+                                                : "0 18px 38px rgba(124,140,255,0.16)",
+                                        },
+                                        transition: "all 0.18s ease-out",
+                                    }}
+                                    elevation={0}
+                                >
+                                    <CardContent>
+                                        <Stack
+                                            direction="row"
+                                            justifyContent="space-between"
+                                            alignItems="flex-start"
+                                            gap={2}
+                                        >
+                                            <Box>
+                                                <Typography
+                                                    variant="overline"
+                                                    sx={{
+                                                        color: unlocked ? "#80ffb4" : "#ffd54f",
+                                                        letterSpacing: 1,
+                                                        fontSize: 11,
+                                                    }}
+                                                >
+                                                    ACHIEVEMENT #{index + 1}
+                                                </Typography>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: "white", fontWeight: 600 }}
+                                                >
+                                                    {a.name}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ color: "#cfd2ff", mt: 0.5 }}
+                                                >
+                                                    {a.description}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        mt: 1.2,
+                                                        color: unlocked ? "#b2ffda" : "#9dd0ff",
+                                                    }}
+                                                >
+                                                    <strong>How to unlock:</strong> {a.unlockHint}
+                                                </Typography>
+                                            </Box>
+
+                                            <Chip
+                                                icon={
+                                                    unlocked ? (
+                                                        <CheckCircleRoundedIcon />
+                                                    ) : (
+                                                        <LockRoundedIcon />
+                                                    )
+                                                }
+                                                label={unlocked ? "Unlocked" : "Locked"}
                                                 sx={{
-                                                    color: "#ffd54f",
-                                                    letterSpacing: 1,
-                                                    fontSize: 11,
+                                                    alignSelf: "flex-start",
+                                                    bgcolor: unlocked
+                                                        ? "rgba(0, 255, 180, 0.18)"
+                                                        : "rgba(255, 255, 255, 0.06)",
+                                                    color: unlocked ? "#b2ffda" : "#e0e0e0",
+                                                    "& .MuiChip-icon": {
+                                                        color: unlocked ? "#b2ffda" : "#e0e0e0",
+                                                    },
                                                 }}
-                                            >
-                                                ACHIEVEMENT #{index + 1}
-                                            </Typography>
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: "white", fontWeight: 600 }}
-                                            >
-                                                {a.name}
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ color: "#cfd2ff", mt: 0.5 }}
-                                            >
-                                                {a.description}
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ mt: 1.2, color: "#9dd0ff" }}
-                                            >
-                                                <strong>How to unlock:</strong> {a.unlockHint}
-                                            </Typography>
-                                        </Box>
-                                    </Stack>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                            />
+                                        </Stack>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
                     </Stack>
                 )}
             </Box>
