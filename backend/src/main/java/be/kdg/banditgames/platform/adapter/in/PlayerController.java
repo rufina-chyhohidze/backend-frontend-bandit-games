@@ -1,9 +1,12 @@
 package be.kdg.banditgames.platform.adapter.in;
 
+import be.kdg.banditgames.common.shared.AchievementId;
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
+import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementCommand;
+import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementUseCase;
 import be.kdg.banditgames.platform.port.in.game.PlayableGameResult;
 import be.kdg.banditgames.platform.port.in.player.*;
 import org.slf4j.Logger;
@@ -27,16 +30,19 @@ public class PlayerController {
     private final AddFavoriteGameUseCase addFavoriteGameUseCase;
     private final RemoveFavoriteGameUseCase removeFavoriteGameUseCase;
     private final ListFavoriteGamesUseCase listFavoriteGamesUseCase;
+    private final AwardAchievementUseCase awardAchievementUseCase;
+
 
     private final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     public PlayerController(PlayerCreationUseCase playerCreationUseCase,
-                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase,ListFavoriteGamesUseCase listFavoriteGamesUseCase) {
+                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase,ListFavoriteGamesUseCase listFavoriteGamesUseCase, AwardAchievementUseCase awardAchievementUseCase) {
         this.playerCreationUseCase = playerCreationUseCase;
         this.findPlayerPort = findPlayerPort;
         this.addFavoriteGameUseCase = addFavoriteGameUseCase;
         this.removeFavoriteGameUseCase = removeFavoriteGameUseCase;
         this.listFavoriteGamesUseCase = listFavoriteGamesUseCase;
+        this.awardAchievementUseCase = awardAchievementUseCase;
     }
 
     @PostMapping("/register")
@@ -115,4 +121,23 @@ public class PlayerController {
                 .map(PlayerDto::fromDomain)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+
+    @PostMapping("/achievements/{achievementId}")
+    @PreAuthorize("hasAuthority('player')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void awardAchievementToCurrentPlayer(@PathVariable UUID achievementId,
+                                                @AuthenticationPrincipal Jwt jwt) {
+        UUID keycloakId = UUID.fromString(jwt.getSubject());
+        PlayerId playerId = PlayerId.of(keycloakId);
+
+        logger.info("Awarding achievement {} to player {}", achievementId, playerId);
+
+        var command = new AwardAchievementCommand(
+                playerId,
+                AchievementId.of(achievementId)
+        );
+
+        awardAchievementUseCase.awardAchievement(command);
+    }
+
 }

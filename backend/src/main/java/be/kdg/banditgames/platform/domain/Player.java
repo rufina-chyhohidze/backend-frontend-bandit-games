@@ -64,4 +64,10 @@ public class Player {
     public List<AchievementId> getAchievements() {
         return achievements;
     }
+
+    public void addAchievement(AchievementId achievementId) {
+        if (!achievements.contains(achievementId)) {
+            achievements.add(achievementId);
+        }
+    }
 }

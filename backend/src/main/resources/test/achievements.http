@@ -1,3 +1,31 @@
 ### List achievements for Connect Four (gameId = 00000000-0000-0000-0000-000000000001)
 GET http://localhost:8080/api/games/00000000-0000-0000-0000-000000000002/achievements
 
+###
+//http://localhost:8180/realms/banditgames/protocol/openid-connect/auth?client_id=platform-backend&response_type=code&scope=openid&redirect_uri=http://localhost:3333/callback
+### Get access token with admin user
+POST http://localhost:8180/realms/banditgames/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=platform-backend&client_secret=**********&username=rufi@rufi&password=rufi
+
+//saving the access token
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}
+###
+
+### Get current player info (before awarding)
+GET http://localhost:8080/api/player/me
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Award "First Connect" to current player
+POST http://localhost:8080/api/player/achievements/00000000-0000-0000-0000-000000000011
+Authorization: Bearer {{access_token}}
+
+###
+### Get current player info (after awarding)
+GET http://localhost:8080/api/player/me
+Authorization: Bearer {{access_token}}
+Accept: application/json
