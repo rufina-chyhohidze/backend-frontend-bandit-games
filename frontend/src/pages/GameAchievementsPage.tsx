@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Box,
@@ -11,18 +11,30 @@ import {
     Stack,
     Divider,
     Chip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    List,
+    ListItemButton,
+    ListItemText,
 } from "@mui/material";
+
 import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 
 import type { Achievement } from "../models/achievement";
 import type { Game } from "../models/game";
 import type { PlayerDto } from "../models/player";
+import type { PlayerDtoWithName } from "../models/friendship";
 
 import { fetchAchievements, fetchGames } from "../services/gamesService";
 import { useCurrentPlayer } from "../hooks/useFavorites";
+import SecurityContext from "../context/SecurityContext";
+import { useFriends } from "../hooks/useFriends";
 
 export default function GameAchievementsPage() {
     const { gameId } = useParams<{ gameId: string }>();
@@ -36,6 +48,20 @@ export default function GameAchievementsPage() {
     const { player, isLoadingPlayer } = useCurrentPlayer() as {
         player: PlayerDto | null;
         isLoadingPlayer: boolean;
+    };
+
+    const { loggedInUser } = useContext(SecurityContext);
+    const playerId = loggedInUser?.id ?? null;
+    const { data: friends, isLoading: loadingFriends } = useFriends(playerId);
+
+    const [compareOpen, setCompareOpen] = useState(false);
+    const openCompare = () => setCompareOpen(true);
+    const closeCompare = () => setCompareOpen(false);
+
+    const goCompare = (friendId: string) => {
+        if (!gameId) return;
+        closeCompare();
+        navigate(`/games/${gameId}/compare/${friendId}`);
     };
 
     useEffect(() => {
@@ -69,11 +95,13 @@ export default function GameAchievementsPage() {
 
     const isLoading = loading || isLoadingPlayer;
 
-    const unlockedSet = new Set(player?.achievements?? []);
+    const unlockedSet = new Set(player?.achievements ?? []);
     const total = achievements.length;
     const unlockedCount = achievements.filter((a) =>
         unlockedSet.has(a.achievementId)
     ).length;
+
+    const hasFriends = !!friends?.length;
 
     return (
         <Box
@@ -121,8 +149,8 @@ export default function GameAchievementsPage() {
                 }}
             >
                 <Stack
-                    direction="row"
-                    alignItems="center"
+                    direction={{ xs: "column", md: "row" }}
+                    alignItems={{ xs: "flex-start", md: "center" }}
                     justifyContent="space-between"
                     gap={2}
                 >
@@ -137,25 +165,46 @@ export default function GameAchievementsPage() {
                             </Typography>
                         </Box>
                     </Stack>
-                    <Button
-                        variant="outlined"
-                        onClick={() => navigate("/games")}
-                        startIcon={<ArrowBackRoundedIcon />}
-                        sx={{
-                            borderColor: "rgba(255,255,255,0.6)",
-                            color: "white",
-                            textTransform: "none",
-                            fontWeight: 500,
-                            borderRadius: 999,
-                            px: 2.3,
-                            "&:hover": {
-                                borderColor: "#ffffff",
-                                backgroundColor: "rgba(255,255,255,0.10)",
-                            },
-                        }}
-                    >
-                        Back to games
-                    </Button>
+
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} width={{ xs: "100%", md: "auto" }}>
+                        <Button
+                            variant="outlined"
+                            onClick={() => navigate("/games")}
+                            startIcon={<ArrowBackRoundedIcon />}
+                            sx={{
+                                borderColor: "rgba(255,255,255,0.6)",
+                                color: "white",
+                                textTransform: "none",
+                                fontWeight: 500,
+                                borderRadius: 999,
+                                px: 2.3,
+                                "&:hover": {
+                                    borderColor: "#ffffff",
+                                    backgroundColor: "rgba(255,255,255,0.10)",
+                                },
+                            }}
+                        >
+                            Back to games
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate(`/games/${gameId}/unlocked`)}
+                            sx={{ textTransform: "none", borderRadius: 999 }}
+                        >
+                            My unlocked
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            startIcon={<CompareArrowsRoundedIcon />}
+                            onClick={openCompare}
+                            disabled={!hasFriends || loadingFriends}
+                            sx={{ textTransform: "none", borderRadius: 999 }}
+                        >
+                            Compare with friend
+                        </Button>
+                    </Stack>
                 </Stack>
 
                 {game && (
@@ -184,6 +233,7 @@ export default function GameAchievementsPage() {
                                         {game.description}
                                     </Typography>
                                 </Box>
+
                                 <Stack direction="row" spacing={1}>
                                     <Chip
                                         size="small"
@@ -195,26 +245,19 @@ export default function GameAchievementsPage() {
                                             bgcolor: "rgba(0, 0, 0, 0.35)",
                                             color: "#ffecb3",
                                             border: "1px solid rgba(255, 236, 179, 0.7)",
-                                            "& .MuiChip-icon": {
-                                                color: "#ffecb3",
-                                            },
+                                            "& .MuiChip-icon": { color: "#ffecb3" },
                                         }}
                                     />
+
                                     <Chip
                                         size="small"
                                         icon={<CheckCircleRoundedIcon />}
-                                        label={
-                                            total > 0
-                                                ? `${unlockedCount}/${total} unlocked`
-                                                : "No achievements"
-                                        }
+                                        label={total > 0 ? `${unlockedCount}/${total} unlocked` : "No achievements"}
                                         sx={{
                                             bgcolor: "rgba(0, 0, 0, 0.35)",
                                             color: "#c8ffe9",
                                             border: "1px solid rgba(200, 255, 233, 0.7)",
-                                            "& .MuiChip-icon": {
-                                                color: "#c8ffe9",
-                                            },
+                                            "& .MuiChip-icon": { color: "#c8ffe9" },
                                         }}
                                     />
                                 </Stack>
@@ -259,9 +302,7 @@ export default function GameAchievementsPage() {
                                         boxShadow: unlocked
                                             ? "0 10px 26px rgba(0,255,180,0.35)"
                                             : "0 10px 26px rgba(0,0,0,0.45)",
-                                        border: unlocked
-                                            ? "1px solid rgba(0,255,180,0.5)"
-                                            : "none",
+                                        border: unlocked ? "1px solid rgba(0,255,180,0.5)" : "none",
                                         "&:hover": {
                                             transform: "translateY(-2px)",
                                             boxShadow: unlocked
@@ -290,18 +331,15 @@ export default function GameAchievementsPage() {
                                                 >
                                                     ACHIEVEMENT #{index + 1}
                                                 </Typography>
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: "white", fontWeight: 600 }}
-                                                >
+
+                                                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600 }}>
                                                     {a.name}
                                                 </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{ color: "#cfd2ff", mt: 0.5 }}
-                                                >
+
+                                                <Typography variant="body2" sx={{ color: "#cfd2ff", mt: 0.5 }}>
                                                     {a.description}
                                                 </Typography>
+
                                                 <Typography
                                                     variant="body2"
                                                     sx={{
@@ -314,13 +352,7 @@ export default function GameAchievementsPage() {
                                             </Box>
 
                                             <Chip
-                                                icon={
-                                                    unlocked ? (
-                                                        <CheckCircleRoundedIcon />
-                                                    ) : (
-                                                        <LockRoundedIcon />
-                                                    )
-                                                }
+                                                icon={unlocked ? <CheckCircleRoundedIcon /> : <LockRoundedIcon />}
                                                 label={unlocked ? "Unlocked" : "Locked"}
                                                 sx={{
                                                     alignSelf: "flex-start",
@@ -328,9 +360,7 @@ export default function GameAchievementsPage() {
                                                         ? "rgba(0, 255, 180, 0.18)"
                                                         : "rgba(255, 255, 255, 0.06)",
                                                     color: unlocked ? "#b2ffda" : "#e0e0e0",
-                                                    "& .MuiChip-icon": {
-                                                        color: unlocked ? "#b2ffda" : "#e0e0e0",
-                                                    },
+                                                    "& .MuiChip-icon": { color: unlocked ? "#b2ffda" : "#e0e0e0" },
                                                 }}
                                             />
                                         </Stack>
@@ -340,6 +370,41 @@ export default function GameAchievementsPage() {
                         })}
                     </Stack>
                 )}
+
+                <Dialog open={compareOpen} onClose={closeCompare} fullWidth maxWidth="sm">
+                    <DialogTitle>Select a friend to compare</DialogTitle>
+
+                    <DialogContent dividers>
+                        {loadingFriends && (
+                            <Box display="flex" justifyContent="center" py={2}>
+                                <CircularProgress />
+                            </Box>
+                        )}
+
+                        {!loadingFriends && (!friends || friends.length === 0) && (
+                            <Alert severity="info">You have no friends to compare with yet.</Alert>
+                        )}
+
+                        {!loadingFriends && friends?.length ? (
+                            <List disablePadding>
+                                {friends.map((f: PlayerDtoWithName) => (
+                                    <ListItemButton key={f.playerId} onClick={() => goCompare(f.playerId)}>
+                                        <ListItemText
+                                            primary={f.username}
+                                            secondary="Compare achievements for this game"
+                                        />
+                                    </ListItemButton>
+                                ))}
+                            </List>
+                        ) : null}
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={closeCompare} sx={{ textTransform: "none" }}>
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
         </Box>
     );
