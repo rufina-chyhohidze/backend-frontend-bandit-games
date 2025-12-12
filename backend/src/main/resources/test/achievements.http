@@ -29,3 +29,20 @@ Authorization: Bearer {{access_token}}
 GET http://localhost:8080/api/player/me
 Authorization: Bearer {{access_token}}
 Accept: application/json
+
+### Get available achievements for Connect4
+GET http://localhost:8080/api/games/f2b3aaf4-6db0-4a94-9d82-123456789abc/achievements
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Get MY unlocked achievements for Connect4
+GET http://localhost:8080/api/player/me/achievements?gameId=f2b3aaf4-6db0-4a94-9d82-123456789abc
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+
+### Get FRIEND unlocked achievements for Connect4
+GET http://localhost:8080/api/player/c653971a-8477-45e9-8129-bb2ffd1616c5/achievements?gameId=f2b3aaf4-6db0-4a94-9d82-123456789abc
+Authorization: Bearer {{access_token}}
+Accept: application/json

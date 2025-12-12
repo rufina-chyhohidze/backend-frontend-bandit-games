@@ -2,6 +2,7 @@ package be.kdg.banditgames.platform.adapter.out.player;
 
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.domain.Player;
+import be.kdg.banditgames.platform.port.out.player.LoadPlayerAchievementIdsPort;
 import be.kdg.banditgames.platform.port.out.player.LoadPlayerPort;
 import be.kdg.banditgames.platform.port.out.player.SavePlayerPort;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class PlayerJpaAdapter implements LoadPlayerPort, SavePlayerPort {
+public class PlayerJpaAdapter implements LoadPlayerPort, SavePlayerPort, LoadPlayerAchievementIdsPort {
     private final PlayerJpaRepository repo;
 
     public PlayerJpaAdapter(PlayerJpaRepository repo) {
@@ -36,5 +37,11 @@ public class PlayerJpaAdapter implements LoadPlayerPort, SavePlayerPort {
         return repo.findByUsernameContainingIgnoreCase(usernamePart).stream()
                 .map(PlayerJpaMapper::toDomain)
                 .toList();
+    }
+    @Override
+    public List<UUID> loadAchievementIds(PlayerId playerId) {
+        return repo.findById(playerId.playerId())
+                .map(PlayerJpaEntity::getAchievements)
+                .orElse(List.of());
     }
 }

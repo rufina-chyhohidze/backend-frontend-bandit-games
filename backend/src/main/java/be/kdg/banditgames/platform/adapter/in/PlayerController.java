@@ -5,8 +5,7 @@ import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.adapter.in.response.PlayerDto;
 import be.kdg.banditgames.platform.domain.Player;
-import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementCommand;
-import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementUseCase;
+import be.kdg.banditgames.platform.port.in.achievement.*;
 import be.kdg.banditgames.platform.port.in.game.PlayableGameResult;
 import be.kdg.banditgames.platform.port.in.player.*;
 import org.slf4j.Logger;
@@ -31,18 +30,20 @@ public class PlayerController {
     private final RemoveFavoriteGameUseCase removeFavoriteGameUseCase;
     private final ListFavoriteGamesUseCase listFavoriteGamesUseCase;
     private final AwardAchievementUseCase awardAchievementUseCase;
+    private final ListUnlockedAchievementsUseCase listUnlockedAchievementsUseCase;
 
 
     private final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     public PlayerController(PlayerCreationUseCase playerCreationUseCase,
-                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase,ListFavoriteGamesUseCase listFavoriteGamesUseCase, AwardAchievementUseCase awardAchievementUseCase) {
+                            FindPlayerPort findPlayerPort,AddFavoriteGameUseCase addFavoriteGameUseCase,RemoveFavoriteGameUseCase removeFavoriteGameUseCase,ListFavoriteGamesUseCase listFavoriteGamesUseCase, AwardAchievementUseCase awardAchievementUseCase, ListUnlockedAchievementsUseCase listUnlockedAchievementsUseCase) {
         this.playerCreationUseCase = playerCreationUseCase;
         this.findPlayerPort = findPlayerPort;
         this.addFavoriteGameUseCase = addFavoriteGameUseCase;
         this.removeFavoriteGameUseCase = removeFavoriteGameUseCase;
         this.listFavoriteGamesUseCase = listFavoriteGamesUseCase;
         this.awardAchievementUseCase = awardAchievementUseCase;
+        this.listUnlockedAchievementsUseCase = listUnlockedAchievementsUseCase;
     }
 
     @PostMapping("/register")
@@ -139,5 +140,42 @@ public class PlayerController {
 
         awardAchievementUseCase.awardAchievement(command);
     }
+    @GetMapping("/me/achievements")
+    @PreAuthorize("hasAuthority('player')")
+    public List<UnlockedAchievementResult> myUnlockedAchievements(
+            @RequestParam UUID gameId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        PlayerId me = PlayerId.of(UUID.fromString(jwt.getSubject()));
+
+        var cmd = new ListUnlockedAchievementsCommand(
+                me,
+                me,
+                GameId.of(gameId)
+        );
+
+        return listUnlockedAchievementsUseCase.listUnlockedAchievements(cmd);
+    }
+
+
+    @GetMapping("/{friendId}/achievements")
+    @PreAuthorize("hasAuthority('player')")
+    public List<UnlockedAchievementResult> friendUnlockedAchievements(
+            @PathVariable UUID friendId,
+            @RequestParam UUID gameId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        PlayerId requester = PlayerId.of(UUID.fromString(jwt.getSubject()));
+        PlayerId friend = PlayerId.of(friendId);
+
+        var cmd = new ListUnlockedAchievementsCommand(
+                requester,
+                friend,
+                GameId.of(gameId)
+        );
+
+        return listUnlockedAchievementsUseCase.listUnlockedAchievements(cmd);
+    }
+
 
 }
