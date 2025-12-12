@@ -9,6 +9,8 @@ import { LobbyPage } from "../pages/LobbyPage";
 import { DefaultRedirect } from "../components/routes/DefaultRedirect.tsx";
 import { FriendsPage } from "../pages/FriendsPage.tsx";
 import { FavoriteGamesPage } from "../pages/FavoriteGamesPage";
+import {MyUnlockedAchievementsPage} from "../pages/MyUnlockedAchievementsPage.tsx";
+import {CompareAchievementsPage} from "../pages/CompareAchievementsPage.tsx";
 
 export function AppRoutes() {
     return (
@@ -81,6 +83,24 @@ export function AppRoutes() {
                         </RouteGuard>
                     }
                 />
+                <Route
+                    path="/games/:gameId/unlocked"
+                    element={
+                        <RouteGuard role="player">
+                            <MyUnlockedAchievementsPage />
+                        </RouteGuard>
+                    }
+                />
+                <Route
+                    path="/games/:gameId/compare/:friendId"
+                    element={
+                        <RouteGuard role="player">
+                            <CompareAchievementsPage />
+                        </RouteGuard>
+                    }
+                />
+
+
             </Route>
 
 
