@@ -29,6 +29,7 @@ public class GameCreatedEventListener {
                 gameCreatedEvent.eventId(),
                 gameCreatedEvent.occurredAt(),
                 UUID.fromString(gameCreatedEvent.sessionId()),
+                UUID.fromString(gameCreatedEvent.gameId()),
                 gameCreatedEvent.player1(),
                 gameCreatedEvent.player2()
         ));

@@ -22,7 +22,7 @@ public class GameCreatedImpl implements GameCreatedPort {
     @Override
     public void project(GameCreatedCommand gameCreatedCommand) {
         GameSession gameSession = GameSession.createNew(
-                GameId.of(UUID.randomUUID()), // temp measure, needs to be changed, here for ttesting rabbitmq
+                GameId.of(gameCreatedCommand.gameId()),
                 SessionId.of(gameCreatedCommand.sessionId()),
                 gameCreatedCommand.player1(),
                 gameCreatedCommand.player2()

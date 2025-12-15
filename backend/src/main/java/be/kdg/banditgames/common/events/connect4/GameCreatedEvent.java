@@ -14,6 +14,7 @@ public record GameCreatedEvent(
         UUID eventId,
         LocalDateTime occurredAt,
         String sessionId,
+        String gameId,
         PlayerType player1,
         PlayerType player2
 ) implements DomainEvent {
@@ -21,10 +22,11 @@ public record GameCreatedEvent(
     @JsonCreator
     public GameCreatedEvent(
             @JsonProperty("sessionId") String sessionId,
+            @JsonProperty("gameId") String gameId,
             @JsonProperty("player1") PlayerType player1,
             @JsonProperty("player2") PlayerType player2
     ) {
-        this(UUID.randomUUID(), LocalDateTime.now(), sessionId, player1, player2);
+        this(UUID.randomUUID(), LocalDateTime.now(), sessionId, gameId, player1, player2);
     }
 
 
