@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/ask';
+const API_URL = 'http://localhost:7001/ask';
 
 export interface ChatbotResponse {
     answer: string;
