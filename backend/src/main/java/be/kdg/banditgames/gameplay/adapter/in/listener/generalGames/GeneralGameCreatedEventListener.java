@@ -1,29 +1,29 @@
-package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
+package be.kdg.banditgames.gameplay.adapter.in.listener.generalGames;
 
-import be.kdg.banditgames.common.config.RabbitMQTopology;
 import be.kdg.banditgames.common.events.connect4.Connect4GameCreatedEvent;
+import be.kdg.banditgames.common.events.generic.GenericGameCreatedEvent;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedCommand;
 import be.kdg.banditgames.gameplay.port.in.GameCreatedPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
-public class GameCreatedEventListener {
+public class GeneralGameCreatedEventListener {
 
-    private final Logger log = LoggerFactory.getLogger(GameCreatedEventListener.class);
+    private final Logger log = LoggerFactory.getLogger(GeneralGameCreatedEventListener.class);
     private final GameCreatedPort gameCreatedPort;
     
-    public GameCreatedEventListener(GameCreatedPort gameCreatedPort) {
+    public GeneralGameCreatedEventListener(GameCreatedPort gameCreatedPort) {
         this.gameCreatedPort = gameCreatedPort;
     }
 
-    @RabbitListener(queues = RabbitMQTopology.CONNECT4_GAME_CREATED_QUEUE)
-    public void gameCreatedEvent(Connect4GameCreatedEvent gameCreatedEvent) {
-        log.info("Connect4 Game created: {}", gameCreatedEvent);
+    @ApplicationModuleListener
+    public void gameCreatedEvent(GenericGameCreatedEvent gameCreatedEvent) {
+        log.info("Game Game created: {}", gameCreatedEvent);
 
         gameCreatedPort.project(new GameCreatedCommand(
                 gameCreatedEvent.eventId(),

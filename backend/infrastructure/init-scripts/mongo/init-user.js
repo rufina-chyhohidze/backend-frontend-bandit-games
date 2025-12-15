@@ -1,3 +1,5 @@
+db = db.getSiblingDB('gameplay');
+
 db.createUser({
     user: "user_mongodb",
     pwd: "password_mongodb",

@@ -1,7 +1,7 @@
 package be.kdg.banditgames.platform.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
-import be.kdg.banditgames.common.events.connect4.AchievementEvent;
+import be.kdg.banditgames.common.events.connect4.Connect4AchievementEvent;
 import be.kdg.banditgames.common.shared.AchievementId;
 import be.kdg.banditgames.common.shared.PlayerId;
 import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementCommand;
@@ -24,7 +24,7 @@ public class AchievementEventListener {
     }
 
     @RabbitListener(queues = RabbitMQTopology.CONNECT4_ACHIEVEMENT_QUEUE)
-    public void achievementEvent(AchievementEvent event) {
+    public void achievementEvent(Connect4AchievementEvent event) {
         log.info("Received AchievementEvent: {}", event);
 
         var command = new AwardAchievementCommand(

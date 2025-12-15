@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Externalized("connect4.events::#{'connect4.move.made.' + #this.sessionId()}")
-public record MoveMadeEvent(
+public record Connect4MoveMadeEvent(
         UUID eventId,
         LocalDateTime occurredAt,
         UUID sessionId,
@@ -23,7 +23,7 @@ public record MoveMadeEvent(
 ) implements DomainEvent {
 
     @JsonCreator
-    public MoveMadeEvent(
+    public Connect4MoveMadeEvent(
             @JsonProperty("sessionId") UUID sessionId,
             @JsonProperty("playerType") PlayerType playerType,
             @JsonProperty("playerSide") PlayerSide playerSide,

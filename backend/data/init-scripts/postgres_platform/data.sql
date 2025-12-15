@@ -19,25 +19,25 @@ VALUES
      'http://localhost:8000/connect4/index.html');
 
 --STATIC ACHIEVEMENTS FOR CHESS AND CONNECT 4
-INSERT INTO achievements (achievement_id, game_id, name, description, unlock_hint)
-VALUES
-    ('00000000-0000-0000-0000-000000000001',
-     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
-     'First Blood',
-     'Win your first chess game on the platform.',
-     'Win any rated chess game once.'),
-
-    ('00000000-0000-0000-0000-000000000002',
-     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
-     'Speed Demon',
-     'Win a chess game in under 20 moves.',
-     'Checkmate your opponent before move 20.'),
-
-    ('00000000-0000-0000-0000-000000000003',
-     '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
-     'Comeback King',
-     'Win a chess game after being down in material.',
-     'Be behind in material at some point and still win.');
+-- INSERT INTO achievements (achievement_id, game_id, name, description, unlock_hint)
+-- VALUES
+--     ('00000000-0000-0000-0000-000000000001',
+--      '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+--      'First Blood',
+--      'Win your first chess game on the platform.',
+--      'Win any rated chess game once.'),
+-- 
+--     ('00000000-0000-0000-0000-000000000002',
+--      '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+--      'Speed Demon',
+--      'Win a chess game in under 20 moves.',
+--      'Checkmate your opponent before move 20.'),
+-- 
+--     ('00000000-0000-0000-0000-000000000003',
+--      '8496c496-a884-48ed-9bb3-7c3aa50fb8ca',
+--      'Comeback King',
+--      'Win a chess game after being down in material.',
+--      'Be behind in material at some point and still win.');
 
 INSERT INTO achievements (achievement_id, game_id, name, description, unlock_hint)
 VALUES

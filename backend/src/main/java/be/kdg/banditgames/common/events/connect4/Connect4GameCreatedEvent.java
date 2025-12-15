@@ -9,24 +9,26 @@ import org.springframework.modulith.events.Externalized;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Externalized("connect4.events::#{'connect4.achievement.' + #this.playerId()}")
-public record AchievementEvent(
+@Externalized("connect4.events::#{'connect4.game.created.' + #this.sessionId()}")
+public record Connect4GameCreatedEvent(
         UUID eventId,
         LocalDateTime occurredAt,
-        String playerId,
-        String achievementId
-
+        String sessionId,
+        PlayerType player1,
+        PlayerType player2
 ) implements DomainEvent {
 
     @JsonCreator
-    public AchievementEvent(
-            @JsonProperty("playerId") String playerId,
-            @JsonProperty("achievementId") String achievementId
+    public Connect4GameCreatedEvent(
+            @JsonProperty("sessionId") String sessionId,
+            @JsonProperty("player1") PlayerType player1,
+            @JsonProperty("player2") PlayerType player2
     ) {
-        this(UUID.randomUUID(), LocalDateTime.now(), playerId, achievementId);
+        this(UUID.randomUUID(), LocalDateTime.now(), sessionId, player1, player2);
     }
 
 
+    
     @Override
     public LocalDateTime eventPit() {
         return occurredAt;

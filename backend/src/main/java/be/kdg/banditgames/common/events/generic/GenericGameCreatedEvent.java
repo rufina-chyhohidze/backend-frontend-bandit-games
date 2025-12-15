@@ -1,4 +1,4 @@
-package be.kdg.banditgames.common.events.connect4;
+package be.kdg.banditgames.common.events.generic;
 
 import be.kdg.banditgames.common.events.DomainEvent;
 import be.kdg.banditgames.common.shared.PlayerType;
@@ -9,8 +9,7 @@ import org.springframework.modulith.events.Externalized;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Externalized("connect4.events::#{'connect4.game.created.' + #this.sessionId()}")
-public record GameCreatedEvent(
+public record GenericGameCreatedEvent(
         UUID eventId,
         LocalDateTime occurredAt,
         String sessionId,
@@ -19,7 +18,7 @@ public record GameCreatedEvent(
 ) implements DomainEvent {
 
     @JsonCreator
-    public GameCreatedEvent(
+    public GenericGameCreatedEvent(
             @JsonProperty("sessionId") String sessionId,
             @JsonProperty("player1") PlayerType player1,
             @JsonProperty("player2") PlayerType player2

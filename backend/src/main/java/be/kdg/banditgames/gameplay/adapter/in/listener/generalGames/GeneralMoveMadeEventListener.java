@@ -1,26 +1,26 @@
-package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
+package be.kdg.banditgames.gameplay.adapter.in.listener.generalGames;
 
-import be.kdg.banditgames.common.config.RabbitMQTopology;
 import be.kdg.banditgames.common.events.connect4.Connect4MoveMadeEvent;
+import be.kdg.banditgames.common.events.generic.GenericMoveMadeEvent;
 import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MoveMadeEventListener {
+public class GeneralMoveMadeEventListener {
 
-    Logger log = LoggerFactory.getLogger(MoveMadeEventListener.class);
+    Logger log = LoggerFactory.getLogger(GeneralMoveMadeEventListener.class);
     private final MoveMadePort moveMadePort;
     
-    public MoveMadeEventListener(MoveMadePort moveMadePort) {
+    public GeneralMoveMadeEventListener(MoveMadePort moveMadePort) {
         this.moveMadePort = moveMadePort;
     }
     
-    @RabbitListener(queues = RabbitMQTopology.CONNECT4_MOVE_MADE_QUEUE)
-    public void moveMadeEvent(Connect4MoveMadeEvent event) {
+    @ApplicationModuleListener
+    public void moveMadeEvent(GenericMoveMadeEvent event) {
         log.info("Received MoveMadeEvent: {}", event);
         
         moveMadePort.project(new MoveMadeCommand(

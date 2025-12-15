@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Externalized("connect4.events::#{'connect4.game.created.' + #this.sessionId()}")
-public record GameResultEvent(
+public record Connect4GameResultEvent(
         UUID eventId,
         LocalDateTime occurredAt,
         String sessionId,
@@ -17,7 +17,7 @@ public record GameResultEvent(
 ) implements DomainEvent {
 
     @JsonCreator
-    public GameResultEvent(
+    public Connect4GameResultEvent(
             @JsonProperty("sessionId") String sessionId,
             @JsonProperty("gameResult") String gameResult
     ) {
