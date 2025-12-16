@@ -81,7 +81,7 @@ services:
       - kdg-backend
     volumes:
       - mongo_data:/data/db
-      - ../data/init-scripts/mongo:/docker-entrypoint-initdb.d
+      - ./init-scripts/mongo:/docker-entrypoint-initdb.d
 
   app_rabbitmq:
     image: rabbitmq:3.13.7-management-alpine
