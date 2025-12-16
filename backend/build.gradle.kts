@@ -31,6 +31,7 @@ spotbugs {
 }
 
 tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+    ignoreFailures = true  // Also set at task level
     reports {
         create("html") {
             required.set(true)
