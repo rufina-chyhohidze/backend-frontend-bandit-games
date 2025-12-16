@@ -2,6 +2,9 @@ plugins {
     java
     id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
+    
+    // Code quality 
+    id("com.github.spotbugs") version "6.0.8"
 }
 
 group = "kdg.be.banditgames"
@@ -17,6 +20,25 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.spring.io/milestone")
+}
+
+spotbugs {
+    toolVersion.set("4.8.6")
+    effort.set(com.github.spotbugs.snom.Effort.MAX)
+    reportLevel.set(com.github.spotbugs.snom.Confidence.HIGH) // Only HIGH confidence issues
+//    ignoreFailures.set(false) // use this when prod updated with dev
+    ignoreFailures.set(true)
+}
+
+tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+    reports {
+        create("html") {
+            required.set(true)
+        }
+        create("xml") {
+            required.set(true)
+        }
+    }
 }
 
 
