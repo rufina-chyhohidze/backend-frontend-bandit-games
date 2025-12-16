@@ -7,11 +7,9 @@ import java.util.UUID;
 
 public record CreateGameCommand(
         UUID sessionId,
-        UUID gameId,
+        GameId gameId,
         UUID player1Id,
         UUID player2Id,
         PlayerType player1Type,
-        PlayerType player2Type,
-        GameId gameId
-) {
+        PlayerType player2Type) {
 }

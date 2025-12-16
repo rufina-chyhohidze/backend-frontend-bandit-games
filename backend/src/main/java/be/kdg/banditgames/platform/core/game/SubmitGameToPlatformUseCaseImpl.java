@@ -7,11 +7,13 @@ import be.kdg.banditgames.platform.port.out.game.UpdateGamesPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class SubmitGameToPlatformUseCaseImpl implements SubmitGameToPlatformUseCase {
-    private final UpdateGamesPort updateGamesPort;
+    private final List<UpdateGamesPort> updateGamesPort;
 
-    public SubmitGameToPlatformUseCaseImpl(UpdateGamesPort updateGamesPort) {
+    public SubmitGameToPlatformUseCaseImpl(List<UpdateGamesPort> updateGamesPort) {
         this.updateGamesPort = updateGamesPort;
     }
 
@@ -26,7 +28,7 @@ public class SubmitGameToPlatformUseCaseImpl implements SubmitGameToPlatformUseC
                 command.urlGameSession()
         );
 
-        this.updateGamesPort.updateGames(game);
+        this.updateGamesPort.forEach(port -> port.updateGames(game));
         return game;
     }
 }

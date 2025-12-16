@@ -27,15 +27,13 @@ import java.util.UUID;
 @Repository
 public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGameSessionPort {
     private final LoadAiMetadataPendingPort loadAiPendingPort;
-    private final DeleteAiMetadataPendingPort deleteAiPendingPort;
     private final MongoGameplayRepository mongoGameplayRepository;
     private final MongoTemplate mongoTemplate;
     private final Logger logger = LoggerFactory.getLogger(GameSessionMongoAdapter.class);
 
-    public GameSessionMongoAdapter(LoadAiMetadataPendingPort loadAiPendingPort, DeleteAiMetadataPendingPort deleteAiPendingPort, MongoGameplayRepository mongoGameplayRepository,
+    public GameSessionMongoAdapter(LoadAiMetadataPendingPort loadAiPendingPort, MongoGameplayRepository mongoGameplayRepository,
                                    MongoTemplate mongoTemplate) {
         this.loadAiPendingPort = loadAiPendingPort;
-        this.deleteAiPendingPort = deleteAiPendingPort;
         this.mongoTemplate = mongoTemplate;
         this.mongoGameplayRepository = mongoGameplayRepository;
     }

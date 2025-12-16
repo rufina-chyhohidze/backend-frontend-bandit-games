@@ -1,4 +1,4 @@
-package be.kdg.banditgames.gameplay.port.in;
+package be.kdg.banditgames.gameplay.port.in.gameSession;
 
 import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.domain.GameResult;

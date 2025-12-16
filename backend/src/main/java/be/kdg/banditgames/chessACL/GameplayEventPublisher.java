@@ -23,10 +23,11 @@ public class GameplayEventPublisher {
         this.publisher = publisher;
     }
 
-    public void publishGameCreated(String sessionId) {
+    public void publishGameCreated(String sessionId, String name) {
         
         publisher.publishEvent(new GenericGameCreatedEvent(
                 sessionId,
+                name,
                 PlayerType.HUMAN,
                 PlayerType.HUMAN
         ));

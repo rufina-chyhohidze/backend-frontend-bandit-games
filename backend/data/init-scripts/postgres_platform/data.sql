@@ -5,7 +5,7 @@ VALUES (
            'Classic strategy board game',
            'https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/ARTy960/phpbTO0Re.jpeg',
            'check online the rules',
-           'PUBLISHED',
+           'DRAFT',
            'http://localhost:3333'
        );
 
@@ -15,7 +15,7 @@ VALUES
      'Classic 2-player connect four game',
      'Connect 4 of your pieces in a row to win.',
      'https://thewashingtonote.com/wp-content/uploads/2023/10/Connect-4-Online-scaled.jpg',
-     'PUBLISHED',
+     'DRAFT',
      'http://localhost:8000/connect4/index.html');
 
 --STATIC ACHIEVEMENTS FOR CHESS AND CONNECT 4

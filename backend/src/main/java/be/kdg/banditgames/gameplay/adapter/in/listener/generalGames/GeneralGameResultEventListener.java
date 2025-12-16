@@ -1,11 +1,10 @@
 package be.kdg.banditgames.gameplay.adapter.in.listener.generalGames;
 
-import be.kdg.banditgames.common.events.connect4.Connect4GameResultEvent;
 import be.kdg.banditgames.common.events.generic.GenericGameResultEvent;
 import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.gameplay.domain.GameResult;
-import be.kdg.banditgames.gameplay.port.in.GameResultsCommand;
-import be.kdg.banditgames.gameplay.port.in.GameResultsPort;
+import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsCommand;
+import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.modulith.events.ApplicationModuleListener;

@@ -97,13 +97,11 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
             createGameService.createGameForLobby(
                     new CreateGameCommand(
                             lobbyId.lobbyID(),
-                            lobby.getGameId().gameId(),
+                            lobby.getGameId(),
                             hostId,
                             guestId,
                             lobby.getHostType(),
-                            lobby.getGuestType(),
-                            lobby.getGameId()
-                    )
+                            lobby.getGuestType())
             );
 
             lobby.startGame();

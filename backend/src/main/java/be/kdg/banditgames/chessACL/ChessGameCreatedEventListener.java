@@ -21,7 +21,8 @@ ChessGameCreatedEventListener {
     public void onGameCreated(ChessGameCreatedEvent event) {
         log.info("ChessGameCreatedEvent received: {}", event);
         publisher.publishGameCreated(
-                event.sessionId()
+                event.sessionId(),
+                "Chess"
         );
     }
 }

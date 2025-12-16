@@ -10,14 +10,16 @@ import be.kdg.banditgames.platform.port.out.game.UpdateGamesPort;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ApproveGameUseCaseImpl implements ApproveGameUseCase {
     private final LoadDraftGamesPort loadDraftGamesPort;
-    private final UpdateGamesPort updateGamesPort;
+    private final List<UpdateGamesPort> updateGamesPort;
 
     public ApproveGameUseCaseImpl(LoadDraftGamesPort loadDraftGamesPort,
-                                  UpdateGamesPort updateGamesPort) {
+                                  List<UpdateGamesPort> updateGamesPort) {
         this.loadDraftGamesPort = loadDraftGamesPort;
         this.updateGamesPort = updateGamesPort;
     }
@@ -27,7 +29,8 @@ public class ApproveGameUseCaseImpl implements ApproveGameUseCase {
                 .orElseThrow(() -> new GameNotFoundException(command.gameId()));
 
         game.acceptGame();
-        return updateGamesPort.updateGames(game);
+        updateGamesPort.forEach(port -> port.updateGames(game));
+        return game;
     }
 
 

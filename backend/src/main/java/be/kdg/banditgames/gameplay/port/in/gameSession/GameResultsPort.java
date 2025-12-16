@@ -1,4 +1,4 @@
-package be.kdg.banditgames.gameplay.port.in;
+package be.kdg.banditgames.gameplay.port.in.gameSession;
 
 public interface GameResultsPort {
 

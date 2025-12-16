@@ -1,11 +1,11 @@
-package be.kdg.banditgames.gameplay.port.in;
+package be.kdg.banditgames.gameplay.port.in.gameSession;
 
 import be.kdg.banditgames.common.shared.PlayerType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record GameCreatedCommand(
+public record GameSessionCreatedCommand(
         UUID eventId,
         LocalDateTime occurredAt,
         UUID sessionId,

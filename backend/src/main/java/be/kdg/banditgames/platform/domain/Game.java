@@ -1,7 +1,11 @@
     package be.kdg.banditgames.platform.domain;
 
+    import be.kdg.banditgames.common.events.DomainEvent;
+    import be.kdg.banditgames.common.events.generic.GenericAcceptedGameEvent;
     import be.kdg.banditgames.common.shared.GameId;
 
+    import java.util.ArrayList;
+    import java.util.List;
     import java.util.UUID;
 
     public class Game {
@@ -12,6 +16,7 @@
         private String pictureUrl;
         private GameStatus status;
         private String urlGameSession;
+        private final List<DomainEvent> domainEvents = new ArrayList<>();
 
         public Game(GameId gameId, String name, String description, String rules, String pictureUrl, GameStatus status, String urlGameSession) {
             this.gameId = gameId;
@@ -35,6 +40,8 @@
 
         public void acceptGame() {
             this.status = GameStatus.PUBLISHED;
+            recordEvent(new GenericAcceptedGameEvent(this.gameId.gameId(), this.name));
+
         }
 
         public void rejectGame() {
@@ -72,6 +79,14 @@
         public String getUrlGameSession() {
             return urlGameSession;
         }
+
+        private void recordEvent(DomainEvent event) {
+            domainEvents.add(event);
+        }
+        public List<DomainEvent> getDomainEvents() {
+            return List.copyOf(domainEvents);
+        }
+
         /**
          * For Chess  set:
          * name = "Chess"

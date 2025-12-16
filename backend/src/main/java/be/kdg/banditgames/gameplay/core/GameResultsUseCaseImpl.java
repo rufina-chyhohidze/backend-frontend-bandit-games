@@ -2,8 +2,8 @@ package be.kdg.banditgames.gameplay.core;
 
 import be.kdg.banditgames.gameplay.domain.GameSession;
 import be.kdg.banditgames.gameplay.domain.exceptions.GameSesssionNotFound;
-import be.kdg.banditgames.gameplay.port.in.GameResultsCommand;
-import be.kdg.banditgames.gameplay.port.in.GameResultsPort;
+import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsCommand;
+import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.LoadGameSessionPort;
 import be.kdg.banditgames.gameplay.port.out.gameSession.PersistGameSessionPort;
 import jakarta.transaction.Transactional;
