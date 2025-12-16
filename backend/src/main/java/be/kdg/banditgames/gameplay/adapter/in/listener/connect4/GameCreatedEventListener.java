@@ -2,6 +2,7 @@ package be.kdg.banditgames.gameplay.adapter.in.listener.connect4;
 
 import be.kdg.banditgames.common.config.RabbitMQTopology;
 import be.kdg.banditgames.common.events.connect4.Connect4GameCreatedEvent;
+import be.kdg.banditgames.gameplay.port.in.game.LoadGameByNamePort;
 import be.kdg.banditgames.gameplay.port.in.gameSession.GameSessionCreatedCommand;
 import be.kdg.banditgames.gameplay.port.in.gameSession.GameSessionCreatedPort;
 import org.slf4j.Logger;
@@ -16,9 +17,11 @@ public class GameCreatedEventListener {
 
     private final Logger log = LoggerFactory.getLogger(GameCreatedEventListener.class);
     private final GameSessionCreatedPort gameSessionCreatedPort;
-    
-    public GameCreatedEventListener(GameSessionCreatedPort gameSessionCreatedPort) {
+    private final LoadGameByNamePort findGamePort;
+
+    public GameCreatedEventListener(GameSessionCreatedPort gameSessionCreatedPort, LoadGameByNamePort findGamePort) {
         this.gameSessionCreatedPort = gameSessionCreatedPort;
+        this.findGamePort = findGamePort;
     }
 
     @RabbitListener(queues = RabbitMQTopology.CONNECT4_GAME_CREATED_QUEUE)
@@ -29,7 +32,7 @@ public class GameCreatedEventListener {
                 gameCreatedEvent.eventId(),
                 gameCreatedEvent.occurredAt(),
                 UUID.fromString(gameCreatedEvent.sessionId()),
-                UUID.fromString(gameCreatedEvent.gameId()),
+                findGamePort.findByName(gameCreatedEvent.game()).gameId(),
                 gameCreatedEvent.player1(),
                 gameCreatedEvent.player2()
         ));
