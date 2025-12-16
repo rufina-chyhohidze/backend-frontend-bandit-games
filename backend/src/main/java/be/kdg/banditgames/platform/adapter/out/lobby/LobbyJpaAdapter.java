@@ -46,17 +46,19 @@ public class LobbyJpaAdapter implements LoadLobbyPort, PersistLobbyPort, LobbyLo
         LobbyJpaEntity lobbyEntity = lobbyJpaRepository.findById(lobbyId.lobbyID())
                 .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId.lobbyID() + " not found."));
 
+        if (lobbyEntity.getGuestType() != null && lobbyEntity.getGuestType() != PlayerType.HUMAN) {
+            throw new LobbyFullException("Lobby with ID " + lobbyId.lobbyID() + " already has an AI opponent.");
+        }
+
         if (lobbyEntity.getGuestPlayerId() == null) {
             lobbyEntity.setGuestPlayerId(playerId.playerId());
             lobbyEntity.setGuestType(PlayerType.HUMAN);
-
-            LobbyJpaEntity updatedLobbyEntity = lobbyJpaRepository.save(lobbyEntity);
-
-            return LobbyJpaMapper.toDomain(updatedLobbyEntity);
-        } else {
-            throw new LobbyFullException("Lobby with ID " + lobbyId.lobbyID() + " is already full.");
+            return LobbyJpaMapper.toDomain(lobbyJpaRepository.save(lobbyEntity));
         }
+
+        throw new LobbyFullException("Lobby with ID " + lobbyId.lobbyID() + " is already full.");
     }
+
 
     @Override
     public boolean isPlayerInAnyLobby(PlayerId playerId) {

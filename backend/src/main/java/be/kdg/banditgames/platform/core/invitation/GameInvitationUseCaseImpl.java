@@ -6,6 +6,7 @@ import be.kdg.banditgames.platform.domain.Friendship;
 import be.kdg.banditgames.platform.domain.FriendshipStatus;
 import be.kdg.banditgames.platform.domain.GameInvitation;
 import be.kdg.banditgames.platform.domain.Lobby;
+import be.kdg.banditgames.platform.domain.exception.lobby.PlayerAlreadyInLobbyException;
 import be.kdg.banditgames.platform.domain.vo.InvitationId;
 import be.kdg.banditgames.platform.domain.vo.LobbyId;
 import be.kdg.banditgames.platform.port.in.friendship.FindFriendshipPort;
@@ -66,7 +67,7 @@ public class GameInvitationUseCaseImpl implements GameInvitationUseCase {
         });
 
         if (lobbyLookupPort.isPlayerInAnyLobby(from)) {
-            throw new IllegalStateException("You are already in a lobby.");
+            throw new PlayerAlreadyInLobbyException(from);
         }
 
         Lobby lobby = Lobby.createNew(from);
@@ -87,7 +88,7 @@ public class GameInvitationUseCaseImpl implements GameInvitationUseCase {
         invitation.accept(command.accepter());
 
         if (lobbyLookupPort.isPlayerInAnyLobby(command.accepter())) {
-            throw new IllegalStateException("You are already in a lobby.");
+            throw new PlayerAlreadyInLobbyException(command.accepter());
         }
 
         Lobby lobby = loadLobbyPort.loadLobbyById(invitation.getLobbyId())
@@ -100,7 +101,7 @@ public class GameInvitationUseCaseImpl implements GameInvitationUseCase {
         lobby.changeGuest(command.accepter(), PlayerType.HUMAN);
         persistLobbyPort.saveLobby(lobby);
 
-        persistInvitationPort.save(invitation);
+        persistInvitationPort.delete(invitation.getId());
 
         return lobby.getLobbyId();
     }

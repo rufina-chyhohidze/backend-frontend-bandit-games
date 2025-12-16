@@ -42,5 +42,10 @@ public class GameInvitationJpaAdapter implements LoadGameInvitationPort, Persist
     public void save(GameInvitation invitation) {
         repo.save(GameInvitationJpaMapper.toEntity(invitation));
     }
+
+    @Override
+    public void delete(InvitationId id) {
+        repo.deleteById(id.id());
+    }
 }
 

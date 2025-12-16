@@ -82,23 +82,18 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
 
     @Override
     public StartGameResponse startGameInLobby(LobbyId lobbyId) {
-        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId).orElseThrow();
+
+        Game game = loadPlayableGamesPort
+                .loadGameById(lobby.getGameId().gameId())
                 .orElseThrow();
 
-        Game game = loadPlayableGamesPort.loadGameById(
-                lobby.getGameId().gameId()).orElseThrow();
-
         if (!lobby.hasStartedGame()) {
+            UUID hostId = lobby.getHostPlayer().playerId();
 
-            var hostId = lobby.getHostPlayer().playerId();
-
-            UUID guestId;
-            if (lobby.getGuestPlayer() != null) {
-                guestId = lobby.getGuestPlayer().playerId();
-            } else {
-                // AI opponent: we still need an ID for player2.
-                guestId = UUID.randomUUID();
-            }
+            UUID guestId = (lobby.getGuestPlayer() != null)
+                    ? lobby.getGuestPlayer().playerId()
+                    : UUID.randomUUID();
 
             createGameService.createGameForLobby(
                     new CreateGameCommand(
@@ -110,26 +105,17 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                             lobby.getGuestType()
                     )
             );
+
             lobby.startGame();
             persistLobbyPort.saveLobby(lobby);
         }
 
+        String hostUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
 
-        String hostUrl = String.format(
-                "%s?sessionId=%s&playerId=%s",
-                game.getUrlGameSession(),
-                lobbyId.lobbyID(),
-                lobby.getHostPlayer().playerId()
-        );
-
-        String guestUrl = String.format(
-                "%s?sessionId=%s&playerId=%s",
-                game.getUrlGameSession(),
-                lobbyId.lobbyID(),
-                lobby.getGuestPlayer() != null
-                        ? lobby.getGuestPlayer().playerId()
-                        : "AI"
-        );
+        String guestUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(),
+                lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : "AI");
 
         return new StartGameResponse(
                 lobby.getGameId().gameId().toString(),
@@ -139,6 +125,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 lobby.getGuestType().name()
         );
     }
+
 
 
     @Override
@@ -170,20 +157,15 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
         Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
                 .orElseThrow(() -> new RuntimeException("Lobby not found: " + lobbyId.lobbyID()));
 
-        // Only host allowed to choose AI
         if (!lobby.getHostPlayer().equals(requestingPlayer)) {
             throw new IllegalStateException("Only the host can choose an AI opponent.");
         }
 
-        // Optional: block override of human guest
         if (lobby.getGuestPlayer() != null && lobby.getGuestType() == PlayerType.HUMAN) {
             throw new IllegalStateException("Cannot set AI: lobby already has a human guest.");
         }
-
-        // Domain: set AI guest
         lobby.changeGuestToAI(aiType);
 
-        // Persist
         persistLobbyPort.saveLobby(lobby);
     }
 }
