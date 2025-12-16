@@ -60,9 +60,9 @@ public class GameSession {
     }
 
     public void addGameState(GameState gameState) {
-        if (this.gameSessionState == GameSessionState.COMPLETED) {
-            throw new IllegalStateException("Cannot add moves to a completed game");
-        }
+//        if (this.gameSessionState == GameSessionState.COMPLETED) {
+//            throw new IllegalStateException("Cannot add moves to a completed game");
+//        }
         this.gameStates.add(gameState);
     }
 

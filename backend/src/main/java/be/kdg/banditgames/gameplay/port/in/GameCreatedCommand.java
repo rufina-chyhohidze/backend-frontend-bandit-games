@@ -9,6 +9,7 @@ public record GameCreatedCommand(
         UUID eventId,
         LocalDateTime occurredAt,
         UUID sessionId,
+        UUID gameId,
         PlayerType player1,
         PlayerType player2
 ) {
