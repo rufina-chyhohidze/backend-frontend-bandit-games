@@ -58,6 +58,7 @@ code_quality_job:
   script:
     - cd backend
     - ./gradlew spotbugsMain spotbugsTest -x test || true
+#  remove this line if you want to fail the job on code quality issues
   allow_failure: true
   artifacts:
     when: always
