@@ -27,6 +27,32 @@ import {
 import { AccessDeniedCard } from "../components/friends/AccessDeniedCard";
 import { FriendsLayout } from "../components/friends/FriendsLayout";
 
+type SnackbarState = {
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+};
+
+function extractApiMessage(err: any, fallback: string): string {
+    const status = err?.response?.status;
+
+    const msgFromObj = err?.response?.data?.message;
+
+    const msgFromString = typeof err?.response?.data === "string" ? err.response.data : null;
+
+    const msgFromAxios = err?.message;
+
+    const best = msgFromObj ?? msgFromString;
+
+    if (!best && typeof msgFromAxios === "string" && msgFromAxios.startsWith("Request failed")) {
+        return status === 409
+            ? "You’re already in a lobby. Leave it before."
+            : fallback;
+    }
+
+    return String(best ?? fallback);
+}
+
 export function FriendsPage() {
     const navigate = useNavigate();
     const { isAuthenticated, loggedInUser, login } = useContext(SecurityContext);
@@ -34,11 +60,11 @@ export function FriendsPage() {
 
     const [searchQuery, setSearchQuery] = useState("");
     const [submittedQuery, setSubmittedQuery] = useState("");
-    const [snackbar, setSnackbar] = useState<{
-        open: boolean;
-        message: string;
-        severity: "success" | "error";
-    }>({ open: false, message: "", severity: "success" });
+    const [snackbar, setSnackbar] = useState<SnackbarState>({
+        open: false,
+        message: "",
+        severity: "success",
+    });
 
     const { data: friends, isLoading: loadingFriends } = useFriends(playerId);
     const { data: pendingRequests, isLoading: loadingPending } = usePendingRequests(playerId);
@@ -72,7 +98,7 @@ export function FriendsPage() {
             await sendFriendRequestMutation.mutateAsync({ fromPlayerId: playerId, toPlayerId });
             setSnackbar({ open: true, message: "Friend request sent!", severity: "success" });
         } catch (error: any) {
-            const msg = error?.response?.data?.message || "Failed to send friend request";
+            const msg = extractApiMessage(error, "Failed to send friend request");
             setSnackbar({ open: true, message: msg, severity: "error" });
         } finally {
             setLocalSentRequests((prev) => {
@@ -89,7 +115,7 @@ export function FriendsPage() {
             await acceptFriendRequestMutation.mutateAsync({ fromPlayerId, toPlayerId: playerId });
             setSnackbar({ open: true, message: "Friend request accepted!", severity: "success" });
         } catch (error: any) {
-            const msg = error?.response?.data?.message || "Failed to accept friend request";
+            const msg = extractApiMessage(error, "Failed to accept friend request");
             setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
@@ -100,7 +126,7 @@ export function FriendsPage() {
             await rejectFriendRequestMutation.mutateAsync({ fromPlayerId, toPlayerId: playerId });
             setSnackbar({ open: true, message: "Friend request rejected", severity: "success" });
         } catch (error: any) {
-            const msg = error?.response?.data?.message || "Failed to reject friend request";
+            const msg = extractApiMessage(error, "Failed to reject friend request");
             setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
@@ -114,7 +140,7 @@ export function FriendsPage() {
             await removeFriendMutation.mutateAsync({ playerAId: playerId, playerBId: friendId });
             setSnackbar({ open: true, message: "Friend removed", severity: "success" });
         } catch (error: any) {
-            const msg = error?.response?.data?.message || "Failed to remove friend";
+            const msg = extractApiMessage(error, "Failed to remove friend");
             setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
@@ -125,11 +151,18 @@ export function FriendsPage() {
             setSnackbar({ open: true, message: "Invite sent! Opening lobby...", severity: "success" });
             navigate("/lobby");
         } catch (err: any) {
-            const msg =
-                err?.response?.data?.message ??
-                (typeof err?.response?.data === "string" ? err.response.data : null) ??
-                err?.message ??
-                "Invite failed";
+            const status = err?.response?.status;
+
+            if (status === 409) {
+                const msg = extractApiMessage(err, "You’re already in a lobby. Leave it before inviting someone.");
+                setSnackbar({ open: true, message: msg, severity: "error" });
+                return;
+            }
+
+            const msg = extractApiMessage(
+                err,
+                "Invite failed. You might already be in a lobby — leave it first and try again."
+            );
             setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
@@ -140,8 +173,8 @@ export function FriendsPage() {
             setSnackbar({ open: true, message: "Invite accepted! Redirecting to lobby...", severity: "success" });
             navigate("/lobby");
         } catch (error: any) {
-            const msg = error?.response?.data || error?.response?.data?.message || "Failed to accept invite";
-            setSnackbar({ open: true, message: String(msg), severity: "error" });
+            const msg = extractApiMessage(error, "Failed to accept invite");
+            setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
 
@@ -150,8 +183,8 @@ export function FriendsPage() {
             await rejectGameInviteMutation.mutateAsync({ invitationId });
             setSnackbar({ open: true, message: "Invite rejected.", severity: "success" });
         } catch (error: any) {
-            const msg = error?.response?.data || error?.response?.data?.message || "Failed to reject invite";
-            setSnackbar({ open: true, message: String(msg), severity: "error" });
+            const msg = extractApiMessage(error, "Failed to reject invite");
+            setSnackbar({ open: true, message: msg, severity: "error" });
         }
     };
 

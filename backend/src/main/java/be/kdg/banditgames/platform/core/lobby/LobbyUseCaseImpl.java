@@ -82,15 +82,16 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
 
     @Override
     public StartGameResponse startGameInLobby(LobbyId lobbyId) {
-        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId).orElseThrow();
+
+        Game game = loadPlayableGamesPort
+                .loadGameById(lobby.getGameId().gameId())
                 .orElseThrow();
 
-        Game game = loadPlayableGamesPort.loadGameById(
-                lobby.getGameId().gameId()).orElseThrow();
-
         if (!lobby.hasStartedGame()) {
-            var hostId = lobby.getHostPlayer().playerId();
-            UUID guestId = lobby.getGuestPlayer() != null
+            UUID hostId = lobby.getHostPlayer().playerId();
+
+            UUID guestId = (lobby.getGuestPlayer() != null)
                     ? lobby.getGuestPlayer().playerId()
                     : UUID.randomUUID();
 
@@ -101,34 +102,19 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                             hostId,
                             guestId,
                             lobby.getHostType(),
-                            lobby.getGuestType())
+                            lobby.getGuestType()
+                    )
             );
-
             lobby.startGame();
             persistLobbyPort.saveLobby(lobby);
         }
 
-        String hostUrl;
-        String guestUrl;
+        String hostUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
 
-        if (game.getName().equals("Chess")) {
-            // Frontend handles Chess, just redirect
-            hostUrl = String.format("%s?sessionId=%s&playerId=%s",
-                    game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
-
-            guestUrl = String.format("%s?sessionId=%s&playerId=%s",
-                    game.getUrlGameSession(), lobbyId.lobbyID(),
-                    lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : "AI");
-
-        } else {
-            // For Connect4 and other backend games
-            hostUrl = String.format("%s?sessionId=%s&playerId=%s",
-                    game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
-
-            guestUrl = String.format("%s?sessionId=%s&playerId=%s",
-                    game.getUrlGameSession(), lobbyId.lobbyID(),
-                    lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : "AI");
-        }
+        String guestUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(),
+                lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : "AI");
 
         return new StartGameResponse(
                 lobby.getGameId().gameId().toString(),
@@ -138,6 +124,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 lobby.getGuestType().name()
         );
     }
+
 
 
     @Override
