@@ -120,6 +120,7 @@ class LobbyControllerTest {
         UUID lobbyId = UUID.randomUUID();
 
         StartGameResponse response = new StartGameResponse(
+                "gameID",
                 "http://host-url",
                 "http://guest-url",
                 "HUMAN",

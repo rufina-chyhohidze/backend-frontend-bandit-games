@@ -6,6 +6,7 @@ import be.kdg.banditgames.gameplay.port.in.MoveMadeCommand;
 import be.kdg.banditgames.gameplay.port.in.MoveMadePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class GeneralMoveMadeEventListener {
         this.moveMadePort = moveMadePort;
     }
     
-    @ApplicationModuleListener
+    @EventListener
     public void moveMadeEvent(GenericMoveMadeEvent event) {
         log.info("Received MoveMadeEvent: {}", event);
         

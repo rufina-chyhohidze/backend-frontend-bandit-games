@@ -25,7 +25,7 @@ public record GenericGameCreatedEvent(
             @JsonProperty("player1") PlayerType player1,
             @JsonProperty("player2") PlayerType player2
     ) {
-        this(UUID.randomUUID(), LocalDateTime.now(), name,  sessionId, player1, player2);
+        this(UUID.randomUUID(), LocalDateTime.now(),  sessionId, name,  player1, player2);
     }
 
 

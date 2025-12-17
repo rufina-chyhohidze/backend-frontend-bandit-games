@@ -6,7 +6,7 @@ import be.kdg.banditgames.gameplay.port.in.gameSession.GameSessionCreatedPort;
 import be.kdg.banditgames.gameplay.port.in.game.LoadGameByNamePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class GeneralGameCreatedEventListener {
         this.findGamePort = findGamePort;
     }
 
-    @ApplicationModuleListener
+    @EventListener
     public void gameCreatedEvent(GenericGameCreatedEvent gameCreatedEvent) {
         log.info("Game Game created: {}", gameCreatedEvent);
 

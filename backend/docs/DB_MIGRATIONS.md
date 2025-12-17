@@ -2,7 +2,7 @@ Database migration helper
 
 What I added:
 
-- `be.kdg.banditgames.config.DatabaseMigrationsRunner` — a Spring `ApplicationRunner` component that runs on startup and ensures the `event_publication.serialized_event` column in the PostgreSQL database is `text` (not `varchar(255)`). It checks the `information_schema.columns` and, if necessary, runs:
+- `be.kdg.banditgames.config` — a Spring `ApplicationRunner` component that runs on startup and ensures the `event_publication.serialized_event` column in the PostgreSQL database is `text` (not `varchar(255)`). It checks the `information_schema.columns` and, if necessary, runs:
 
     ALTER TABLE event_publication ALTER COLUMN serialized_event TYPE text;
 

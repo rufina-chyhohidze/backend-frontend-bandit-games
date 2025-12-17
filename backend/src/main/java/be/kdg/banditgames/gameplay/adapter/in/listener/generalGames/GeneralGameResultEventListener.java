@@ -7,6 +7,7 @@ import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsCommand;
 import be.kdg.banditgames.gameplay.port.in.gameSession.GameResultsPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class GeneralGameResultEventListener {
         this.gameResultsPort = gameResultsPort;
     }
 
-    @ApplicationModuleListener
+    @EventListener
     public void gameResultEvent(GenericGameResultEvent gameResultEvent) {
         log.info("Game result: {}", gameResultEvent);
 

@@ -20,14 +20,23 @@ public class ChessGameEndedEventListener {
     public void onGameEnded(ChessGameEndedEvent event) {
         log.info("ChessGameEndedEvent received: {}", event);
 
-        String gameResult = event.winner() == null
-                ? "DRAW"
-                : event.winner().toUpperCase() + "_WIN";
+        String gameResult;
+
+        if (event.winner() == null) {
+            gameResult = "DRAW";
+        } else {
+            switch (event.winner().toUpperCase()) {
+                case "WHITE" -> gameResult = "A";
+                case "BLACK" -> gameResult = "B";
+                default -> throw new IllegalArgumentException(
+                        "Unknown chess winner: " + event.winner()
+                );
+            }
+        }
 
         publisher.publishGameResult(
                 event.sessionId(),
                 gameResult
         );
     }
-
 }
