@@ -1,7 +1,7 @@
 package be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove;
 
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
-import be.kdg.banditgames.gameplay.port.in.MLRecommendedMoveCommand.GetRecommendedMoveCommand;
+import be.kdg.banditgames.gameplay.port.in.MLRecommendedMove.GetRecommendedMoveCommand;
 import be.kdg.banditgames.gameplay.port.out.MLRecommendedMove.MLRecommendedMoveService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,9 +13,7 @@ public class MLRecommenderMoveAdaptor implements MLRecommendedMoveService {
 
     @Override
     public RecommendedMove getRecommendedMove(GetRecommendedMoveCommand getRecommendedMoveCommand) {
-        String recommenderSystem = "http://localhost:8081/recommenderSystem";
-        String url = recommenderSystem + "/recommend";
-
+        String url = "http://localhost:8082/predict-best-move";
 
         RecommendedMove recommendedMove = restTemplate.postForObject(
                 url,

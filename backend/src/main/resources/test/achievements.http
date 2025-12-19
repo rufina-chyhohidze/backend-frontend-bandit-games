@@ -46,3 +46,7 @@ Accept: application/json
 GET http://localhost:8080/api/player/c653971a-8477-45e9-8129-bb2ffd1616c5/achievements?gameId=f2b3aaf4-6db0-4a94-9d82-123456789abc
 Authorization: Bearer {{access_token}}
 Accept: application/json
+
+###
+
+GET http://localhost:8080/api/games/21c6a122-9049-4e71-8d69-7d5c8fc4601b
