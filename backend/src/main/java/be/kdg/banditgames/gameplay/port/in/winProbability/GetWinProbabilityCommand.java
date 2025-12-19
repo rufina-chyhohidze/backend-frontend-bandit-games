@@ -1,12 +1,12 @@
-package be.kdg.banditgames.gameplay.adapter.in.request;
+package be.kdg.banditgames.gameplay.port.in.winProbability;
 
 import java.util.UUID;
 
-public record MLRecommendedMoveRequest(
+public record GetWinProbabilityCommand(
         UUID sessionId,
         int moveNumber,
         String aiType,
         String gameState,
         String legalMoves
-) {
+){
 }
