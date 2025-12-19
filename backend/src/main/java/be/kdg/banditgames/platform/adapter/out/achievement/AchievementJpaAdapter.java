@@ -4,6 +4,7 @@ import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Achievement;
 import be.kdg.banditgames.platform.port.out.achievement.LoadAchievementsByIdsPort;
 import be.kdg.banditgames.platform.port.out.achievement.LoadAvailableAchievementsPort;
+import be.kdg.banditgames.platform.port.out.achievement.UpdateAchievementsPort;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 @Transactional
-public class AchievementJpaAdapter implements LoadAvailableAchievementsPort, LoadAchievementsByIdsPort {
+public class AchievementJpaAdapter implements LoadAvailableAchievementsPort, LoadAchievementsByIdsPort, UpdateAchievementsPort {
     private final AchievementJpaRepository repo;
 
     public AchievementJpaAdapter(AchievementJpaRepository repo) {
@@ -33,5 +34,10 @@ public class AchievementJpaAdapter implements LoadAvailableAchievementsPort, Loa
                 .stream()
                 .map(AchievementJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void save(Achievement achievement) {
+        repo.save(AchievementJpaMapper.toEntity(achievement));
     }
 }

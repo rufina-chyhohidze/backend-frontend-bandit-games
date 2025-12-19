@@ -9,13 +9,8 @@ public class AchievementJpaMapper {
     }
 
     public static Achievement toDomain(AchievementJpaEntity entity) {
-        return new Achievement(
-                AchievementId.of(entity.getAchievementId()),
-                GameId.of(entity.getGameId()),
-                entity.getName(),
-                entity.getDescription(),
-                entity.getUnlockHint()
-        );
+        return Achievement.rehydrate(entity.toGameId(), entity.getName(), entity.getDescription(), entity.getUnlockHint());
+
     }
 
     public static AchievementJpaEntity toEntity(Achievement achievement) {

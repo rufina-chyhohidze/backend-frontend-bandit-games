@@ -1,5 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in;
 
+import be.kdg.banditgames.common.events.generic.GenericAchievementDto;
 import be.kdg.banditgames.platform.adapter.in.requests.CreateGameRequest;
 import be.kdg.banditgames.platform.adapter.in.response.GameDto;
 import be.kdg.banditgames.platform.domain.Game;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/dev/games")
@@ -22,12 +25,19 @@ public class DevGameSubmissionRestController {
 
     @PostMapping
     public ResponseEntity<GameDto> submitGame(@RequestBody CreateGameRequest request) {
+
+        List<GenericAchievementDto> achievements =
+                request.availableAchievements() == null
+                        ? List.of()
+                        : request.availableAchievements();
+
         GameSubmissionCommand command = new GameSubmissionCommand(
                 request.name(),
                 request.description(),
                 request.rules(),
                 request.pictureUrl(),
-                request.urlGameSession()
+                request.urlGameSession(),
+                achievements
         );
 
         Game game = submitGameToPlatformUseCase.submitGame(command);

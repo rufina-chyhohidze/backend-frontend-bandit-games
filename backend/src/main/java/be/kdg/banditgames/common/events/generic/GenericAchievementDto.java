@@ -1,6 +1,6 @@
 package be.kdg.banditgames.common.events.generic;
 
-public record GenericAchievement(
+public record GenericAchievementDto(
         String code,
         String description
 ) {

@@ -1,9 +1,6 @@
 package be.kdg.banditgames.common.config;
 
-import be.kdg.banditgames.common.events.chess.ChessAchievementAcquiredEvent;
-import be.kdg.banditgames.common.events.chess.ChessGameCreatedEvent;
-import be.kdg.banditgames.common.events.chess.ChessGameEndedEvent;
-import be.kdg.banditgames.common.events.chess.ChessMoveMadeEvent;
+import be.kdg.banditgames.common.events.chess.*;
 import be.kdg.banditgames.common.events.connect4.Connect4GameCreatedEvent;
 import be.kdg.banditgames.common.events.connect4.Connect4MoveMadeEvent;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -63,6 +60,10 @@ public class RabbitMQConfig {
                 Map.entry(
                         "be.kdg.i5.chess.messaging.messages.AchievementAcquiredMessage",
                         ChessAchievementAcquiredEvent.class
+                ),
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.GameRegisteredMessage",
+                        ChessGameRegisteredEvent.class
                 )
         ));
 
