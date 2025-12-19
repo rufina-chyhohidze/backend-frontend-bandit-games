@@ -1,13 +1,8 @@
 package be.kdg.banditgames.platform.adapter.out.ml;
 
-import be.kdg.banditgames.common.shared.PlayerType;
-import be.kdg.banditgames.common.shared.SessionId;
 import be.kdg.banditgames.platform.domain.WinProbabilityProjection;
 import be.kdg.banditgames.platform.port.out.ml.PersistWinProbabilityProjectionPort;
 import org.springframework.stereotype.Repository;
-import be.kdg.banditgames.platform.adapter.out.ml.WinProbabilityProjectionJpaEntity;
-
-import java.util.List;
 
 @Repository
 public class WinProbabilityProjectionAdapter implements PersistWinProbabilityProjectionPort {

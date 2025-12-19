@@ -1,4 +1,4 @@
-package be.kdg.banditgames.gameplay.adapter.out.mlWinProbability;
+package be.kdg.banditgames.common.events.ml;
 
 import java.util.List;
 import java.util.UUID;

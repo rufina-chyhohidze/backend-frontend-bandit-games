@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class WinProbabilityUseCaseImpl implements AddWinProbabilityPort {
+public class WinProbabilityProjectionUseCaseImpl implements AddWinProbabilityPort {
 
     private final PersistWinProbabilityProjectionPort persistWinProbabilityProjectionPort;
 
-    public WinProbabilityUseCaseImpl(PersistWinProbabilityProjectionPort persistWinProbabilityProjectionPort) {
+    public WinProbabilityProjectionUseCaseImpl(PersistWinProbabilityProjectionPort persistWinProbabilityProjectionPort) {
         this.persistWinProbabilityProjectionPort = persistWinProbabilityProjectionPort;
     }
 

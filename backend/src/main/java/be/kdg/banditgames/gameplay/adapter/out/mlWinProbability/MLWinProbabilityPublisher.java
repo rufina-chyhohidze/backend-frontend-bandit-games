@@ -1,6 +1,6 @@
 package be.kdg.banditgames.gameplay.adapter.out.mlWinProbability;
 
-import be.kdg.banditgames.gameplay.domain.WinProbability;
+import be.kdg.banditgames.common.events.ml.MLWinProbabilityEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

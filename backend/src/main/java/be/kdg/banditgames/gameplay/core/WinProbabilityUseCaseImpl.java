@@ -1,6 +1,6 @@
 package be.kdg.banditgames.gameplay.core;
 
-import be.kdg.banditgames.gameplay.adapter.out.mlWinProbability.MLWinProbabilityEvent;
+import be.kdg.banditgames.common.events.ml.MLWinProbabilityEvent;
 import be.kdg.banditgames.gameplay.adapter.out.mlWinProbability.MLWinProbabilityPublisher;
 import be.kdg.banditgames.gameplay.domain.WinProbability;
 import be.kdg.banditgames.gameplay.port.in.winProbability.GetWinProbabilityCommand;

@@ -1,6 +1,6 @@
 package be.kdg.banditgames.gameplay.core;
 
-import be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove.MLRecommendedMoveEvent;
+import be.kdg.banditgames.common.events.ml.MLRecommendedMoveEvent;
 import be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove.MLRecommendedMoveEventPublisher;
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
 import be.kdg.banditgames.gameplay.port.in.MLRecommendedMove.GetRecommendedMoveCommand;

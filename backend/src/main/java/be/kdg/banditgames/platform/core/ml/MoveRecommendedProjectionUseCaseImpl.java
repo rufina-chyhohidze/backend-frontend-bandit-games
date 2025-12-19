@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class MoveRecommendedUseCaseImpl implements AddMoveRecommendedPort {
+public class MoveRecommendedProjectionUseCaseImpl implements AddMoveRecommendedPort {
     private final PersistMoveRecommendedProjectionPort persistMoveRecommendedProjectionPort;
 
-    public MoveRecommendedUseCaseImpl(PersistMoveRecommendedProjectionPort persistMoveRecommendedProjectionPort) {
+    public MoveRecommendedProjectionUseCaseImpl(PersistMoveRecommendedProjectionPort persistMoveRecommendedProjectionPort) {
         this.persistMoveRecommendedProjectionPort = persistMoveRecommendedProjectionPort;
     }
 

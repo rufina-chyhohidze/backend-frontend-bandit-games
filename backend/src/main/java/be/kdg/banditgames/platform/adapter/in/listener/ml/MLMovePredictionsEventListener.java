@@ -1,6 +1,6 @@
 package be.kdg.banditgames.platform.adapter.in.listener.ml;
 
-import be.kdg.banditgames.gameplay.domain.RecommendedMove;
+import be.kdg.banditgames.common.events.ml.MLRecommendedMoveEvent;
 import be.kdg.banditgames.platform.port.in.ml.AddMoveRecommendedPort;
 import be.kdg.banditgames.platform.port.in.ml.CreateMoveRecommendedCommand;
 import org.slf4j.Logger;
@@ -16,10 +16,16 @@ public class MLMovePredictionsEventListener {
     public MLMovePredictionsEventListener(AddMoveRecommendedPort winProbabilityPort) {
         this.winProbabilityPort = winProbabilityPort;
     }
-    //TODO add event and full fill the command
     @ApplicationModuleListener
-    public void createWinProbability(RecommendedMove event){
+    public void createWinProbability(MLRecommendedMoveEvent event){
         logger.info("create win probability in platform");
-        winProbabilityPort.addMoveProbability(new CreateMoveRecommendedCommand(event.));
+        winProbabilityPort.addMoveProbability(new CreateMoveRecommendedCommand(
+                event.sessionId(),
+                event.moveNumber(),
+                event.aiType(),
+                event.gameState(),
+                event.legalMoves(),
+                event.move(),
+                event.confidenceScore()));
     }
 }

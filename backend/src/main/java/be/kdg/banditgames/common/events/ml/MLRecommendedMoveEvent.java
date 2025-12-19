@@ -1,4 +1,4 @@
-package be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove;
+package be.kdg.banditgames.common.events.ml;
 
 import java.util.UUID;
 

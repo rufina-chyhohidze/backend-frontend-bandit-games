@@ -1,5 +1,6 @@
 package be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove;
 
+import be.kdg.banditgames.common.events.ml.MLRecommendedMoveEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
