@@ -141,7 +141,7 @@ export function useLobbyById(lobbyId: string | null) {
         queryKey: ["lobby-by-id", lobbyId],
         queryFn: () => getLobbyById(lobbyId!),
         enabled: !!lobbyId && isAuthenticated(),
-        refetchInterval: 5000, // Reduced to 5 seconds for faster updates
+        refetchInterval: 1000, // Reduced to 5 seconds for faster updates
     });
 }
 
@@ -153,7 +153,7 @@ export function useLobbyByPlayerId() {
         queryKey: ["lobby-by-player"],
         queryFn: () => getLobbyByPlayerId(),
         enabled: isAuthenticated(), // Only run when authenticated
-        refetchInterval: 5000, // Reduced to 5 seconds for faster updates
+        refetchInterval: 1000, // Reduced to 5 seconds for faster updates
         retry: false, // Don't retry on 401 errors
     });
 }
