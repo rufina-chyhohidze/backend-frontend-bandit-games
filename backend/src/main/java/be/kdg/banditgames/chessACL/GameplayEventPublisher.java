@@ -58,11 +58,5 @@ public class GameplayEventPublisher {
         ));
     }
 
-    public void publishAchievementAcquired(String playerId, String achievementId) {
-        publisher.publishEvent(new GenericAchievementEvent(
-                playerId,
-                achievementId
-        ));
-    }
 
 }
