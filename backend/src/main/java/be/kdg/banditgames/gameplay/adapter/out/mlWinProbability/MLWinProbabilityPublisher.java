@@ -13,7 +13,7 @@ public class MLWinProbabilityPublisher {
         this.publisher = publisher;
     }
 
-    public void publish(WinProbability winProbability) {
+    public void publish(MLWinProbabilityEvent winProbability) {
         publisher.publishEvent(winProbability);
     }
 }

@@ -1,5 +1,6 @@
 package be.kdg.banditgames.gameplay.core;
 
+import be.kdg.banditgames.gameplay.adapter.out.mlWinProbability.MLWinProbabilityEvent;
 import be.kdg.banditgames.gameplay.adapter.out.mlWinProbability.MLWinProbabilityPublisher;
 import be.kdg.banditgames.gameplay.domain.WinProbability;
 import be.kdg.banditgames.gameplay.port.in.winProbability.GetWinProbabilityCommand;
@@ -26,7 +27,17 @@ public class WinProbabilityUseCaseImpl implements MLWinProbabilityUseCase {
         WinProbability winProbability =
                 winProbabilityService.getWinProbability(getWinProbabilityCommand);
         
-        winProbabilityPublisher.publish(winProbability);
+        winProbabilityPublisher.publish(new MLWinProbabilityEvent(
+                getWinProbabilityCommand.sessionId(),
+                getWinProbabilityCommand.moveNumber(),
+                getWinProbabilityCommand.aiType(),
+                getWinProbabilityCommand.gameState(),
+                getWinProbabilityCommand.legalMoves(),
+                winProbability.player1WinProbability(),
+                winProbability.player2WinProbability(),
+                winProbability.activePlayerWinProbability(),
+                winProbability.distribution()
+        ));
         return winProbability;
     }
 }

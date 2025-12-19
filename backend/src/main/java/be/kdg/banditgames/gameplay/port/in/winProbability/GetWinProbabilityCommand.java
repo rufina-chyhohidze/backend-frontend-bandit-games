@@ -5,7 +5,7 @@ import java.util.UUID;
 public record GetWinProbabilityCommand(
         UUID sessionId,
         int moveNumber,
-        String AiType,
+        String aiType,
         String gameState,
         String legalMoves
 ){

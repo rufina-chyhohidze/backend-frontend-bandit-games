@@ -1,6 +1,5 @@
 package be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove;
 
-import be.kdg.banditgames.gameplay.domain.RecommendedMove;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ public class MLRecommendedMoveEventPublisher {
         this.publisher = publisher;
     }
 
-    public void publish(RecommendedMove recommendedMove) {
+    public void publish(MLRecommendedMoveEvent recommendedMove) {
         publisher.publishEvent(recommendedMove);
     }
 }

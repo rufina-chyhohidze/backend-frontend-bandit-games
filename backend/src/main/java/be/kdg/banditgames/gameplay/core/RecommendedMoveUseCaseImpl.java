@@ -1,5 +1,6 @@
 package be.kdg.banditgames.gameplay.core;
 
+import be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove.MLRecommendedMoveEvent;
 import be.kdg.banditgames.gameplay.adapter.out.mlRecommendedMove.MLRecommendedMoveEventPublisher;
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
 import be.kdg.banditgames.gameplay.port.in.MLRecommendedMove.GetRecommendedMoveCommand;
@@ -26,7 +27,15 @@ public class RecommendedMoveUseCaseImpl implements MLRecommendedMoveUseCase {
         RecommendedMove recommendedMove =
                 recommendedMoveService.getRecommendedMove(command);
 
-        eventPublisher.publish(recommendedMove);
+        eventPublisher.publish(new MLRecommendedMoveEvent(
+                command.sessionId(),
+                command.moveNumber(),
+                command.aiType(),
+                command.gameState(),
+                command.legalMoves(),
+                recommendedMove.move(),
+                recommendedMove.confidenceScore()
+        ));
 
         return recommendedMove;
     }
