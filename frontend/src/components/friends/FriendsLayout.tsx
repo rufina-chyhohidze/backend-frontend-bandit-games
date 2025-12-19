@@ -59,15 +59,15 @@ export function FriendsLayout(props: Props) {
     const pageBg = "linear-gradient(135deg, #101a2a 0%, #2a1422 45%, #0e0f1a 100%)";
 
     const shellSx = {
-        width: { xs: "96vw", md: 1120 },
-        maxWidth: "96vw",
+        width: "100%",
+        maxWidth: { xs: "96vw", md: 900 },
         borderRadius: 4,
-        p: { xs: 1.5, md: 2 },
+        p: { xs: 1.75, md: 2.5 },
         bgcolor: "rgba(10, 14, 28, 0.84)",
         border: "1px solid rgba(255,255,255,0.08)",
         boxShadow: "0 22px 70px rgba(0,0,0,0.7)",
         backdropFilter: "blur(10px)",
-    };
+    } as const;
 
     return (
         <Box
@@ -82,19 +82,24 @@ export function FriendsLayout(props: Props) {
             }}
         >
             <Box sx={shellSx}>
-                {/* Header */}
                 <Stack
                     direction={{ xs: "column", sm: "row" }}
                     spacing={1.25}
                     alignItems={{ xs: "flex-start", sm: "center" }}
                     justifyContent="space-between"
-                    sx={{ mb: 1.75 }}
+                    sx={{ mb: 2.25 }}
                 >
                     <Box>
-                        <Typography variant="h5" sx={{ fontWeight: 900, color: "#fff" }}>
+                        <Typography
+                            variant="h5"
+                            sx={{ fontWeight: 900, color: "#fff" }}
+                        >
                             Friends
                         </Typography>
-                        <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.72)" }}>
+                        <Typography
+                            variant="caption"
+                            sx={{ color: "rgba(255,255,255,0.72)" }}
+                        >
                             Friends • Requests • Invites
                         </Typography>
                     </Box>
@@ -121,8 +126,38 @@ export function FriendsLayout(props: Props) {
                     </Stack>
                 </Stack>
 
-                <Grid container spacing={1.5}>
-                    <Grid item xs={12} md={7}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        mb: 3,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: { xs: "100%", sm: "80%", md: "70%" },
+                        }}
+                    >
+                        <SearchPlayersPanel
+                            searchQuery={props.searchQuery}
+                            setSearchQuery={props.setSearchQuery}
+                            submittedQuery={props.submittedQuery}
+                            onSubmit={props.onSearchSubmit}
+                            loading={props.searchLoading}
+                            results={props.searchResults}
+                            onAdd={props.onSendFriendRequest}
+                            addPending={props.sendReqPending}
+                        />
+                    </Box>
+                </Box>
+
+                <Grid
+                    container
+                    spacing={2.5}
+                    alignItems="stretch"
+                >
+                    {/* Friends list */}
+                    <Grid item xs={12} md={6}>
                         <FriendsPanel
                             friends={props.friends}
                             loading={props.loadingFriends}
@@ -133,43 +168,34 @@ export function FriendsLayout(props: Props) {
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={5}>
-                        <Stack spacing={1.5}>
-                            <GameInvitesPanel
-                                loading={props.loadingGameInvites}
-                                invites={props.pendingGameInvites}
-                                guessFromName={props.guessFromName}
-                                normalizeInvitationId={props.normalizeInvitationId}
-                                normalizeFromPlayerId={props.normalizeFromPlayerId}
-                                normalizeLobbyId={props.normalizeLobbyId}
-                                onAccept={props.onAcceptGameInvite}
-                                onReject={props.onRejectGameInvite}
-                                acceptPending={props.acceptInvitePending}
-                                rejectPending={props.rejectInvitePending}
-                            />
+                    <Grid item xs={12} md={6}>
+                        <GameInvitesPanel
+                            loading={props.loadingGameInvites}
+                            invites={props.pendingGameInvites}
+                            guessFromName={props.guessFromName}
+                            normalizeInvitationId={props.normalizeInvitationId}
+                            normalizeFromPlayerId={props.normalizeFromPlayerId}
+                            normalizeLobbyId={props.normalizeLobbyId}
+                            onAccept={props.onAcceptGameInvite}
+                            onReject={props.onRejectGameInvite}
+                            acceptPending={props.acceptInvitePending}
+                            rejectPending={props.rejectInvitePending}
+                        />
+                    </Grid>
 
-                            <FriendRequestsPanel
-                                loading={props.loadingPending}
-                                requests={props.pendingRequests}
-                                onAccept={props.onAcceptFriendRequest}
-                                onReject={props.onRejectFriendRequest}
-                                acceptPending={props.acceptReqPending}
-                                rejectPending={props.rejectReqPending}
-                            />
+                    <Grid item xs={12} md={6}>
+                        <FriendRequestsPanel
+                            loading={props.loadingPending}
+                            requests={props.pendingRequests}
+                            onAccept={props.onAcceptFriendRequest}
+                            onReject={props.onRejectFriendRequest}
+                            acceptPending={props.acceptReqPending}
+                            rejectPending={props.rejectReqPending}
+                        />
+                    </Grid>
 
-                            <SentRequestsPanel sentRequests={props.sentRequests} />
-
-                            <SearchPlayersPanel
-                                searchQuery={props.searchQuery}
-                                setSearchQuery={props.setSearchQuery}
-                                submittedQuery={props.submittedQuery}
-                                onSubmit={props.onSearchSubmit}
-                                loading={props.searchLoading}
-                                results={props.searchResults}
-                                onAdd={props.onSendFriendRequest}
-                                addPending={props.sendReqPending}
-                            />
-                        </Stack>
+                    <Grid item xs={12} md={6}>
+                        <SentRequestsPanel sentRequests={props.sentRequests} />
                     </Grid>
                 </Grid>
             </Box>
