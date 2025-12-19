@@ -1,8 +1,8 @@
-package be.kdg.banditgames.gameplay.adapter.in.request;
+package be.kdg.banditgames.gameplay.port.in.MLRecommendedMove;
 
 import java.util.UUID;
 
-public record MLRecommendedMoveRequest(
+public record GetRecommendedMoveCommand(
         UUID sessionId,
         int moveNumber,
         String aiType,
