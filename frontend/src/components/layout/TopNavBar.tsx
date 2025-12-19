@@ -15,7 +15,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useContext, useState } from "react";
 import SecurityContext from "../../context/SecurityContext";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 
 const FONT_FAMILY =
     '"Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
@@ -24,6 +25,7 @@ export function TopNavBar() {
     const { isAuthenticated, loggedInUser, login, logout } =
         useContext(SecurityContext);
     const navigate = useNavigate();
+    const location = useLocation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -32,8 +34,6 @@ export function TopNavBar() {
 
     const isMdUp = useMediaQuery("(min-width:960px)");
 
-
-
     const handleNavClick = (path: string) => {
         setMobileNavOpen(false);
         navigate(path);
@@ -41,7 +41,7 @@ export function TopNavBar() {
 
     const handleBrandClick = () => {
         setMobileNavOpen(false);
-        navigate("/");
+        navigate("/public");
     };
 
     const handleUserClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -141,8 +141,15 @@ export function TopNavBar() {
                                 "radial-gradient(circle at 0% 0%, #6366f1, transparent 60%), " +
                                 "radial-gradient(circle at 100% 100%, #22c55e, transparent 60%)",
                             boxShadow: "0 0 16px rgba(129,140,248,0.7)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            color: "#fff",
                         }}
-                    />
+                    >
+                        <SportsEsportsRoundedIcon sx={{ fontSize: 18 }} />
+                    </Box>
+
                     <Typography
                         variant="h6"
                         sx={{
@@ -156,7 +163,6 @@ export function TopNavBar() {
                     </Typography>
                 </Box>
 
-                {/* Desktop nav links */}
                 {isAuthenticated() && isMdUp && (
                     <Box
                         sx={{
@@ -210,16 +216,6 @@ export function TopNavBar() {
                                     Friends
                                 </Button>
 
-                                {/*<Button*/}
-                                {/*    disabled*/}
-                                {/*    sx={{*/}
-                                {/*        ...commonButtonSx,*/}
-                                {/*        color: "#64748b",*/}
-                                {/*    }}*/}
-                                {/*>*/}
-                                {/*    Achievements*/}
-                                {/*</Button>*/}
-
                                 <Button
                                     onClick={() => handleNavClick("/lobby")}
                                     sx={{
@@ -234,13 +230,10 @@ export function TopNavBar() {
                     </Box>
                 )}
 
-                {/* Spacer when nav hidden */}
                 {(!isAuthenticated() || !isMdUp) && (
                     <Box sx={{ flexGrow: 1 }} />
                 )}
 
-
-                {/* User section OR Login */}
                 {isAuthenticated() ? (
                     <Box
                         sx={{
@@ -273,7 +266,8 @@ export function TopNavBar() {
                                     width: 30,
                                     height: 30,
                                     fontSize: 13,
-                                    bgcolor: "linear-gradient(135deg,#6366f1,#22c55e)",
+                                    bgcolor:
+                                        "linear-gradient(135deg,#6366f1,#22c55e)",
                                 }}
                             >
                                 {initials}
@@ -311,7 +305,6 @@ export function TopNavBar() {
                             </MenuItem>
                         </Menu>
 
-                        {/* Mobile nav toggle */}
                         {!isMdUp && (
                             <IconButton
                                 sx={{ color: "#e5e7eb", ml: 1 }}
@@ -319,11 +312,7 @@ export function TopNavBar() {
                                     setMobileNavOpen((prev) => !prev)
                                 }
                             >
-                                {mobileNavOpen ? (
-                                    <CloseIcon />
-                                ) : (
-                                    <MenuIcon />
-                                )}
+                                {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
                             </IconButton>
                         )}
                     </Box>
@@ -363,7 +352,6 @@ export function TopNavBar() {
                 )}
             </Toolbar>
 
-            {/* Mobile dropdown nav */}
             {!isMdUp && mobileNavOpen && isAuthenticated() && (
                 <Box
                     sx={{
@@ -376,7 +364,6 @@ export function TopNavBar() {
                         borderTop: "1px solid rgba(148,163,184,0.3)",
                     }}
                 >
-
                     {isAdmin ? (
                         <Button
                             onClick={() => handleNavClick("/admin")}
@@ -422,16 +409,6 @@ export function TopNavBar() {
                             >
                                 Friends
                             </Button>
-                            {/*<Button*/}
-                            {/*    disabled*/}
-                            {/*    sx={{*/}
-                            {/*        ...commonButtonSx,*/}
-                            {/*        justifyContent: "flex-start",*/}
-                            {/*        color: "#64748b",*/}
-                            {/*    }}*/}
-                            {/*>*/}
-                            {/*    Achievements*/}
-                            {/*</Button>*/}
                             <Button
                                 onClick={() => handleNavClick("/lobby")}
                                 sx={{
