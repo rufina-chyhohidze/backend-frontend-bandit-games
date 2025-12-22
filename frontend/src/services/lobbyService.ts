@@ -107,7 +107,7 @@ export async function fetchOpenLobbies(): Promise<LobbyDto[]> {
 
 export const chooseAiOpponent = async (
     lobbyId: string,
-    difficulty: "EASY" | "MEDIUM" | "HARD"
+    difficulty: "EASY" | "MEDIUM" | "HARD" | "ML"
 ): Promise<void> => {
     await axios.post(`${LOBBY_API_URL}/${lobbyId}/choose-ai`, null, {
         params: { difficulty },

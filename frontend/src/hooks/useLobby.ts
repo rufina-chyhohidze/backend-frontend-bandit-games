@@ -196,7 +196,7 @@ export function useOpenLobbies() {
 export function useChooseAiOpponent() {
     const queryClient = useQueryClient();
 
-    return useMutation<void, unknown, { lobbyId: string; difficulty: "EASY" | "MEDIUM" | "HARD" }>({
+    return useMutation<void, unknown, { lobbyId: string; difficulty: "EASY" | "MEDIUM" | "HARD" | "ML" }>({
         mutationFn: ({ lobbyId, difficulty }) => chooseAiOpponent(lobbyId, difficulty),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lobby-by-player"] });

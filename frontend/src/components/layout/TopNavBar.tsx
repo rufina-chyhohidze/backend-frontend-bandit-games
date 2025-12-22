@@ -175,15 +175,26 @@ export function TopNavBar() {
                         }}
                     >
                         {isAdmin ? (
-                            <Button
-                                onClick={() => handleNavClick("/admin")}
-                                sx={{
-                                    ...commonButtonSx,
-                                    ...activeStyle("/admin"),
-                                }}
-                            >
-                                Admin
-                            </Button>
+                            <>
+                                <Button
+                                    onClick={() => handleNavClick("/admin")}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/admin"),
+                                    }}
+                                >
+                                    Admin
+                                </Button>
+                                <Button
+                                    onClick={() => handleNavClick("/admin/game-analysis")}
+                                    sx={{
+                                        ...commonButtonSx,
+                                        ...activeStyle("/admin/game-analysis"),
+                                    }}
+                                >
+                                    Game Analysis
+                                </Button>
+                            </>
                         ) : (
                             <>
                                 <Button
