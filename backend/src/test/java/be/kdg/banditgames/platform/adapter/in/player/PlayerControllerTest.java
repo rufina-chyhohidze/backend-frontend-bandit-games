@@ -5,12 +5,13 @@ import be.kdg.banditgames.platform.adapter.in.PlayerController;
 import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.in.game.PlayableGameResult;
 import be.kdg.banditgames.platform.port.in.player.*;
+import be.kdg.banditgames.platform.port.in.achievement.AwardAchievementUseCase;
+import be.kdg.banditgames.platform.port.in.achievement.ListUnlockedAchievementsUseCase; // Added import
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,31 +26,34 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PlayerController.class)
-@Import(PlayerControllerTest.MockConfig.class)
 class PlayerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private PlayerCreationUseCase playerCreationUseCase;
-    @Autowired
+
+    @MockitoBean
     private FindPlayerPort findPlayerPort;
-    @Autowired
+
+    @MockitoBean
     private AddFavoriteGameUseCase addFavoriteGameUseCase;
-    @Autowired
+
+    @MockitoBean
     private RemoveFavoriteGameUseCase removeFavoriteGameUseCase;
-    @Autowired
+
+    @MockitoBean
     private ListFavoriteGamesUseCase listFavoriteGamesUseCase;
 
-    @TestConfiguration
-    static class MockConfig {
-        @Bean PlayerCreationUseCase playerCreationUseCase() { return mock(PlayerCreationUseCase.class); }
-        @Bean FindPlayerPort findPlayerPort() { return mock(FindPlayerPort.class); }
-        @Bean AddFavoriteGameUseCase addFavoriteGameUseCase() { return mock(AddFavoriteGameUseCase.class); }
-        @Bean RemoveFavoriteGameUseCase removeFavoriteGameUseCase() { return mock(RemoveFavoriteGameUseCase.class); }
-        @Bean ListFavoriteGamesUseCase listFavoriteGamesUseCase() { return mock(ListFavoriteGamesUseCase.class); }
-    }
+    @MockitoBean
+    private AwardAchievementUseCase awardAchievementUseCase;
+
+    @MockitoBean
+    private ListUnlockedAchievementsUseCase listUnlockedAchievementsUseCase; // FIX: Added missing dependency
+
+    @MockitoBean
+    private JwtDecoder jwtDecoder; // Required for @WebMvcTest with OAuth2
 
     private Player dummyPlayer(UUID id) {
         Player player = mock(Player.class);

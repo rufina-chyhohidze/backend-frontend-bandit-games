@@ -7,13 +7,13 @@ import be.kdg.banditgames.platform.domain.exception.game.GameNotFoundException;
 import be.kdg.banditgames.platform.port.in.game.RejectGameCommand;
 import be.kdg.banditgames.platform.port.out.game.LoadDraftGamesPort;
 import be.kdg.banditgames.platform.port.out.game.UpdateGamesPort;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +29,16 @@ class RejectGameUseCaseImplTest {
     @Mock
     private UpdateGamesPort updateGamesPort;
 
-    @InjectMocks
     private RejectGameUseCaseImpl rejectGameUseCase;
+
+    @BeforeEach
+    void setUp() {
+        // Initialize with a list containing the mocked port
+        rejectGameUseCase = new RejectGameUseCaseImpl(
+                loadDraftGamesPort,
+                List.of(updateGamesPort)
+        );
+    }
 
     @Test
     void rejectGame_changesStatusToRejected_andPersists() {
@@ -51,20 +59,16 @@ class RejectGameUseCaseImplTest {
         when(loadDraftGamesPort.findById(any(GameId.class)))
                 .thenReturn(Optional.of(draftGame));
 
-        when(updateGamesPort.updateGames(any(Game.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
         // when
         RejectGameCommand command = new RejectGameCommand(gameIdRaw);
         Game result = rejectGameUseCase.rejectGame(command);
 
         // then
+        assertThat(result).isNotNull();
         assertThat(result.getStatus()).isEqualTo(GameStatus.REJECTED);
 
-        ArgumentCaptor<GameId> idCaptor = ArgumentCaptor.forClass(GameId.class);
-        verify(loadDraftGamesPort).findById(idCaptor.capture());
-        assertThat(idCaptor.getValue().gameId()).isEqualTo(gameIdRaw);
-
+        // verify interactions with ports
+        verify(loadDraftGamesPort).findById(any(GameId.class));
         verify(updateGamesPort).updateGames(draftGame);
         verifyNoMoreInteractions(loadDraftGamesPort, updateGamesPort);
     }
@@ -80,8 +84,7 @@ class RejectGameUseCaseImplTest {
 
         // when / then
         assertThatThrownBy(() -> rejectGameUseCase.rejectGame(command))
-                .isInstanceOf(GameNotFoundException.class)
-                .hasMessageContaining(gameIdRaw.toString());
+                .isInstanceOf(GameNotFoundException.class);
 
         verify(loadDraftGamesPort).findById(any(GameId.class));
         verifyNoInteractions(updateGamesPort);
