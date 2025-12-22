@@ -30,12 +30,19 @@ public class MoveMadeImpl implements MoveMadePort {
         logger.info("Processing move for session: {}, player: {}, move: {}",
                 moveMadeCommand.sessionId(), moveMadeCommand.playerSide(), moveMadeCommand.moveNumber());
 
-        GameState gameState = GameState.createNew(
+        GameState gameState = GameState.createNewWithAiMetadata(
                 moveMadeCommand.playerType(),
                 moveMadeCommand.playerSide(),
                 moveMadeCommand.moveNumber(),
                 moveMadeCommand.serializedBoard(),
-                moveMadeCommand.serializedLegalMoves());
+                moveMadeCommand.serializedLegalMoves(),
+                moveMadeCommand.actualMove(),
+                moveMadeCommand.aiHardRecommendedMove(),
+                moveMadeCommand.aiHardConfidence(),
+                moveMadeCommand.aiHardWinProbability(),
+                moveMadeCommand.aiMlRecommendedMove(),
+                moveMadeCommand.aiMlConfidence(),
+                moveMadeCommand.aiMlWinProbability());
 
         GameSession gameSession = loadGameSessionPort.loadGameSessionById(SessionId.of(moveMadeCommand.sessionId())).orElseThrow(() -> new GameSesssionNotFound("Game session not found: " +  SessionId.of(moveMadeCommand.sessionId())));
 

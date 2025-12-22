@@ -71,6 +71,31 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
                 aiMetadata = pending.get().getMetadata();
             }
         }
+
+        if (gameState.getActualMove() != null ||
+            gameState.getAiHardRecommendedMove() != null ||
+            gameState.getAiMlRecommendedMove() != null) {
+            if (aiMetadata == null) {
+                aiMetadata = new AiMetadataEmbedded(
+                        gameState.getActualMove(),
+                        gameState.getAiHardRecommendedMove(),
+                        gameState.getAiHardConfidence(),
+                        gameState.getAiHardWinProbability(),
+                        gameState.getAiMlRecommendedMove(),
+                        gameState.getAiMlConfidence(),
+                        gameState.getAiMlWinProbability()
+                );
+            } else {
+                aiMetadata.setActualMove(gameState.getActualMove());
+                aiMetadata.setAiHardRecommendedMove(gameState.getAiHardRecommendedMove());
+                aiMetadata.setAiHardConfidence(gameState.getAiHardConfidence());
+                aiMetadata.setAiHardWinProbability(gameState.getAiHardWinProbability());
+                aiMetadata.setAiMlRecommendedMove(gameState.getAiMlRecommendedMove());
+                aiMetadata.setAiMlConfidence(gameState.getAiMlConfidence());
+                aiMetadata.setAiMlWinProbability(gameState.getAiMlWinProbability());
+            }
+        }
+
         GameStateMongoEmbedded embedded = GameSessionMongoMapper.toEmbeddedState(gameState, aiMetadata);
 
         Update update = new Update().push("game_states", embedded);
