@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import be.kdg.banditgames.common.shared.PlayerType;
 
 @Service
 public class AiAgentMoveAdaptor implements AiAgentMoveService {
@@ -20,7 +21,13 @@ public class AiAgentMoveAdaptor implements AiAgentMoveService {
     }
     @Override
     public AiMoveMetadata getAiAgentMove(AiRequestCommand aiRequest) {
-        String aiApiUrl = "http://localhost:8081/ai";
+        String aiApiUrl;
+        if (aiRequest.playerType() == PlayerType.AI_ML) {
+            aiApiUrl = "http://localhost:8082/ai";
+        } else {
+           aiApiUrl = "http://localhost:8081/ai";
+        }
+
         String url = aiApiUrl + "/aiMove";
 
         logger.info("Calling AI service: sessionId={}, moveNumber={}, difficulty={}",

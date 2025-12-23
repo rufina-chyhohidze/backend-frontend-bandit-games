@@ -81,3 +81,15 @@ CREATE TABLE IF NOT EXISTS friendships (
                                            CONSTRAINT fk_friendship_player_a FOREIGN KEY (player_a_id) REFERENCES players(id) ON DELETE CASCADE,
                                            CONSTRAINT fk_friendship_player_b FOREIGN KEY (player_b_id) REFERENCES players(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS event_publication (
+                                                 id UUID NOT NULL,
+                                                 listener_id VARCHAR(512) NOT NULL,
+                                                 event_type VARCHAR(512) NOT NULL,
+                                                 serialized_event TEXT NOT NULL,
+                                                 publication_date TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+                                                 completion_date TIMESTAMP(6) WITH TIME ZONE,
+                                                 PRIMARY KEY (id)
+);
+
+-- DROP TABLE event_publication;
