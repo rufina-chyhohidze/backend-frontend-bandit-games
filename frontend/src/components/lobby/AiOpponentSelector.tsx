@@ -5,7 +5,7 @@ import type { LobbyDto } from "../../models/lobby";
 interface AiOpponentSelectorProps {
     lobby: LobbyDto;
     isHost: boolean;
-    onChooseAi: (difficulty: "EASY" | "MEDIUM" | "HARD") => void;
+    onChooseAi: (difficulty: "EASY" | "MEDIUM" | "HARD" | "ML") => void;
     isChoosing: boolean;
 }
 
@@ -16,7 +16,8 @@ export function AiOpponentSelector({ lobby, isHost, onChooseAi, isChoosing }: Ai
     const isAiGuest =
         lobby.guestType === "AI_EASY" ||
         lobby.guestType === "AI_MEDIUM" ||
-        lobby.guestType === "AI_HARD";
+        lobby.guestType === "AI_HARD" ||
+        lobby.guestType === "AI_ML";
 
     const currentDifficulty =
         lobby.guestType === "AI_EASY"
@@ -25,7 +26,9 @@ export function AiOpponentSelector({ lobby, isHost, onChooseAi, isChoosing }: Ai
                 ? "MEDIUM"
                 : lobby.guestType === "AI_HARD"
                     ? "HARD"
-                    : null;
+                    : lobby.guestType === "AI_ML"
+                        ? "ML"
+                        : null;
 
     return (
         <Box
@@ -58,7 +61,7 @@ export function AiOpponentSelector({ lobby, isHost, onChooseAi, isChoosing }: Ai
                         <ToggleButtonGroup
                             exclusive
                             value={currentDifficulty}
-                            onChange={(_, value: "EASY" | "MEDIUM" | "HARD" | null) => {
+                            onChange={(_, value: "EASY" | "MEDIUM" | "HARD" | "ML" | null) => {
                                 if (!value || isChoosing) return;
                                 onChooseAi(value);
                             }}
@@ -79,6 +82,7 @@ export function AiOpponentSelector({ lobby, isHost, onChooseAi, isChoosing }: Ai
                             <ToggleButton value="EASY">Easy</ToggleButton>
                             <ToggleButton value="MEDIUM">Medium</ToggleButton>
                             <ToggleButton value="HARD">Hard</ToggleButton>
+                            <ToggleButton value="ML">ML</ToggleButton>
                         </ToggleButtonGroup>
 
                         {isChoosing && (

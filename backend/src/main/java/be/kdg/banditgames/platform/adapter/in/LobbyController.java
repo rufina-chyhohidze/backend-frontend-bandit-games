@@ -150,6 +150,7 @@ public class LobbyController {
             case "EASY" -> PlayerType.AI_EASY;
             case "MEDIUM" -> PlayerType.AI_MEDIUM;
             case "HARD" -> PlayerType.AI_HARD;
+            case "ML" -> PlayerType.AI_ML;
             default -> throw new IllegalArgumentException("Unknown AI difficulty: " + difficulty);
         };
 

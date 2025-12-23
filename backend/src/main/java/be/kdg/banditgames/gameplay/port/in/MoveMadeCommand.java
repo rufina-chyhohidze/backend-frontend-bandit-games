@@ -14,5 +14,12 @@ public record MoveMadeCommand(
         PlayerSide playerSide,
         int moveNumber,
         String serializedBoard,
-        String serializedLegalMoves) {
+        String serializedLegalMoves,
+        Integer actualMove,
+        Integer aiHardRecommendedMove,
+        Double aiHardConfidence,
+        Double aiHardWinProbability,
+        Integer aiMlRecommendedMove,
+        Double aiMlConfidence,
+        Double aiMlWinProbability) {
 }

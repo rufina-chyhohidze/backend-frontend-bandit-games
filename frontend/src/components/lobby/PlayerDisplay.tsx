@@ -12,7 +12,7 @@ interface PlayerDisplayProps {
 export function PlayerDisplay({ playerId, playerType, isHost, isYou }: PlayerDisplayProps) {
     const isAi =
         !!playerType &&
-        (playerType === "AI_EASY" || playerType === "AI_MEDIUM" || playerType === "AI_HARD");
+        (playerType === "AI_EASY" || playerType === "AI_MEDIUM" || playerType === "AI_HARD" || playerType === "AI_ML");
 
     const { data: player } = usePlayerById(playerId && !isAi ? playerId : null);
 
@@ -22,7 +22,9 @@ export function PlayerDisplay({ playerId, playerType, isHost, isYou }: PlayerDis
                 ? "AI (Easy)"
                 : playerType === "AI_MEDIUM"
                     ? "AI (Medium)"
-                    : "AI (Hard)";
+                    : playerType === "AI_HARD"
+                        ? "AI (Hard)"
+                        : "AI (ML)";
 
         return (
             <Stack alignItems="center" spacing={1} sx={{ width: 100 }}>

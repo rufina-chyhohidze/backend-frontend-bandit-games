@@ -15,26 +15,65 @@ public class GameState {
     private final String board;
     private final String legalMoves;
 
+    private final Integer actualMove;
+    private final Integer aiHardRecommendedMove;
+    private final Double aiHardConfidence;
+    private final Double aiHardWinProbability;
+    private final Integer aiMlRecommendedMove;
+    private final Double aiMlConfidence;
+    private final Double aiMlWinProbability;
+
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     private GameState(PlayerType playerType,
                       PlayerSide playerSide,
                       int moveNumber,
                       String board,
-                      String legalMoves) {
+                      String legalMoves,
+                      Integer actualMove,
+                      Integer aiHardRecommendedMove,
+                      Double aiHardConfidence,
+                      Double aiHardWinProbability,
+                      Integer aiMlRecommendedMove,
+                      Double aiMlConfidence,
+                      Double aiMlWinProbability) {
         this.timestamp = LocalDateTime.now();
         this.playerType = playerType;
         this.playerSide = playerSide;
         this.moveNumber = moveNumber;
         this.board = board;
         this.legalMoves = legalMoves;
+        this.actualMove = actualMove;
+        this.aiHardRecommendedMove = aiHardRecommendedMove;
+        this.aiHardConfidence = aiHardConfidence;
+        this.aiHardWinProbability = aiHardWinProbability;
+        this.aiMlRecommendedMove = aiMlRecommendedMove;
+        this.aiMlConfidence = aiMlConfidence;
+        this.aiMlWinProbability = aiMlWinProbability;
     }
 
     public static GameState createNew(PlayerType playerType,
                                       PlayerSide playerSide,
                                       int moveNumber,
                                       String board, String legalMoves) {
-        return new GameState(playerType, playerSide, moveNumber, board,legalMoves);
+        return new GameState(playerType, playerSide, moveNumber, board, legalMoves, null, null, null, null, null, null, null);
+    }
+
+    public static GameState createNewWithAiMetadata(PlayerType playerType,
+                                                     PlayerSide playerSide,
+                                                     int moveNumber,
+                                                     String board,
+                                                     String legalMoves,
+                                                     Integer actualMove,
+                                                     Integer aiHardRecommendedMove,
+                                                     Double aiHardConfidence,
+                                                     Double aiHardWinProbability,
+                                                     Integer aiMlRecommendedMove,
+                                                     Double aiMlConfidence,
+                                                     Double aiMlWinProbability) {
+        return new GameState(playerType, playerSide, moveNumber, board, legalMoves,
+                            actualMove, aiHardRecommendedMove, aiHardConfidence, aiHardWinProbability,
+                            aiMlRecommendedMove, aiMlConfidence, aiMlWinProbability);
     }
 
     public List<DomainEvent> getDomainEvents() { return domainEvents; }
@@ -46,4 +85,12 @@ public class GameState {
     public PlayerSide getPlayerSide() { return playerSide; }
     public int getMoveNumber() { return moveNumber; }
     public String getBoard() { return board; }
+
+    public Integer getActualMove() { return actualMove; }
+    public Integer getAiHardRecommendedMove() { return aiHardRecommendedMove; }
+    public Double getAiHardConfidence() { return aiHardConfidence; }
+    public Double getAiHardWinProbability() { return aiHardWinProbability; }
+    public Integer getAiMlRecommendedMove() { return aiMlRecommendedMove; }
+    public Double getAiMlConfidence() { return aiMlConfidence; }
+    public Double getAiMlWinProbability() { return aiMlWinProbability; }
 }

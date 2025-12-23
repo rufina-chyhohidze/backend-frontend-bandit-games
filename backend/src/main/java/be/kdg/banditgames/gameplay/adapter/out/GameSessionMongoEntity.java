@@ -39,7 +39,7 @@ public class GameSessionMongoEntity {
     @Field("end_time")
     private LocalDateTime endTime;
 
-    @Field("winner_id")
+    @Field("game_result")
     private GameResult gameResult;
 
     // Embedded move snapshots with AI annotations

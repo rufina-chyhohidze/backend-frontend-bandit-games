@@ -19,7 +19,14 @@ public record Connect4MoveMadeEvent(
         PlayerSide playerSide,
         int moveNumber,
         String serializedBoard,
-        String serializedLegalMoves
+        String serializedLegalMoves,
+        Integer actualMove,
+        Integer aiHardRecommendedMove,
+        Double aiHardConfidence,
+        Double aiHardWinProbability,
+        Integer aiMlRecommendedMove,
+        Double aiMlConfidence,
+        Double aiMlWinProbability
 ) implements DomainEvent {
 
     @JsonCreator
@@ -29,7 +36,14 @@ public record Connect4MoveMadeEvent(
             @JsonProperty("playerSide") PlayerSide playerSide,
             @JsonProperty("moveNumber") int moveNumber,
             @JsonProperty("serializedBoard") String serializedBoard,
-            @JsonProperty("serializedLegalMoves") String serializedLegalMoves
+            @JsonProperty("serializedLegalMoves") String serializedLegalMoves,
+            @JsonProperty("actualMove") Integer actualMove,
+            @JsonProperty("aiHardRecommendedMove") Integer aiHardRecommendedMove,
+            @JsonProperty("aiHardConfidence") Double aiHardConfidence,
+            @JsonProperty("aiHardWinProbability") Double aiHardWinProbability,
+            @JsonProperty("aiMlRecommendedMove") Integer aiMlRecommendedMove,
+            @JsonProperty("aiMlConfidence") Double aiMlConfidence,
+            @JsonProperty("aiMlWinProbability") Double aiMlWinProbability
     ) {
         this(UUID.randomUUID(),
                 LocalDateTime.now(),
@@ -38,7 +52,14 @@ public record Connect4MoveMadeEvent(
                 playerSide,
                 moveNumber,
                 serializedBoard,
-                serializedLegalMoves);
+                serializedLegalMoves,
+                actualMove,
+                aiHardRecommendedMove,
+                aiHardConfidence,
+                aiHardWinProbability,
+                aiMlRecommendedMove,
+                aiMlConfidence,
+                aiMlWinProbability);
     }
 
 

@@ -32,7 +32,15 @@ public class GeneralMoveMadeEventListener {
                 event.playerSide(),
                 event.moveNumber(),
                 event.serializedBoard(),
-                event.serializedLegalMoves()));
+                event.serializedLegalMoves(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
     }
     
     
