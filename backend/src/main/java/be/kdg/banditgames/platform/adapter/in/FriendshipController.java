@@ -11,12 +11,13 @@ import be.kdg.banditgames.platform.domain.Player;
 import be.kdg.banditgames.platform.port.in.friendship.FindFriendshipPort;
 import be.kdg.banditgames.platform.port.in.friendship.ManagingFriendshipUseCase;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@PreAuthorize("hasAuthority('player')")
 @RestController
 @RequestMapping("/api/friendships")
 public class FriendshipController {

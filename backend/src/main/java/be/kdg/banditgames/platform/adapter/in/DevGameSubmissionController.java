@@ -16,10 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/dev/games")
-public class DevGameSubmissionRestController {
+public class DevGameSubmissionController {
     private final SubmitGameToPlatformUseCase submitGameToPlatformUseCase;
 
-    public DevGameSubmissionRestController(SubmitGameToPlatformUseCase submitGameToPlatformUseCase) {
+    public DevGameSubmissionController(SubmitGameToPlatformUseCase submitGameToPlatformUseCase) {
         this.submitGameToPlatformUseCase = submitGameToPlatformUseCase;
     }
 
