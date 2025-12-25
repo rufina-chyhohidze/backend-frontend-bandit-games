@@ -81,3 +81,6 @@ CREATE TABLE IF NOT EXISTS friendships (
                                            CONSTRAINT fk_friendship_player_a FOREIGN KEY (player_a_id) REFERENCES players(id) ON DELETE CASCADE,
                                            CONSTRAINT fk_friendship_player_b FOREIGN KEY (player_b_id) REFERENCES players(id) ON DELETE CASCADE
 );
+
+ALTER TABLE event_publication
+    ALTER COLUMN serialized_event TYPE TEXT;
