@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/api/games",
                                 "/api/dev/games",
-                                "/api/gameplay/ai-move",//CHANGE IT AFTER
+                                "/api/gameplay/**",//CHANGE IT AFTER
                                 "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
                         ).permitAll()
                         .anyRequest().authenticated()
