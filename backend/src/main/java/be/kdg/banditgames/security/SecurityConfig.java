@@ -2,6 +2,7 @@ package be.kdg.banditgames.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,13 +27,15 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/actuator/health",
-                                "/api/games",
-                                "/api/dev/games",
-                                "/api/gameplay/**",//CHANGE IT AFTER
-                                "/api/games/{gameId}/achievements"//CHANGE IT AFTER WITH SECURITY
-                        ).permitAll()
+
+                        .requestMatchers("/actuator/health").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/games").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/games/*/achievements").permitAll()
+
+                        .requestMatchers("/api/dev/games/**").permitAll()
+                        .requestMatchers("/api/gameplay/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
