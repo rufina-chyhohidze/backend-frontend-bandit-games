@@ -13,7 +13,7 @@ public class MLWinProbabilityAdaptor implements MLWinProbabilityService {
 
     @Override
     public WinProbability getWinProbability(GetWinProbabilityCommand getWinProbabilityCommand) {
-        String url = "http://localhost:8082/win-probability";
+        String url = "http://localhost:8085/win-probability";
 
         WinProbability winProbabilityDto = restTemplate.postForObject(
                 url,

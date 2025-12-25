@@ -13,7 +13,7 @@ public class MLRecommenderMoveAdaptor implements MLRecommendedMoveService {
 
     @Override
     public RecommendedMove getRecommendedMove(GetRecommendedMoveCommand getRecommendedMoveCommand) {
-        String url = "http://localhost:8082/predict-best-move";
+        String url = "http://localhost:8085/predict-best-move";
 
         RecommendedMove recommendedMove = restTemplate.postForObject(
                 url,

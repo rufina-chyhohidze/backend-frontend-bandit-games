@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/gameplay/recommended-move")
-public class RecommendedMoveController {
+@RequestMapping("/api/gameplay/ml-move")
+public class MachineLearningController {
     
     private final MLRecommendedMoveUseCase recommendedMoveUseCase;
     private final MLWinProbabilityUseCase winProbabilityUseCase;
     
-    public RecommendedMoveController(MLRecommendedMoveUseCase recommendedMoveUseCase,
+    public MachineLearningController(MLRecommendedMoveUseCase recommendedMoveUseCase,
                                      MLWinProbabilityUseCase winProbabilityUseCase
     ) {
         this.recommendedMoveUseCase = recommendedMoveUseCase;
