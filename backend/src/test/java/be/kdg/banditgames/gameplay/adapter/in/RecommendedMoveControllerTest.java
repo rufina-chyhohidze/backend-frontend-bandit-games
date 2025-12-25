@@ -25,7 +25,7 @@ public class RecommendedMoveControllerTest {
         MLRecommendedMoveUseCase recommendedMoveUseCase = mock(MLRecommendedMoveUseCase.class);
         MLWinProbabilityUseCase winProbabilityUseCase = mock(MLWinProbabilityUseCase.class);
 
-        RecommendedMoveController controller = new RecommendedMoveController(recommendedMoveUseCase, winProbabilityUseCase);
+        MachineLearningController controller = new MachineLearningController(recommendedMoveUseCase, winProbabilityUseCase);
 
         UUID sessionId = UUID.randomUUID();
         MLRecommendedMoveRequest request = new MLRecommendedMoveRequest(sessionId, 1, "CHESS_AI", "state", "moves");

@@ -100,6 +100,12 @@ public class Lobby {
         this.guestPlayer = null;
         this.guestType = PlayerType.AI_HARD;
     }
+
+    public void changeGuestToAIPlayerML() {
+        this.guestPlayer = null;
+        this.guestType = PlayerType.AI_ML;
+    }
+
     public LobbyStatus getLobbyStatus() {
         return lobbyStatus;
     }
@@ -129,6 +135,7 @@ public class Lobby {
             case AI_EASY -> changeGuestToAIPlayerEasy();
             case AI_MEDIUM -> changeGuestToAIPlayerMedium();
             case AI_HARD -> changeGuestToAIPlayerHard();
+            case AI_ML -> changeGuestToAIPlayerML();
             default -> throw new IllegalArgumentException("Invalid AI type: " + aiType);
         }
     }
