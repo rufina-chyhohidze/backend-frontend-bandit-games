@@ -4,12 +4,10 @@ import be.kdg.banditgames.common.events.DomainEvent;
 import be.kdg.banditgames.common.shared.PlayerType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.modulith.events.Externalized;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Externalized("connect4.events::#{'connect4.game.created.' + #this.sessionId()}")
 public record Connect4GameCreatedEvent(
         UUID eventId,
         LocalDateTime occurredAt,
