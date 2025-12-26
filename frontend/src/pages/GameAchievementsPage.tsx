@@ -28,13 +28,13 @@ import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 
 import type { Achievement } from "../models/achievement";
 import type { Game } from "../models/game";
-import type { PlayerDto } from "../models/player";
 import type { PlayerDtoWithName } from "../models/friendship";
 
 import { fetchAchievements, fetchGames } from "../services/gamesService";
-import { useCurrentPlayer } from "../hooks/useFavorites";
 import SecurityContext from "../context/SecurityContext";
 import { useFriends } from "../hooks/useFriends";
+
+import { useMyUnlockedAchievements } from "../hooks/useUnlockedAchievements";
 
 export default function GameAchievementsPage() {
     const { gameId } = useParams<{ gameId: string }>();
@@ -45,14 +45,16 @@ export default function GameAchievementsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const { player, isLoadingPlayer } = useCurrentPlayer() as {
-        player: PlayerDto | null;
-        isLoadingPlayer: boolean;
-    };
-
     const { loggedInUser } = useContext(SecurityContext);
     const playerId = loggedInUser?.id ?? null;
     const { data: friends, isLoading: loadingFriends } = useFriends(playerId);
+
+    const {
+        data: unlockedData,
+        isLoading: unlockedLoading,
+        isError: unlockedIsError,
+        error: unlockedError,
+    } = useMyUnlockedAchievements(gameId);
 
     const [compareOpen, setCompareOpen] = useState(false);
     const openCompare = () => setCompareOpen(true);
@@ -89,16 +91,19 @@ export default function GameAchievementsPage() {
         loadData();
     }, [gameId]);
 
-    if (!gameId) {
-        return <Alert severity="error">Missing game id.</Alert>;
-    }
+    if (!gameId) return <Alert severity="error">Missing game id.</Alert>;
 
-    const isLoading = loading || isLoadingPlayer;
+    const isLoading = loading || unlockedLoading;
 
-    const unlockedSet = new Set(player?.achievements ?? []);
+:    const normalizeName = (s: string) => (s ?? "").trim().toLowerCase();
+
+    const unlockedNameSet = new Set(
+        (unlockedData ?? []).map((u: any) => normalizeName(u.name))
+    );
+
     const total = achievements.length;
     const unlockedCount = achievements.filter((a) =>
-        unlockedSet.has(a.achievementId)
+        unlockedNameSet.has(normalizeName(a.name))
     ).length;
 
     const hasFriends = !!friends?.length;
@@ -207,12 +212,17 @@ export default function GameAchievementsPage() {
                     </Stack>
                 </Stack>
 
+                {unlockedIsError && (
+                    <Alert severity="warning">
+                        {(unlockedError as any)?.message ?? "Could not load unlocked achievements."}
+                    </Alert>
+                )}
+
                 {game && (
                     <Card
                         sx={{
                             borderRadius: 2.5,
-                            background:
-                                "linear-gradient(135deg, rgba(124,140,255,0.14), rgba(0,220,130,0.16))",
+                            background: "linear-gradient(135deg, rgba(124,140,255,0.14), rgba(0,220,130,0.16))",
                             boxShadow: "0 10px 32px rgba(0,0,0,0.65)",
                             border: "none",
                         }}
@@ -238,9 +248,7 @@ export default function GameAchievementsPage() {
                                     <Chip
                                         size="small"
                                         icon={<EmojiEventsRoundedIcon />}
-                                        label={`${achievements.length} achievement${
-                                            achievements.length === 1 ? "" : "s"
-                                        }`}
+                                        label={`${achievements.length} achievement${achievements.length === 1 ? "" : "s"}`}
                                         sx={{
                                             bgcolor: "rgba(0, 0, 0, 0.35)",
                                             color: "#ffecb3",
@@ -280,46 +288,26 @@ export default function GameAchievementsPage() {
                     </Alert>
                 )}
 
-                {!isLoading && !error && achievements.length === 0 && (
-                    <Typography variant="body2" sx={{ color: "#cccccc", mt: 1 }}>
-                        No achievements defined for this game yet.
-                    </Typography>
-                )}
-
                 {!isLoading && !error && achievements.length > 0 && (
                     <Stack spacing={2.0} mt={1}>
                         {achievements.map((a, index) => {
-                            const unlocked = unlockedSet.has(a.achievementId);
+                            // ✅ name-based check
+                            const unlocked = unlockedNameSet.has(normalizeName(a.name));
 
                             return (
                                 <Card
                                     key={a.achievementId}
                                     sx={{
-                                        backgroundColor: unlocked
-                                            ? "rgba(8, 32, 32, 0.99)"
-                                            : "rgba(8, 12, 32, 0.99)",
+                                        backgroundColor: unlocked ? "rgba(8, 32, 32, 0.99)" : "rgba(8, 12, 32, 0.99)",
                                         borderRadius: 2,
-                                        boxShadow: unlocked
-                                            ? "0 10px 26px rgba(0,255,180,0.35)"
-                                            : "0 10px 26px rgba(0,0,0,0.45)",
+                                        boxShadow: unlocked ? "0 10px 26px rgba(0,255,180,0.35)" : "0 10px 26px rgba(0,0,0,0.45)",
                                         border: unlocked ? "1px solid rgba(0,255,180,0.5)" : "none",
-                                        "&:hover": {
-                                            transform: "translateY(-2px)",
-                                            boxShadow: unlocked
-                                                ? "0 18px 38px rgba(0,255,180,0.4)"
-                                                : "0 18px 38px rgba(124,140,255,0.16)",
-                                        },
                                         transition: "all 0.18s ease-out",
                                     }}
                                     elevation={0}
                                 >
                                     <CardContent>
-                                        <Stack
-                                            direction="row"
-                                            justifyContent="space-between"
-                                            alignItems="flex-start"
-                                            gap={2}
-                                        >
+                                        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
                                             <Box>
                                                 <Typography
                                                     variant="overline"
@@ -340,13 +328,7 @@ export default function GameAchievementsPage() {
                                                     {a.description}
                                                 </Typography>
 
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                        mt: 1.2,
-                                                        color: unlocked ? "#b2ffda" : "#9dd0ff",
-                                                    }}
-                                                >
+                                                <Typography variant="body2" sx={{ mt: 1.2, color: unlocked ? "#b2ffda" : "#9dd0ff" }}>
                                                     <strong>How to unlock:</strong> {a.unlockHint}
                                                 </Typography>
                                             </Box>
@@ -356,9 +338,7 @@ export default function GameAchievementsPage() {
                                                 label={unlocked ? "Unlocked" : "Locked"}
                                                 sx={{
                                                     alignSelf: "flex-start",
-                                                    bgcolor: unlocked
-                                                        ? "rgba(0, 255, 180, 0.18)"
-                                                        : "rgba(255, 255, 255, 0.06)",
+                                                    bgcolor: unlocked ? "rgba(0, 255, 180, 0.18)" : "rgba(255, 255, 255, 0.06)",
                                                     color: unlocked ? "#b2ffda" : "#e0e0e0",
                                                     "& .MuiChip-icon": { color: unlocked ? "#b2ffda" : "#e0e0e0" },
                                                 }}
@@ -389,10 +369,7 @@ export default function GameAchievementsPage() {
                             <List disablePadding>
                                 {friends.map((f: PlayerDtoWithName) => (
                                     <ListItemButton key={f.playerId} onClick={() => goCompare(f.playerId)}>
-                                        <ListItemText
-                                            primary={f.username}
-                                            secondary="Compare achievements for this game"
-                                        />
+                                        <ListItemText primary={f.username} secondary="Compare achievements for this game" />
                                     </ListItemButton>
                                 ))}
                             </List>
