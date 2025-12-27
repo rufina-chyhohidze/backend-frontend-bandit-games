@@ -33,6 +33,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     // NOTE: spring-boot-starter-data-jpa is commented out, which is correct since you are using MongoDB.
 
+    // FLYWAY - Add these lines
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
+
     // MODULITH & AMQP (Events)
     implementation("org.springframework.modulith:spring-modulith-starter-core:1.4.1")
     implementation("org.springframework.modulith:spring-modulith-events-api:1.4.1")
@@ -64,7 +68,7 @@ dependencies {
     testImplementation("org.testcontainers:rabbitmq")
     testImplementation("org.testcontainers:mongodb")
     testImplementation("org.testcontainers:postgresql")
-    
+
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly ("com.h2database:h2")
 

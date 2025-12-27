@@ -1,23 +1,33 @@
 package be.kdg.banditgames.config;
 
 import org.flywaydb.core.Flyway;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class FlywayConfig {
+public class FlywayConfig implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Bean(initMethod = "migrate")
-    @DependsOn("entityManagerFactory") // This ensures JPA runs first
-    public Flyway flyway(DataSource dataSource) {
-        return Flyway.configure()
-                .dataSource(dataSource)
-                .locations("classpath:db/migration")
-                .baselineOnMigrate(true)
-                .baselineVersion("0")
-                .load();
+    private final DataSource dataSource;
+    private boolean hasRun = false;
+
+    public FlywayConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        if (!hasRun) {
+            hasRun = true;
+            Flyway flyway = Flyway.configure()
+                    .dataSource(dataSource)
+                    .locations("classpath:db/migration")
+                    .baselineOnMigrate(true)
+                    .baselineVersion("0")
+                    .load();
+            flyway.migrate();
+        }
     }
 }
