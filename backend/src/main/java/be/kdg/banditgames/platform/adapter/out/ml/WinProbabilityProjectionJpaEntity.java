@@ -25,11 +25,11 @@ public class WinProbabilityProjectionJpaEntity {
     private PlayerType aiType;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String gameState;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String legalMoves;
 
     @Column(nullable = false)
@@ -46,7 +46,7 @@ public class WinProbabilityProjectionJpaEntity {
             name = "win_probability_distributions",
             joinColumns = @JoinColumn(name = "projection_id")
     )
-    @Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false, columnDefinition = "TEXT")
     private List<Double> distribution;
 
     protected WinProbabilityProjectionJpaEntity() {}

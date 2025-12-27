@@ -84,3 +84,8 @@ CREATE TABLE IF NOT EXISTS friendships (
 
 ALTER TABLE event_publication
     ALTER COLUMN serialized_event TYPE TEXT;
+
+-- Delete Flyway's migration history
+DELETE FROM flyway_schema_history WHERE version = '1';
+DELETE FROM flyway_schema_history WHERE version = '2';
+DELETE FROM flyway_schema_history WHERE version = '3';
