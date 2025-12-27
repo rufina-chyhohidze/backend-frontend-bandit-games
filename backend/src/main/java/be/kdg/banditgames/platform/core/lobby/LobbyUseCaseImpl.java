@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -28,6 +31,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
     private final LobbyLookupPort lobbyLookupPort;
     private final LoadPlayableGamesPort loadPlayableGamesPort;
     private final CreateGameService createGameService;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public LobbyUseCaseImpl(LoadLobbyPort loadLobbyPort,
                             PersistLobbyPort persistLobbyPort,
@@ -90,7 +94,6 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
 
         if (!lobby.hasStartedGame()) {
             UUID hostId = lobby.getHostPlayer().playerId();
-
             UUID guestId = (lobby.getGuestPlayer() != null)
                     ? lobby.getGuestPlayer().playerId()
                     : UUID.randomUUID();
@@ -105,10 +108,14 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                             lobby.getGuestType()
                     )
             );
+
             lobby.startGame();
             persistLobbyPort.saveLobby(lobby);
+
+            scheduleLobbyDeletion(lobbyId);
         }
 
+        // REDIRECTION LOGIC (Stays the same)
         String hostUrl = String.format("%s?sessionId=%s&playerId=%s",
                 game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
 
@@ -123,6 +130,19 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
                 lobby.getHostType().name(),
                 lobby.getGuestType().name()
         );
+    }
+
+
+
+    private void scheduleLobbyDeletion(LobbyId lobbyId) {
+        scheduler.schedule(() -> {
+            try {
+                // We call the port directly to ensure a fresh transaction for the deletion
+                persistLobbyPort.removeLobby(lobbyId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 30, TimeUnit.SECONDS);
     }
 
 
