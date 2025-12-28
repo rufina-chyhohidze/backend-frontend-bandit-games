@@ -142,7 +142,7 @@ public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseC
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, 30, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
     }
 
 
