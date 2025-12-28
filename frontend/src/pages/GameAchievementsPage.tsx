@@ -95,7 +95,7 @@ export default function GameAchievementsPage() {
 
     const isLoading = loading || unlockedLoading;
 
-:    const normalizeName = (s: string) => (s ?? "").trim().toLowerCase();
+    const normalizeName = (s: string) => (s ?? "").trim().toLowerCase();
 
     const unlockedNameSet = new Set(
         (unlockedData ?? []).map((u: any) => normalizeName(u.name))

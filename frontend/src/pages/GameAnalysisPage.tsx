@@ -132,7 +132,7 @@ export function GameAnalysisPage() {
     }
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3,  pt: 10  }}>
             {/* Header */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
                 <Stack direction="row" alignItems="center" spacing={2}>
