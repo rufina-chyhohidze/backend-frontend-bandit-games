@@ -25,7 +25,7 @@ public class GeneralGameCreatedEventListener {
 
     @EventListener
     public void gameCreatedEvent(GenericGameCreatedEvent gameCreatedEvent) {
-        log.info("Game Game created: {}", gameCreatedEvent);
+        log.info("Game created: {}", gameCreatedEvent);
 
         gameSessionCreatedPort.project(new GameSessionCreatedCommand(
                 gameCreatedEvent.eventId(),

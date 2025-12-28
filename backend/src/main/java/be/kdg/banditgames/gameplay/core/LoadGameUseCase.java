@@ -18,7 +18,7 @@ public class LoadGameUseCase implements LoadGameByNamePort {
 
     @Override
     public GameId findByName(String name) {
-        GameProjection gameProjection = gamePort.findByName(name).orElseThrow(() -> new RuntimeException("Game not found with name: " + name));
-        return  GameId.of(gameProjection.gameId());
+        var gameProjection = gamePort.findByName(name);
+        return gameProjection.map(projection -> GameId.of(projection.gameId())).orElse(null);
     }
 }
