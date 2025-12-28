@@ -91,7 +91,8 @@ export function LobbyPage() {
             !!lobby.guestType &&
             (lobby.guestType === "AI_EASY" ||
                 lobby.guestType === "AI_MEDIUM" ||
-                lobby.guestType === "AI_HARD");
+                lobby.guestType === "AI_HARD" ||
+                lobby.guestType === "AI_ML");
 
         if ((!lobby.guestPlayerId && !hasAiGuest) || !lobby.gameId) {
             console.warn("Cannot start game: Waiting for guest or game selection.");
@@ -156,7 +157,8 @@ export function LobbyPage() {
         lobby &&
         (lobby.guestType === "AI_EASY" ||
             lobby.guestType === "AI_MEDIUM" ||
-            lobby.guestType === "AI_HARD");
+            lobby.guestType === "AI_HARD" ||
+            lobby.guestType === "AI_ML");
 
     const isLobbyReady =
         hasLobby && lobby && (lobby.guestPlayerId || isAiGuest) && !!lobby.gameId;

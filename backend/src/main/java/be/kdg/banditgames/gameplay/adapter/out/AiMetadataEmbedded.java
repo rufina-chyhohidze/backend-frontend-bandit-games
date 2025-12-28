@@ -6,19 +6,19 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class AiMetadataEmbedded {
     @Field("recommended_move")
     private String recommendedMove;
-    
+
     @Field("confidence_score")
     private Double confidenceScore;
-    
+
     @Field("best_move")
     private String bestMove;
-    
+
     @Field("heuristic_score")
     private Double heuristicScore;
-    
+
     @Field("visit_count")
     private Integer visitCount;
-    
+
     @Field("search_depth")
     private Integer searchDepth;
 

@@ -14,15 +14,15 @@ public class MoveMadeEventListener {
 
     Logger log = LoggerFactory.getLogger(MoveMadeEventListener.class);
     private final MoveMadePort moveMadePort;
-    
+
     public MoveMadeEventListener(MoveMadePort moveMadePort) {
         this.moveMadePort = moveMadePort;
     }
-    
+
     @RabbitListener(queues = RabbitMQTopology.CONNECT4_MOVE_MADE_QUEUE)
     public void moveMadeEvent(Connect4MoveMadeEvent event) {
         log.info("Received MoveMadeEvent: {}", event);
-        
+
         moveMadePort.project(new MoveMadeCommand(
                 event.eventId(),
                 event.occurredAt(),
@@ -33,8 +33,5 @@ public class MoveMadeEventListener {
                 event.serializedBoard(),
                 event.serializedLegalMoves()));
     }
-    
-    
-    
 
 }

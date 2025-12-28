@@ -15,15 +15,15 @@ public class GeneralMoveMadeEventListener {
 
     Logger log = LoggerFactory.getLogger(GeneralMoveMadeEventListener.class);
     private final MoveMadePort moveMadePort;
-    
+
     public GeneralMoveMadeEventListener(MoveMadePort moveMadePort) {
         this.moveMadePort = moveMadePort;
     }
-    
+
     @EventListener
     public void moveMadeEvent(GenericMoveMadeEvent event) {
         log.info("Received MoveMadeEvent: {}", event);
-        
+
         moveMadePort.project(new MoveMadeCommand(
                 event.eventId(),
                 event.occurredAt(),
@@ -34,8 +34,8 @@ public class GeneralMoveMadeEventListener {
                 event.serializedBoard(),
                 event.serializedLegalMoves()));
     }
-    
-    
-    
+
+
+
 
 }

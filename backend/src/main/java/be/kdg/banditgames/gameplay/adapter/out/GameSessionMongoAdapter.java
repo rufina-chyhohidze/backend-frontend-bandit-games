@@ -37,7 +37,7 @@ public class GameSessionMongoAdapter implements PersistGameSessionPort, LoadGame
         this.mongoTemplate = mongoTemplate;
         this.mongoGameplayRepository = mongoGameplayRepository;
     }
-    
+
     @Override
     public void save(GameSession gameSession) {
         GameSessionMongoEntity entity = GameSessionMongoMapper.fromDomain(gameSession);

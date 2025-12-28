@@ -68,5 +68,5 @@ public class AiAgentMoveAdaptor implements AiAgentMoveService {
 
         return metadata;
     }
-    
+
 }

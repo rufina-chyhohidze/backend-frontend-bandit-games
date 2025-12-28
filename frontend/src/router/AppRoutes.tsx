@@ -11,6 +11,8 @@ import { FriendsPage } from "../pages/FriendsPage.tsx";
 import { FavoriteGamesPage } from "../pages/FavoriteGamesPage";
 import {MyUnlockedAchievementsPage} from "../pages/MyUnlockedAchievementsPage.tsx";
 import {CompareAchievementsPage} from "../pages/CompareAchievementsPage.tsx";
+import {GameReplayPage} from "../pages/GameReplayPage.tsx";
+import {GameAnalysisPage} from "../pages/GameAnalysisPage.tsx";
 
 export function AppRoutes() {
     return (
@@ -26,6 +28,25 @@ export function AppRoutes() {
                     element={
                         <RouteGuard role="admin">
                             <AdminPage />
+                        </RouteGuard>
+                    }
+                />
+
+                {/* Admin-only Game Analysis routes */}
+                <Route
+                    path="/admin/game-analysis"
+                    element={
+                        <RouteGuard role="admin">
+                            <GameAnalysisPage />
+                        </RouteGuard>
+                    }
+                />
+
+                <Route
+                    path="/games/replay/:sessionId"
+                    element={
+                        <RouteGuard role="admin">
+                            <GameReplayPage />
                         </RouteGuard>
                     }
                 />
@@ -99,6 +120,7 @@ export function AppRoutes() {
                         </RouteGuard>
                     }
                 />
+
 
 
             </Route>
