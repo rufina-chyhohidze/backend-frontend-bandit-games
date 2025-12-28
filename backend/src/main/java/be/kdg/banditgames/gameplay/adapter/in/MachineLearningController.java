@@ -1,7 +1,5 @@
 package be.kdg.banditgames.gameplay.adapter.in;
 
-
-import be.kdg.banditgames.gameplay.adapter.in.request.AiRequest;
 import be.kdg.banditgames.gameplay.adapter.in.request.MLRecommendedMoveRequest;
 import be.kdg.banditgames.gameplay.adapter.in.response.MLRecommendedMoveDto;
 import be.kdg.banditgames.gameplay.domain.RecommendedMove;
@@ -31,7 +29,7 @@ public class MachineLearningController {
     }
     
     @PostMapping
-    public ResponseEntity<MLRecommendedMoveDto> recommendedMove(@RequestBody AiRequest request) {
+    public ResponseEntity<MLRecommendedMoveDto> recommendedMove(@RequestBody MLRecommendedMoveRequest request) {
 
         logger.info("recommendedMove has been called");
 

@@ -5,7 +5,7 @@ import java.util.UUID;
 public record MLRecommendedMoveRequest(
         UUID sessionId,
         int moveNumber,
-        String aiType,
+        String AiType,
         String gameState,
         String legalMoves
 ) {
