@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS move_recommended_projections (
     game_state TEXT NOT NULL,
     legal_moves TEXT NOT NULL
     );
-ALTER TABLE move_recommended_projections OWNER TO bandit;
+--ALTER TABLE move_recommended_projections OWNER TO bandit;
 
 -- Players table
 CREATE TABLE IF NOT EXISTS players (

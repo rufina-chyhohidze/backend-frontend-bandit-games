@@ -5,6 +5,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 
 @TestConfiguration(proxyBeanMethods = false)
 public class TestContainerConfig {
@@ -22,5 +23,11 @@ public class TestContainerConfig {
     @ServiceConnection
     static MongoDBContainer mongoDBContainer() {
         return new MongoDBContainer("mongo:7.0");
+    }
+
+    @Bean
+    @ServiceConnection
+    static RabbitMQContainer rabbitMQContainer() {
+        return new RabbitMQContainer("rabbitmq:3.13-alpine");
     }
 }

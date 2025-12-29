@@ -68,10 +68,11 @@ dependencies {
 }
 
 // use jacoco for coverage test reports
-tasks.named<Test>("test") {
+tasks.test {
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
+    systemProperty("spring.profiles.active", "test")
 }
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
