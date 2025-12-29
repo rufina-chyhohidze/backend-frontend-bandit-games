@@ -32,12 +32,12 @@ public class RecommendedMoveControllerTest {
 
         RecommendedMove recommendedMove = new RecommendedMove("e2e4", 0.92);
         when(recommendedMoveUseCase.handleMove(new GetRecommendedMoveCommand(
-                request.sessionId(), request.moveNumber(), request.aiType(), request.gameState(), request.legalMoves()
+                request.sessionId(), request.moveNumber(), request.AiType(), request.gameState(), request.legalMoves()
         ))).thenReturn(recommendedMove);
 
         WinProbability winProbability = new WinProbability(0.7, 0.3, 0.7, List.of(0.7, 0.3));
         when(winProbabilityUseCase.handleWinProbability(new GetWinProbabilityCommand(
-                request.sessionId(), request.moveNumber(), request.aiType(), request.gameState(), request.legalMoves()
+                request.sessionId(), request.moveNumber(), request.AiType(), request.gameState(), request.legalMoves()
         ))).thenReturn(winProbability);
 
         // Act

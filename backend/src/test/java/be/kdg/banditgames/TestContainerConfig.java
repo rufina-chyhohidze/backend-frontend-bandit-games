@@ -1,25 +1,35 @@
 package be.kdg.banditgames;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.containers.RabbitMQContainer;
 
-@Configuration
+@TestConfiguration(proxyBeanMethods = false)
+@ConditionalOnProperty(name = "testcontainers.enabled", havingValue = "true", matchIfMissing = true)
 public class TestContainerConfig {
 
     @Bean
     @ServiceConnection
-    PostgreSQLContainer<?> postgreSQLContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.1"));
+    static PostgreSQLContainer<?> postgreSQLContainer() {
+        return new PostgreSQLContainer<>("postgres:16-alpine")
+                .withDatabaseName("test")
+                .withUsername("bandit")
+                .withPassword("bandit");
     }
 
     @Bean
     @ServiceConnection
-    MongoDBContainer mongoDBContainer() {
-        return new MongoDBContainer(DockerImageName.parse("mongo:6.0"));
+    static MongoDBContainer mongoDBContainer() {
+        return new MongoDBContainer("mongo:7.0");
     }
-    
+
+    @Bean
+    @ServiceConnection
+    static RabbitMQContainer rabbitMQContainer() {
+        return new RabbitMQContainer("rabbitmq:3.13-alpine");
+    }
 }
