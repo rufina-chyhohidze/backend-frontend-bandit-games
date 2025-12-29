@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Import;
 @Import(TestContainerConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BackendApplicationTest {
-    
+
     @Test
     void contextLoads() {
-        // This test ensures that the Spring application context loads successfully.
     }
-
 }

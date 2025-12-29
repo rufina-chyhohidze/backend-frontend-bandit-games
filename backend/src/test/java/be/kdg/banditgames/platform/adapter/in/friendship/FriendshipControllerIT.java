@@ -1,4 +1,5 @@
 package be.kdg.banditgames.platform.adapter.in.friendship;
+
 import be.kdg.banditgames.BackendApplication;
 import be.kdg.banditgames.TestContainerConfig;
 import be.kdg.banditgames.platform.adapter.out.friendship.FriendshipJpaEntity;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -28,48 +28,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(TestContainerConfig.class)
 class FriendshipControllerIT {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private FriendshipJpaRepository friendshipJpaRepository;
+    FriendshipJpaRepository friendshipJpaRepository;
 
     @Test
     @WithMockUser(authorities = "player")
     void sendFriendRequest_createsPendingFriendshipInDatabase() throws Exception {
-        // given
         UUID fromId = UUID.randomUUID();
         UUID toId = UUID.randomUUID();
 
         String body = """
-                {
-                  "fromPlayerId": "%s",
-                  "toPlayerId": "%s"
-                }
-                """.formatted(fromId, toId);
+            {
+              "fromPlayerId": "%s",
+              "toPlayerId": "%s"
+            }
+            """.formatted(fromId, toId);
 
         mockMvc.perform(
-                        post("/api/friendships/request")
-                                .with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(body)
-                )
-                .andExpect(status().isOk());
+                post("/api/friendships/request")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        ).andExpect(status().isOk());
 
         List<FriendshipJpaEntity> all = friendshipJpaRepository.findAll();
         assertThat(all).hasSize(1);
 
         FriendshipJpaEntity entity = all.get(0);
         assertThat(entity.getStatus()).isEqualTo(FriendshipStatus.PENDING);
-
         assertThat(List.of(entity.getPlayerAId(), entity.getPlayerBId()))
                 .containsExactlyInAnyOrder(fromId, toId);
-
         assertThat(entity.getInitiatorId()).isEqualTo(fromId);
     }
 }
