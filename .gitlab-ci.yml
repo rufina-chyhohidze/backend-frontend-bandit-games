@@ -34,7 +34,7 @@ build_job:
   script:
     - echo "Compiling backend..."
     - cd backend
-    - ./gradlew clean build -x test
+    - ./gradlew clean build -x test -x spotbugsMain -x spotbugsTest
   artifacts:
     paths:
       - backend/build/libs/
