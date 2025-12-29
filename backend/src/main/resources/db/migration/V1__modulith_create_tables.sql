@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS achievements (
     name VARCHAR(255) NOT NULL,
     unlock_hint VARCHAR(255)
     );
-ALTER TABLE achievements OWNER TO bandit;
+--ALTER TABLE achievements OWNER TO bandit;
 
 -- Admins table
 CREATE TABLE IF NOT EXISTS admins (
                                       id UUID NOT NULL PRIMARY KEY
 );
-ALTER TABLE admins OWNER TO bandit;
+--ALTER TABLE admins OWNER TO bandit;
 
 -- Event publication table
 CREATE TABLE IF NOT EXISTS event_publication (
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS event_publication (
                                                                                   listener_id TEXT,
                                                                                   serialized_event TEXT
                                                                                   );
-ALTER TABLE event_publication OWNER TO bandit;
+--ALTER TABLE event_publication OWNER TO bandit;
 
 -- Friendships table
 CREATE TABLE IF NOT EXISTS friendships (
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS friendships (
     status VARCHAR(255) NOT NULL CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'BLOCKED')),
     UNIQUE (player_a_id, player_b_id)
     );
-ALTER TABLE friendships OWNER TO bandit;
+--ALTER TABLE friendships OWNER TO bandit;
 
 -- Game invitations table
 CREATE TABLE IF NOT EXISTS game_invitations (
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS game_invitations (
     lobby_id UUID NOT NULL,
     status VARCHAR(255) NOT NULL CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELED', 'EXPIRED'))
     );
-ALTER TABLE game_invitations OWNER TO bandit;
+--ALTER TABLE game_invitations OWNER TO bandit;
 
 -- Games table
 CREATE TABLE IF NOT EXISTS games (
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS games (
     status VARCHAR(255) CHECK (status IN ('DRAFT', 'PUBLISHED', 'REJECTED')),
     url_game_session VARCHAR(255)
     );
-ALTER TABLE games OWNER TO bandit;
+--ALTER TABLE games OWNER TO bandit;
 
 -- Lobbies table
 CREATE TABLE IF NOT EXISTS lobbies (
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS lobbies (
     guest_type VARCHAR(255) CHECK (guest_type IN ('HUMAN','AI_EASY','AI_MEDIUM','AI_HARD','AI_ML')),
     status VARCHAR(255) NOT NULL CHECK (status IN ('WAITING','IN_GAME','FINISHED'))
     );
-ALTER TABLE lobbies OWNER TO bandit;
+--ALTER TABLE lobbies OWNER TO bandit;
 
 -- Move recommended projections table
 CREATE TABLE IF NOT EXISTS move_recommended_projections (
@@ -94,21 +94,21 @@ CREATE TABLE IF NOT EXISTS players (
                                        id UUID NOT NULL PRIMARY KEY,
                                        username VARCHAR(255)
     );
-ALTER TABLE players OWNER TO bandit;
+--ALTER TABLE players OWNER TO bandit;
 
 -- Player achievements table
 CREATE TABLE IF NOT EXISTS player_achievements (
                                                    player_id UUID NOT NULL REFERENCES players(id),
     achievement_id UUID
     );
-ALTER TABLE player_achievements OWNER TO bandit;
+--ALTER TABLE player_achievements OWNER TO bandit;
 
 -- Player favorite games table
 CREATE TABLE IF NOT EXISTS player_favorite_games (
                                                      player_id UUID NOT NULL REFERENCES players(id),
     game_id UUID
     );
-ALTER TABLE player_favorite_games OWNER TO bandit;
+--ALTER TABLE player_favorite_games OWNER TO bandit;
 
 -- Win probability projections table
 CREATE TABLE IF NOT EXISTS win_probability_projections (
@@ -122,14 +122,14 @@ CREATE TABLE IF NOT EXISTS win_probability_projections (
     game_state TEXT NOT NULL,
     legal_moves TEXT NOT NULL
     );
-ALTER TABLE win_probability_projections OWNER TO bandit;
+--ALTER TABLE win_probability_projections OWNER TO bandit;
 
 -- Win probability distributions table
 CREATE TABLE IF NOT EXISTS win_probability_distributions (
                                                              projection_id BIGINT NOT NULL REFERENCES win_probability_projections(id),
     value TEXT NOT NULL
     );
-ALTER TABLE win_probability_distributions OWNER TO bandit;
+--ALTER TABLE win_probability_distributions OWNER TO bandit;
 
 -- insert into tables some data
 INSERT INTO games (id, name, description, rules, picture_url, status, url_game_session)
