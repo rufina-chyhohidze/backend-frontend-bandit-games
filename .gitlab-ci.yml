@@ -17,7 +17,7 @@ cache:
   paths:
     - .gradle/wrapper/
     - .gradle/caches/
-    - backend/build/
+    #- backend/build/
 
 variables:
   DEFAULT_IMAGE_NAME: eclipse-temurin:21-jdk-alpine
@@ -44,13 +44,35 @@ test_job:
   stage: test
   image: $DEFAULT_IMAGE_NAME
   services:
-    - name: docker:27-dind
+    - name: postgres:16-alpine
+      alias: postgres
+    - name: mongo:7.0
+      alias: mongo
+    - name: rabbitmq:3.13-alpine
+      alias: rabbit
+  variables:
+    SPRING_PROFILES_ACTIVE: test
+
+    # Disable Testcontainers in CI
+    TESTCONTAINERS_ENABLED: "false"
+
+    # Point Spring to CI services
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test
+    SPRING_DATASOURCE_USERNAME: $TEST_DB_USER
+    SPRING_DATASOURCE_PASSWORD: $TEST_DB_PASSWORD
+
+    SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/test
+
+    SPRING_RABBITMQ_HOST: rabbit
+    SPRING_RABBITMQ_PORT: "5672"
+
   script:
     - cd backend
-    - ./gradlew test
+    - ./gradlew clean test
   artifacts:
     reports:
       junit: backend/build/test-results/test/*.xml
+
 
 package_image_job:
   stage: package
