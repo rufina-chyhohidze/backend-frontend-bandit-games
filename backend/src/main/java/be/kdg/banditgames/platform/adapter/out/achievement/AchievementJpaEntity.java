@@ -13,17 +13,23 @@ import java.util.UUID;
 @Table(name = "achievements")
 public class AchievementJpaEntity {
     @Id
-    @Column(columnDefinition = "UUID")
+    @Column(name = "achievement_id", columnDefinition = "UUID")
     private UUID achievementId;
 
-    @Column(columnDefinition = "UUID")
+    @Column(name = "game_id", columnDefinition = "UUID", nullable = false)
     private UUID gameId;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(name = "unlock_hint")
     private String unlockHint;
 
-    public AchievementJpaEntity() {}
+    public AchievementJpaEntity() {
+    }
 
     public AchievementId toAchievementId() {
         return AchievementId.of(achievementId);
@@ -33,7 +39,43 @@ public class AchievementJpaEntity {
         return GameId.of(gameId);
     }
 
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public String getUnlockHint() { return unlockHint; }
+    public UUID getAchievementId() {
+        return achievementId;
+    }
+
+    public UUID getGameId() {
+        return gameId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUnlockHint() {
+        return unlockHint;
+    }
+
+    public void setAchievementId(UUID achievementId) {
+        this.achievementId = achievementId;
+    }
+
+    public void setGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUnlockHint(String unlockHint) {
+        this.unlockHint = unlockHint;
+    }
 }

@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface AchievementJpaRepository extends JpaRepository<AchievementJpaEntity, UUID> {
     List<AchievementJpaEntity> findByGameId(UUID gameId);
+    List<AchievementJpaEntity> findByGameIdAndAchievementIdIn(UUID gameId, List<UUID> achievementIds);
 
 }

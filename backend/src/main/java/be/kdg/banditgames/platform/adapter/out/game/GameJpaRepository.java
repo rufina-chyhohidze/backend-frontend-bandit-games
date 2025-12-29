@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface GameJpaRepository extends JpaRepository<GameJpaEntity, UUID> {
     List<GameJpaEntity> findByStatus(GameStatus status);
+    List<GameJpaEntity> findByIdIn(List<UUID> ids);
+
 }

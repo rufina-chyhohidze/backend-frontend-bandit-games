@@ -1,0 +1,53 @@
+package be.kdg.banditgames.platform.adapter.in;
+
+import be.kdg.banditgames.common.events.generic.GenericAchievementDto;
+import be.kdg.banditgames.platform.adapter.in.requests.CreateGameRequest;
+import be.kdg.banditgames.platform.adapter.in.response.GameDto;
+import be.kdg.banditgames.platform.domain.Game;
+import be.kdg.banditgames.platform.port.in.game.GameSubmissionCommand;
+import be.kdg.banditgames.platform.port.in.game.SubmitGameToPlatformUseCase;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/dev/games")
+public class DevGameSubmissionController {
+    private final SubmitGameToPlatformUseCase submitGameToPlatformUseCase;
+
+    public DevGameSubmissionController(SubmitGameToPlatformUseCase submitGameToPlatformUseCase) {
+        this.submitGameToPlatformUseCase = submitGameToPlatformUseCase;
+    }
+
+    @PostMapping
+    public ResponseEntity<GameDto> submitGame(@RequestBody CreateGameRequest request) {
+
+        List<GenericAchievementDto> achievements =
+                request.availableAchievements() == null
+                        ? List.of()
+                        : request.availableAchievements();
+
+        GameSubmissionCommand command = new GameSubmissionCommand(
+                request.name(),
+                request.description(),
+                request.rules(),
+                request.pictureUrl(),
+                request.urlGameSession(),
+                achievements
+        );
+
+        Game game = submitGameToPlatformUseCase.submitGame(command);
+
+        return ResponseEntity.ok(new GameDto(
+                game.getName(),
+                game.getDescription(),
+                game.getRules(),
+                game.getPictureUrl(),
+                game.getUrlGameSession()
+        ));
+    }
+}

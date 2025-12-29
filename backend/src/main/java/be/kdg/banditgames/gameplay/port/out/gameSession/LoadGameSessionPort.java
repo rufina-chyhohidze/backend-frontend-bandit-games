@@ -6,7 +6,6 @@ import be.kdg.banditgames.common.shared.SessionId;
 import java.util.Optional;
 
 public interface LoadGameSessionPort {
-    
     Optional<GameSession> loadGameSessionById(SessionId sessionId);
     
 }

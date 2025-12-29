@@ -14,6 +14,5 @@ public record MoveMadeCommand(
         PlayerSide playerSide,
         int moveNumber,
         String serializedBoard,
-        String serializedLegalMoves
-) {
+        String serializedLegalMoves) {
 }

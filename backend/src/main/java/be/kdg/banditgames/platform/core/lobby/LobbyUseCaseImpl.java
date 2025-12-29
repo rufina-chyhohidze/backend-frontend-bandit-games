@@ -1,0 +1,195 @@
+package be.kdg.banditgames.platform.core.lobby;
+
+import be.kdg.banditgames.common.shared.GameId;
+import be.kdg.banditgames.common.shared.PlayerId;
+import be.kdg.banditgames.common.shared.PlayerType;
+import be.kdg.banditgames.platform.adapter.in.response.StartGameResponse;
+import be.kdg.banditgames.platform.domain.Game;
+import be.kdg.banditgames.platform.domain.Lobby;
+import be.kdg.banditgames.platform.domain.exception.lobby.LobbyNotFoundException;
+import be.kdg.banditgames.platform.domain.exception.lobby.PlayerAlreadyInLobbyException;
+import be.kdg.banditgames.platform.domain.vo.LobbyId;
+import be.kdg.banditgames.platform.port.in.lobby.*;
+import be.kdg.banditgames.platform.port.out.game.LoadPlayableGamesPort;
+import be.kdg.banditgames.platform.port.out.lobby.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+@Service
+@Transactional
+public class LobbyUseCaseImpl implements LobbyCreationUseCase, ManagingLobbyUseCase, FindLobbyPort {
+
+    private final LoadLobbyPort loadLobbyPort;
+    private final PersistLobbyPort persistLobbyPort;
+    private final LobbyLookupPort lobbyLookupPort;
+    private final LoadPlayableGamesPort loadPlayableGamesPort;
+    private final CreateGameService createGameService;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    public LobbyUseCaseImpl(LoadLobbyPort loadLobbyPort,
+                            PersistLobbyPort persistLobbyPort,
+                            LobbyLookupPort lobbyLookup,
+                            LoadPlayableGamesPort loadPlayableGamesPort,
+                            CreateGameService createGameService) {
+        this.loadLobbyPort = loadLobbyPort;
+        this.persistLobbyPort = persistLobbyPort;
+        this.lobbyLookupPort = lobbyLookup;
+        this.loadPlayableGamesPort = loadPlayableGamesPort;
+        this.createGameService = createGameService;
+    }
+
+    @Override
+    public Lobby createLobby(CreateLobbyCommand createLobbyCommand) {
+        PlayerId playerId = PlayerId.of(createLobbyCommand.playerId());
+
+        if (lobbyLookupPort.isPlayerInAnyLobby(playerId)) {
+            throw new PlayerAlreadyInLobbyException(playerId);
+        }
+
+        Lobby lobby = Lobby.createNew(playerId);
+        persistLobbyPort.saveLobby(lobby);
+        return lobby;
+    }
+
+    @Override
+    public void closeLobby(LobbyId lobbyId) {
+        persistLobbyPort.removeLobby(lobbyId);
+    }
+
+    @Override
+    public Lobby addPlayerToLobby(PlayerId playerId, LobbyId lobbyId) {
+        if (lobbyLookupPort.isPlayerInAnyLobby(playerId)) {
+            throw new PlayerAlreadyInLobbyException(playerId);
+        }
+
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+                .orElseThrow();
+        lobby.changeGuest(playerId, PlayerType.HUMAN);
+        persistLobbyPort.saveLobby(lobby);
+        return lobby;
+    }
+
+    @Override
+    public void removePlayerFromLobby(PlayerId playerId, LobbyId lobbyId) {
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+                .orElseThrow();
+        lobby.removePlayer(playerId);
+        persistLobbyPort.saveLobby(lobby);
+    }
+
+    @Override
+    public StartGameResponse startGameInLobby(LobbyId lobbyId) {
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId).orElseThrow();
+
+        Game game = loadPlayableGamesPort
+                .loadGameById(lobby.getGameId().gameId())
+                .orElseThrow();
+
+        if (!lobby.hasStartedGame()) {
+            UUID hostId = lobby.getHostPlayer().playerId();
+            UUID guestId = (lobby.getGuestPlayer() != null)
+                    ? lobby.getGuestPlayer().playerId()
+                    : UUID.randomUUID();
+
+            createGameService.createGameForLobby(
+                    new CreateGameCommand(
+                            lobbyId.lobbyID(),
+                            lobby.getGameId(),
+                            hostId,
+                            guestId,
+                            lobby.getHostType(),
+                            lobby.getGuestType()
+                    )
+            );
+
+            lobby.startGame();
+            persistLobbyPort.saveLobby(lobby);
+
+            scheduleLobbyDeletion(lobbyId);
+        }
+
+        // REDIRECTION LOGIC (Stays the same)
+        String hostUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(), lobby.getHostPlayer().playerId());
+
+        String guestUrl = String.format("%s?sessionId=%s&playerId=%s",
+                game.getUrlGameSession(), lobbyId.lobbyID(),
+                lobby.getGuestPlayer() != null ? lobby.getGuestPlayer().playerId() : "AI");
+
+        return new StartGameResponse(
+                lobby.getGameId().gameId().toString(),
+                hostUrl,
+                guestUrl,
+                lobby.getHostType().name(),
+                lobby.getGuestType().name()
+        );
+    }
+
+
+
+    private void scheduleLobbyDeletion(LobbyId lobbyId) {
+        scheduler.schedule(() -> {
+            try {
+                // We call the port directly to ensure a fresh transaction for the deletion
+                persistLobbyPort.removeLobby(lobbyId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 10, TimeUnit.SECONDS);
+    }
+
+
+
+    @Override
+    public void chooseGameForLobby(LobbyId lobbyId, GameId gameId) {
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+                .orElseThrow();
+        lobby.chooseGame(gameId);
+        persistLobbyPort.saveLobby(lobby);
+    }
+
+    @Override
+    public Lobby findLobbyById(UUID lobbyId) {
+        return loadLobbyPort.loadLobbyById(LobbyId.of(lobbyId))
+                .orElseThrow();
+    }
+
+    @Override
+    public Optional<Lobby> findLobbyByPlayerId(UUID playerId) {
+        return loadLobbyPort.loadLobbyByPlayerId(PlayerId.of(playerId));
+    }
+
+    @Override
+    public List<Lobby> findLobbies() {
+        return loadLobbyPort.loadAll();
+    }
+
+    @Override
+    public void chooseAiOpponent(LobbyId lobbyId, PlayerId requestingPlayer, PlayerType aiType) {
+        Lobby lobby = loadLobbyPort.loadLobbyById(lobbyId)
+                .orElseThrow(() -> new RuntimeException("Lobby not found: " + lobbyId.lobbyID()));
+
+        // Only host allowed to choose AI
+        if (!lobby.getHostPlayer().equals(requestingPlayer)) {
+            throw new IllegalStateException("Only the host can choose an AI opponent.");
+        }
+
+        // Optional: block override of human guest
+        if (lobby.getGuestPlayer() != null && lobby.getGuestType() == PlayerType.HUMAN) {
+            throw new IllegalStateException("Cannot set AI: lobby already has a human guest.");
+        }
+
+        // Domain: set AI guest
+        lobby.changeGuestToAI(aiType);
+
+        // Persist
+        persistLobbyPort.saveLobby(lobby);
+    }
+}

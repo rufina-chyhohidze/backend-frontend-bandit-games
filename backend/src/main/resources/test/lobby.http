@@ -14,7 +14,7 @@ Content-Type: application/json
 ### Add Player to Lobby
 ### Replace {lobbyId} with actual ID from "createLobby"
 ###############################################
-POST http://localhost:8080/api/lobby/{{lobbyId}}/add-player?playerId=22222222-2222-2222-2222-222222222222
+POST http://localhost:8080/api/lobby/c2b46fd1-3c68-4cff-92d8-62eddc19b16e/add-player?playerId=be0d4876-7161-4673-a132-2ed60c5b412a
 
 ###
 

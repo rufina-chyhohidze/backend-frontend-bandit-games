@@ -12,6 +12,8 @@ public class RabbitMQTopology {
     // Queues
     public static final String CONNECT4_GAME_CREATED_QUEUE = "connect4.game.created";
     public static final String CONNECT4_MOVE_MADE_QUEUE = "connect4.move.made";
+    public static final String CONNECT4_GAME_RESULT_QUEUE = "connect4.game.result";
+    public static final String CONNECT4_ACHIEVEMENT_QUEUE = "connect4.achievement";
 
     @Bean
     TopicExchange connect4Exchange() {
@@ -22,6 +24,9 @@ public class RabbitMQTopology {
     }
 
     @Bean
+    Queue connect4AchievementQueue() {return QueueBuilder.durable(CONNECT4_ACHIEVEMENT_QUEUE).build();}
+
+    @Bean
     Queue connect4GameCreatedQueue() {
         return QueueBuilder.durable(CONNECT4_GAME_CREATED_QUEUE).build();
     }
@@ -29,6 +34,10 @@ public class RabbitMQTopology {
     @Bean
     Queue connect4MoveMadeQueue() {
         return QueueBuilder.durable(CONNECT4_MOVE_MADE_QUEUE).build();
+    }
+
+    @Bean
+    Queue connect4GameResultQueue() { return QueueBuilder.durable(CONNECT4_GAME_RESULT_QUEUE).build();
     }
 
     // Bindings
@@ -46,5 +55,21 @@ public class RabbitMQTopology {
                 .bind(connect4MoveMadeQueue())
                 .to(connect4Exchange())
                 .with("connect4.move.made.*");
+    }
+
+    @Bean
+    Binding bindGameResult() {
+        return BindingBuilder
+                .bind(connect4GameResultQueue())
+                .to(connect4Exchange())
+                .with("connect4.game.result.*");
+    }
+
+    @Bean
+    Binding bindAchievement() {
+        return BindingBuilder
+                .bind(connect4AchievementQueue())
+                .to(connect4Exchange())
+                .with("connect4.achievement.*");
     }
 }

@@ -1,7 +1,10 @@
 package be.kdg.banditgames.gameplay.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record RecommendedMove(
-        String move,
-        double confidenceScore
+        @JsonProperty("recommendedMove") String move,
+
+        @JsonProperty("confidence") double confidenceScore
 ) {
 }

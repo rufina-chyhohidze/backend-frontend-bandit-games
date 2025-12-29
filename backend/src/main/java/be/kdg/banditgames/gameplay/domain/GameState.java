@@ -8,19 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
-    private LocalDateTime timestamp;
-    private PlayerType playerType;
-    private PlayerSide playerSide;
-    private int moveNumber;
-    private String board;
-    private String legalMoves;
-    private String bestMove;
-    private Double winProbability; //comes from the AI (MCTS)
-    private Double confidenceScore;
+    private final LocalDateTime timestamp;
+    private final PlayerType playerType;
+    private final PlayerSide playerSide;
+    private final int moveNumber;
+    private final String board;
+    private final String legalMoves;
 
-    List<DomainEvent> domainEvents = new ArrayList<>();
+    private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    private GameState(PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
+    private GameState(PlayerType playerType,
+                      PlayerSide playerSide,
+                      int moveNumber,
+                      String board,
+                      String legalMoves) {
         this.timestamp = LocalDateTime.now();
         this.playerType = playerType;
         this.playerSide = playerSide;
@@ -28,63 +29,21 @@ public class GameState {
         this.board = board;
         this.legalMoves = legalMoves;
     }
-    
-    public static GameState createNew(PlayerType playerType, PlayerSide playerSide, int moveNumber, String board, String legalMoves) {
-        return new GameState(playerType, playerSide, moveNumber, board, legalMoves);
+
+    public static GameState createNew(PlayerType playerType,
+                                      PlayerSide playerSide,
+                                      int moveNumber,
+                                      String board, String legalMoves) {
+        return new GameState(playerType, playerSide, moveNumber, board,legalMoves);
     }
 
-    public List<DomainEvent> getDomainEvents() {
-        return domainEvents;
-    }
-
-    public void addDomainEvents(DomainEvent domainEvent) {
-        this.domainEvents.add(domainEvent);
-    }
-
-    public void clearDomainEvents() {
-        this.domainEvents.clear();
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public PlayerType getPlayerType() {
-        return playerType;
-    }
-
-    public PlayerSide getPlayerSide() {
-        return playerSide;
-    }
-
-    public int getMoveNumber() {
-        return moveNumber;
-    }
-
-    public String getBoard() {
-        return board;
-    }
-
-    public String getLegalMoves() {
-        return legalMoves;
-    }
-
-    public String getBestMove() {
-        return bestMove;
-    }
-
-    public Double getWinProbability() {
-        return winProbability;
-    }
-
-    public Double getConfidenceScore() {
-        return confidenceScore;
-    }
-
-    // TODO: Check if: Adding Double winProbabililty in AIMove and save it in GameState or just add this seperate
-    public void addAIFeatures( String bestMove, Double winProbability, Double confidenceScore){
-        this.bestMove = bestMove;
-        this.winProbability = winProbability;
-        this.confidenceScore = confidenceScore;
-    }
+    public List<DomainEvent> getDomainEvents() { return domainEvents; }
+    public void addDomainEvent(DomainEvent domainEvent) { this.domainEvents.add(domainEvent); }
+    public void clearDomainEvents() { this.domainEvents.clear(); }
+    public String getLegalMoves() { return legalMoves; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public PlayerType getPlayerType() { return playerType; }
+    public PlayerSide getPlayerSide() { return playerSide; }
+    public int getMoveNumber() { return moveNumber; }
+    public String getBoard() { return board; }
 }

@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Game } from "../models/game.ts";
-import { fetchGames } from "../api/gamesApi";
+import type { Game } from "../models/game";
 import { GameList } from "../components/games/GameList";
+import { useGames } from "../hooks/useGames";
+import { useCurrentPlayer, useToggleFavoriteGame } from "../hooks/useFavorites";
+
 import {
     Box,
     CircularProgress,
@@ -11,56 +13,60 @@ import {
     Button,
     Stack,
     Chip,
+    InputBase,
 } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import SearchIcon from "@mui/icons-material/Search";
 
 export function GamesPage() {
-    const [games, setGames] = useState<Game[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const loadGames = async () => {
-        try {
-            setLoading(true);
-            const result = await fetchGames();
-            setGames(result);
-            setError(null);
-        } catch (err) {
-            console.error(err);
-            setError("Failed to load games. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { games, isLoadingGames, isGamesError, refreshGames } = useGames();
+    const { favoriteGameIds, isLoadingPlayer } = useCurrentPlayer();
+    const toggleFavoriteMutation = useToggleFavoriteGame();
 
-    useEffect(() => {
-        loadGames();
-    }, []);
+    const [search, setSearch] = useState("");
+
+    const loading = isLoadingGames || isLoadingPlayer;
+    const error = isGamesError ? "Failed to load games. Please try again later." : null;
 
     const handlePlay = (game: Game) => {
-        const url = game.urlGameSession;
-        if (url.startsWith("http")) {
-            window.location.href = url;
-        } else {
-            navigate(url);
-        }
+        navigate("/lobby");
     };
 
     const handleViewAchievements = (game: Game) => {
         navigate(`/games/${game.gameId}/achievements`);
     };
 
+    const handleFavorite = (game: Game) => {
+        const isFavorite = favoriteGameIds.includes(game.gameId);
+        toggleFavoriteMutation.mutate({ gameId: game.gameId, isFavorite });
+    };
+
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+    };
+
+    const filteredGames = useMemo(
+        () =>
+            games.filter((g) =>
+                g.name.toLowerCase().includes(search.toLowerCase())
+            ),
+        [games, search]
+    );
+
     return (
         <Box
             sx={{
+                width: "100%",
                 minHeight: "100vh",
-                width: "100vw",
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "center",
+                alignItems: "flex-start",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
+                pt: { xs: 9, sm: 10 },
+                pb: 4,
             }}
         >
             <Box
@@ -69,12 +75,12 @@ export function GamesPage() {
                     maxWidth: "98vw",
                     borderRadius: 4,
                     p: { xs: 2, md: 4 },
+                    pt: { xs: 6, md: 7 },
                     bgcolor: "rgba(10, 16, 36, 0.97)",
                     boxShadow: "0 24px 60px rgba(0,0,0,0.7)",
                     position: "relative",
                 }}
             >
-                {/* Decorative background overlay */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -89,7 +95,15 @@ export function GamesPage() {
                     }}
                 />
 
-                <Stack spacing={3} alignItems="center" sx={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                <Stack
+                    spacing={3}
+                    alignItems="center"
+                    sx={{
+                        textAlign: "center",
+                        position: "relative",
+                        zIndex: 1,
+                    }}
+                >
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <SportsEsportsRoundedIcon sx={{ fontSize: 32, color: "#9d7dff" }} />
                         <Typography
@@ -104,17 +118,39 @@ export function GamesPage() {
                             Games Library
                         </Typography>
                     </Stack>
+
                     <Typography
                         variant="body1"
+                        sx={{ color: "#d0d0e5", mt: 1, maxWidth: 600 }}
+                    >
+                        Pick a game to start playing, explore achievements, or star your favorites.
+                    </Typography>
+
+                    <Box
                         sx={{
-                            color: "#d0d0e5",
                             mt: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            bgcolor: "rgba(15,23,42,0.95)",
+                            borderRadius: 999,
+                            px: 2,
+                            py: 0.5,
+                            border: "1px solid rgba(148,163,184,0.5)",
+                            width: { xs: "100%", sm: "70%" },
                             maxWidth: 600,
+                            gap: 1,
                         }}
                     >
-                        Pick a game to start playing or explore its achievements.
-                    </Typography>
-                    <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
+                        <SearchIcon sx={{ fontSize: 18, color: "#9ca3af" }} />
+                        <InputBase
+                            placeholder="Search games..."
+                            sx={{ fontSize: 14, flexGrow: 1, color: "#e5e7eb" }}
+                            value={search}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                        />
+                    </Box>
+
+                    <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
                         <Chip
                             label="All platforms"
                             size="small"
@@ -124,7 +160,9 @@ export function GamesPage() {
                             }}
                         />
                         <Chip
-                            label={`${games.length} game${games.length === 1 ? "" : "s"} `}
+                            label={`${filteredGames.length} game${
+                                filteredGames.length === 1 ? "" : "s"
+                            }`}
                             size="small"
                             sx={{
                                 bgcolor: "rgba(0, 220, 130, 0.12)",
@@ -132,9 +170,10 @@ export function GamesPage() {
                             }}
                         />
                     </Stack>
+
                     <Button
                         variant="outlined"
-                        onClick={loadGames}
+                        onClick={() => refreshGames()}
                         disabled={loading}
                         startIcon={<RefreshRoundedIcon />}
                         sx={{
@@ -148,21 +187,20 @@ export function GamesPage() {
                             borderRadius: 100,
                             "&:hover": {
                                 borderColor: "#ffffff",
-                                background: "linear-gradient(120deg, rgba(157,125,255,0.25), rgba(0,220,130,0.25))",
+                                background:
+                                    "linear-gradient(120deg, rgba(157,125,255,0.25), rgba(0,220,130,0.25))",
                             },
                         }}
                     >
                         {loading ? "Loading..." : "Refresh list"}
                     </Button>
 
-                    {/* Loading */}
                     {loading && (
                         <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
                             <CircularProgress sx={{ color: "#ffffff" }} />
                         </Box>
                     )}
 
-                    {/* Error */}
                     {!loading && error && (
                         <Stack spacing={2}>
                             <Alert severity="error" variant="filled">
@@ -170,7 +208,7 @@ export function GamesPage() {
                             </Alert>
                             <Button
                                 variant="contained"
-                                onClick={loadGames}
+                                onClick={() => refreshGames()}
                                 startIcon={<RefreshRoundedIcon />}
                                 sx={{
                                     alignSelf: "center",
@@ -184,7 +222,6 @@ export function GamesPage() {
                         </Stack>
                     )}
 
-                    {/* Game list */}
                     {!loading && !error && (
                         <Box
                             sx={{
@@ -202,9 +239,11 @@ export function GamesPage() {
                             }}
                         >
                             <GameList
-                                games={games}
+                                games={filteredGames}
                                 onPlay={handlePlay}
                                 onViewAchievements={handleViewAchievements}
+                                onFavorite={handleFavorite}
+                                favoriteGameIds={favoriteGameIds}
                             />
                         </Box>
                     )}

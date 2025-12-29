@@ -1,22 +1,29 @@
-import { type PropsWithChildren, useContext, useEffect } from 'react'
-import SecurityContext from '../../context/SecurityContext.ts'
+import { type PropsWithChildren, useContext } from "react";
+import { Navigate } from "react-router-dom";
+import SecurityContext from "../../context/SecurityContext.ts";
 
-export function RouteGuard({ children }: PropsWithChildren) {
-    const { isInitialised, isAuthenticated, login } = useContext(SecurityContext)
+type RouteGuardProps = PropsWithChildren<{
+    role?: string;
+}>;
 
-    useEffect(() => {
-        if (isInitialised && !isAuthenticated()) {
-            login()
-        }
-    }, [isInitialised, isAuthenticated, login])
+export function RouteGuard({ children, role }: RouteGuardProps) {
+    const { isInitialised, isAuthenticated, loggedInUser } = useContext(SecurityContext);
 
     if (!isInitialised) {
-        return <div>Initialising authentication...</div>
+        return <div>Loading authentication...</div>;
     }
 
     if (!isAuthenticated()) {
-        return <div>Authenticating...</div>
+        return <Navigate to="/public" replace />;
     }
 
-    return children
+    if (role && !loggedInUser?.roles.includes(role)) {
+        return <Navigate to="/public" replace />;
+    }
+
+    if (role === "player" && loggedInUser?.roles.includes("admin")) {
+        return <Navigate to="/public" replace />;
+    }
+
+    return <>{children}</>;
 }

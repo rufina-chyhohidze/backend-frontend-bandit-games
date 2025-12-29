@@ -1,0 +1,27 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#root {
+    width: 100%;
+    min-height: 100%;
+    /* no overflow: hidden here */
+}
+
+/* You can keep this, but it no longer needs a fixed height */
+.scrollable-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}

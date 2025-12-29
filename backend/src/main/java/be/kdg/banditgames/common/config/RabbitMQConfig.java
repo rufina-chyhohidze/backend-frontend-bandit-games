@@ -1,7 +1,8 @@
 package be.kdg.banditgames.common.config;
 
-import be.kdg.banditgames.common.events.GameCreatedEvent;
-import be.kdg.banditgames.common.events.MoveMadeEvent;
+import be.kdg.banditgames.common.events.chess.*;
+import be.kdg.banditgames.common.events.connect4.Connect4GameCreatedEvent;
+import be.kdg.banditgames.common.events.connect4.Connect4MoveMadeEvent;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
@@ -30,17 +31,44 @@ public class RabbitMQConfig {
         Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
 
         DefaultClassMapper classMapper = new DefaultClassMapper();
-        classMapper.setTrustedPackages(
-                "*"
-        );
+        classMapper.setTrustedPackages("*");
 
-        // Map incoming RabbitMQ class names to DTOs
-        classMapper.setIdClassMapping(Map.of(
-                "connect4.domain.event.GameCreatedEvent", GameCreatedEvent.class,
-                "connect4.domain.event.MoveMadeEvent", MoveMadeEvent.class
+        classMapper.setIdClassMapping(Map.ofEntries(
+                // Connect4
+                Map.entry(
+                        "connect4.domain.event.GameCreatedEvent",
+                        Connect4GameCreatedEvent.class
+                ),
+                Map.entry(
+                        "connect4.domain.event.MoveMadeEvent",
+                        Connect4MoveMadeEvent.class
+                ),
+
+                // Chess — keys must match the incoming __TypeId__ from the producer
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.GameCreatedMessage",
+                        ChessGameCreatedEvent.class
+                ),
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.MoveMadeMessage",
+                        ChessMoveMadeEvent.class
+                ),
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.GameEndedMessage",
+                        ChessGameEndedEvent.class
+                ),
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.AchievementAcquiredMessage",
+                        ChessAchievementAcquiredEvent.class
+                ),
+                Map.entry(
+                        "be.kdg.i5.chess.messaging.messages.GameRegisteredMessage",
+                        ChessGameRegisteredEvent.class
+                )
         ));
 
         converter.setClassMapper(classMapper);
         return converter;
     }
+
 }

@@ -1,0 +1,75 @@
+### login as a player
+POST http://localhost:8180/realms/banditgames/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=platform-backend&client_secret=**********&username=rufi@rufi&password=rufi
+
+//saving the access token
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}
+
+### login as a friend
+POST http://localhost:8180/realms/banditgames/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=platform-backend&client_secret=**********&username=test@test&password=test
+
+//saving the access token
+> {%
+    client.global.set("friend_token", response.body.access_token);
+%}
+
+### Get friend player info
+GET http://localhost:8080/api/player/me
+Authorization: Bearer {{friend_token}}
+Accept: application/json
+
+###
+@host_id = 068632b0-1e1b-459b-972e-dfecd2c55cb3
+@friend_id = c653971a-8477-45e9-8129-bb2ffd1616c5
+### Check friendship status
+GET http://localhost:8080/api/friendships/between?playerAId={{host_id}}&playerBId={{friend_id}}
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Invite friend to lobby
+POST http://localhost:8080/api/game-invitations/invite
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "toPlayerId": "{{friend_id}}"
+}
+
+> {%
+    client.global.set("invitation_id", response.body);
+%}
+
+### Get pending game invitations
+GET http://localhost:8080/api/game-invitations/pending
+Authorization: Bearer {{friend_token}}
+Accept: application/json
+###
+
+
+
+### Accept game invitation
+POST http://localhost:8080/api/game-invitations/accept
+Authorization: Bearer {{friend_token}}
+Content-Type: application/json
+
+{
+  "invitationId": "{{invitation_id}}"
+}
+
+> {%
+    client.global.set("lobby_id", response.body.lobbyId);
+%}
+###
+
+### Get lobby by ID (after accept)
+GET http://localhost:8080/api/lobby/by-id?lobbyId={{lobby_id}}
+Authorization: Bearer {{friend_token}}
+Accept: application/json
+###
