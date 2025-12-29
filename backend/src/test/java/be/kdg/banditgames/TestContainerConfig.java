@@ -14,8 +14,8 @@ public class TestContainerConfig {
     static PostgreSQLContainer<?> postgreSQLContainer() {
         return new PostgreSQLContainer<>("postgres:16-alpine")
                 .withDatabaseName("test")
-                .withUsername("test")
-                .withPassword("test");
+                .withUsername("bandit")
+                .withPassword("bandit");
     }
 
     @Bean
