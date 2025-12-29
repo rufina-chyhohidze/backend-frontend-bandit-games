@@ -3,9 +3,11 @@ package be.kdg.banditgames.platform.adapter.out.game;
 import be.kdg.banditgames.common.shared.GameId;
 import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.domain.GameStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
@@ -16,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(GameJpaAdapter.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GameJpaAdapterTest {
 
     @Autowired
@@ -23,6 +26,12 @@ class GameJpaAdapterTest {
 
     @Autowired
     private GameJpaAdapter adapter;
+
+    @BeforeEach
+    void setUp() {
+        // Clean up any existing data before each test
+        jpaRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("loadPlayableGames returns only games with status PUBLISHED")
