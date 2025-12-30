@@ -9,7 +9,6 @@ import {
     Menu,
     MenuItem,
 } from "@mui/material";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -122,7 +121,6 @@ export function TopNavBar() {
                     fontFamily: FONT_FAMILY,
                 }}
             >
-                {/* Brand / Logo */}
                 <Box
                     sx={{
                         display: "flex",
@@ -254,11 +252,6 @@ export function TopNavBar() {
                             gap: 1,
                         }}
                     >
-                        {isMdUp && (
-                            <IconButton size="small" sx={{ color: "#e5e7eb" }}>
-                                <NotificationsNoneIcon fontSize="small" />
-                            </IconButton>
-                        )}
 
                         <Button
                             onClick={handleUserClick}

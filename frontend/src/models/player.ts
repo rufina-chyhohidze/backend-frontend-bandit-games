@@ -1,6 +1,5 @@
-// models/player.ts
 export interface PlayerDto {
-    id: string;       // UUID
+    id: string;
     username: string;
     favoriteGameIds: string[];
     achievements: string[];

@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useChatbot } from '../../hooks/useChatbot';
 import './Chatbot.css';
 
-const ChatbotWidget: React.FC = () => {
+const ChatbotWidget = () => {
     const { isOpen, toggleChat, messages, sendMessage, suggestions, isLoading } = useChatbot();
     const [inputValue, setInputValue] = useState<string>('');
     const historyRef = useRef<HTMLDivElement>(null);
@@ -36,20 +36,20 @@ const ChatbotWidget: React.FC = () => {
                     <div className="ai-history" id="ai-history" ref={historyRef}>
                         {messages.map((msg, index) => (
                             <div key={index} className={`msg ${msg.type}`}>
-                                <ReactMarkdown>
-                                    {msg.text}
-                                </ReactMarkdown>
+                                <ReactMarkdown>{msg.text}</ReactMarkdown>
                             </div>
                         ))}
 
-                        {isLoading && (
-                            <div className="msg bot">Thinking...</div>
-                        )}
+                        {isLoading && <div className="msg bot">Thinking...</div>}
 
                         {suggestions.length > 0 && !isLoading && (
                             <div className="suggestion-container">
                                 {suggestions.map((s, idx) => (
-                                    <div key={idx} className="suggestion" onClick={() => sendMessage(s)}>
+                                    <div
+                                        key={idx}
+                                        className="suggestion"
+                                        onClick={() => sendMessage(s)}
+                                    >
                                         {s}
                                     </div>
                                 ))}
@@ -66,7 +66,9 @@ const ChatbotWidget: React.FC = () => {
                             onKeyPress={handleKeyPress}
                             placeholder="Ask a question..."
                         />
-                        <button className="ai-send-btn" onClick={handleSend}>Send</button>
+                        <button className="ai-send-btn" onClick={handleSend}>
+                            Send
+                        </button>
                     </div>
                 </div>
             )}

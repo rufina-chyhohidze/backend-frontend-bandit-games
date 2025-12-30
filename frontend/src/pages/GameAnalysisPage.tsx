@@ -60,12 +60,10 @@ export function GameAnalysisPage() {
         }
     };
 
-    // Initial fetch
     useEffect(() => {
         fetchGames();
     }, []);
 
-    // Auto-refresh every 10 seconds
     useEffect(() => {
         const interval = setInterval(() => {
             fetchGames();
@@ -85,7 +83,6 @@ export function GameAnalysisPage() {
                 { responseType: 'blob' }
             );
 
-            // Create a download link
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -132,8 +129,7 @@ export function GameAnalysisPage() {
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            {/* Header */}
+        <Box sx={{ p: 3,  pt: 10  }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                     <AnalyticsIcon sx={{ fontSize: 40, color: "primary.main" }} />
@@ -160,7 +156,6 @@ export function GameAnalysisPage() {
                 </Alert>
             )}
 
-            {/* Search */}
             <Paper sx={{ p: 2, mb: 3 }}>
                 <TextField
                     fullWidth
@@ -178,7 +173,6 @@ export function GameAnalysisPage() {
                 />
             </Paper>
 
-            {/* Stats */}
             <Stack direction="row" spacing={2} mb={3}>
                 <Paper sx={{ p: 2, flex: 1 }}>
                     <Typography variant="h6">{games.length}</Typography>
@@ -204,7 +198,6 @@ export function GameAnalysisPage() {
                 </Paper>
             </Stack>
 
-            {/* Games Table */}
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>

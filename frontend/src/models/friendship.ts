@@ -1,13 +1,13 @@
 export interface FriendshipDto {
-    playerA: string; // UUID
-    playerB: string; // UUID
+    playerA: string;
+    playerB: string;
     status: FriendshipStatus;
-    createdAt: string; // ISO string from LocalDateTime
-    initiator: string; // <-- NEW FIELD
+    createdAt: string;
+    initiator: string;
 }
 
 export interface PlayerDtoWithName {
-    playerId: string; // UUID
+    playerId: string;
     username: string;
 }
 

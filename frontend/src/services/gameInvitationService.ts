@@ -16,7 +16,7 @@ export const getPendingGameInvites = async (): Promise<GameInvitationDto[]> => {
 
 export const acceptGameInvite = async (invitationId: string): Promise<{ lobbyId: string }> => {
     const res = await axios.post(`${INV_API}/accept`, { invitationId });
-    return res.data; // { lobbyId: "..." }
+    return res.data;
 };
 
 export const rejectGameInvite = async (invitationId: string): Promise<void> => {
