@@ -11,15 +11,6 @@ export const registerPlayer = async (): Promise<PlayerDto> => {
     const response = await axios.post(`${PLAYER_API_URL}/register`);
     return response.data;
 };
-
-// -----------------------------
-// Get Current Player Info
-// -----------------------------
-export const getCurrentPlayer = async (): Promise<PlayerDto> => {
-    const response = await axios.get(`${PLAYER_API_URL}/me`);
-    return response.data;
-};
-
 // -----------------------------
 // Search Players by Username
 // -----------------------------

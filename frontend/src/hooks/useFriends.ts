@@ -24,12 +24,6 @@ export function useSendFriendRequest() {
         },
     });
 }
-
-// -----------------------------
-// Accept Friend Request
-// -----------------------------
-// hooks/useFriends.ts
-
 // -----------------------------
 // Accept Friend Request
 // -----------------------------
@@ -113,10 +107,9 @@ export function useFriendshipBetween(playerAId: string, playerBId: string) {
     });
 }
 
-// Add to hooks/useFriends.ts
 
 // -----------------------------
-// Get Sent Friend Requests (requests YOU sent to others)
+// Get Sent Friend Requests
 // -----------------------------
 export function useSentRequests(playerId: string | null) {
     return useQuery<PlayerDtoWithName[]>({

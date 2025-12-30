@@ -291,7 +291,6 @@ export default function GameAchievementsPage() {
                 {!isLoading && !error && achievements.length > 0 && (
                     <Stack spacing={2.0} mt={1}>
                         {achievements.map((a, index) => {
-                            // ✅ name-based check
                             const unlocked = unlockedNameSet.has(normalizeName(a.name));
 
                             return (

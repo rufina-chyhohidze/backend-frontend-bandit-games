@@ -17,7 +17,7 @@ const keycloak = new Keycloak(keycloakConfig)
 export default function SecurityContextProvider({ children }: PropsWithChildren) {
     const [loggedInUser, setLoggedInUser] = useState<User | undefined>(undefined)
     const [isInitialised, setIsInitialised] = useState(false)
-    const hasRegisteredPlayer = useRef(false) // <- ref avoids re-renders
+    const hasRegisteredPlayer = useRef(false)
 
     useEffect(() => {
         const handleUserUpdate = () => {
@@ -31,9 +31,6 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
             setIsInitialised(true)
             handleUserUpdate()
         }
-
-        // Removed onAuthSuccess to avoid double call
-        // keycloak.onAuthSuccess = handleUserUpdate
 
         keycloak.onAuthLogout = () => {
             removeAccessTokenFromAuthHeader()
@@ -97,9 +94,8 @@ export default function SecurityContextProvider({ children }: PropsWithChildren)
 
         setLoggedInUser({ id, name, roles: allRoles })
 
-        // Only register once
         if (!hasRegisteredPlayer.current) {
-            hasRegisteredPlayer.current = true // set before awaiting
+            hasRegisteredPlayer.current = true
             try {
                 const backendPlayer = await registerPlayer()
                 console.log('Backend player registered / fetched:', backendPlayer)

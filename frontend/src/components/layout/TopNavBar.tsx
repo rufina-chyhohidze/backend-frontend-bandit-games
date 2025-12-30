@@ -121,7 +121,6 @@ export function TopNavBar() {
                     fontFamily: FONT_FAMILY,
                 }}
             >
-                {/* Brand / Logo */}
                 <Box
                     sx={{
                         display: "flex",

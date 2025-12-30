@@ -532,7 +532,6 @@ export function GameReplayPage() {
                 </Stack>
             </Paper>
 
-            {/* Main content */}
             <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 3 }}>
                 {/* Board */}
                 <Box sx={{ flex: 1 }}>
@@ -614,7 +613,6 @@ export function GameReplayPage() {
                     </Paper>
                 </Box>
 
-                {/* AI Analysis */}
                 <Box sx={{ flex: 1 }}>
                     <AiAnalysisPanel
                         move={currentMove}

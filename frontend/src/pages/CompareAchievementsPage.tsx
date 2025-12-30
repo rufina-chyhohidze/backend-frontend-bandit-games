@@ -61,7 +61,6 @@ export function CompareAchievementsPage() {
                 }}
             >
                 <Stack spacing={2.5}>
-                    {/* Header */}
                     <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
                         <Stack direction="row" alignItems="center" spacing={1.5}>
                             <CompareArrowsRoundedIcon sx={{ fontSize: 32, color: "#ffd54f" }} />
@@ -114,7 +113,7 @@ export function CompareAchievementsPage() {
                         <Box
                             sx={{
                                 display: "grid",
-                                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, // <-- 2 columns on desktop
+                                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
                                 gap: 2.5,
                                 alignItems: "start",
                             }}
