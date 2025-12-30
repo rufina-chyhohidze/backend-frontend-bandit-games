@@ -48,7 +48,7 @@ export const startGame = async (lobbyId: string) => {
             `${LOBBY_API_URL}/${lobbyId}/start-game`,
         );
 
-        return response.data; // JSON: hostUrl, guestUrl, player1Type, player2Type
+        return response.data;
     } catch (err) {
         console.error("Failed to start game:", err);
         return null;
@@ -84,9 +84,9 @@ export const getLobbyById = async (lobbyId: string): Promise<LobbyDto> => {
 export const getLobbyByPlayerId = async (): Promise<LobbyDto | null> => {
     try {
         const response = await axios.get(`${LOBBY_API_URL}/by-player`);
-        return response.data || null; // handle null if lobby doesn't exist
+        return response.data || null;
     } catch (err: any) {
-        if (err.response?.status === 404) return null; // optional, in case your backend returns 404
+        if (err.response?.status === 404) return null;
         throw err;
     }
 };

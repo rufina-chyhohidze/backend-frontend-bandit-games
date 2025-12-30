@@ -32,7 +32,6 @@ export function AppRoutes() {
                     }
                 />
 
-                {/* Admin-only Game Analysis routes */}
                 <Route
                     path="/admin/game-analysis"
                     element={

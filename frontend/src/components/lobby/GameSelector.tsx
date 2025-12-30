@@ -1,5 +1,3 @@
-// src/components/lobby/GameSelector.tsx
-
 import { useState, useEffect } from "react";
 import {
     Box,
@@ -14,7 +12,6 @@ import {
     DialogContent,
     DialogActions,
 } from "@mui/material";
-// Assuming you meant SportsEsportsRoundedIcon again, but HubRoundedIcon is fine too.
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { fetchGames } from "../../services/gamesService.ts";
@@ -38,19 +35,16 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
         loadGames();
     }, []);
 
-    // New useEffect to retry loading games if currentGameId changes and the game isn't found
     useEffect(() => {
         if (currentGameId && games.length > 0) {
             const found = games.find(g => g.gameId === currentGameId);
 
-            // If the game ID exists but isn't in our list, it might be stale.
-            // If not loading, re-run the fetch to see if the game list has changed on the server.
             if (!found && !loading) {
                 console.warn(`Game ID ${currentGameId} not found in local list. Retrying fetch.`);
                 loadGames();
             }
         }
-    }, [currentGameId, games, loading]); // Added loading as a dependency
+    }, [currentGameId, games, loading]);
 
     const loadGames = async () => {
         try {
@@ -85,7 +79,6 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
 
     const currentGame = games.find(g => g.gameId === currentGameId);
 
-    // --- NON-HOST VIEW ---
     if (!isHost) {
         return (
             <Box
@@ -104,7 +97,6 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
                         </Typography>
                     </Stack>
 
-                    {/* Display loading state if the game ID is present but the details are missing */}
                     {(loading || (currentGameId && !currentGame)) ? (
                         <Stack direction="row" spacing={1} alignItems="center">
                             <CircularProgress size={16} sx={{ color: "#9d7dff" }} />
@@ -113,12 +105,10 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
                             </Typography>
                         </Stack>
                     ) : currentGame ? (
-                        // Game found, display name
                         <Typography variant="body2" sx={{ color: "#d0d0e5" }}>
                             {currentGame.name}
                         </Typography>
                     ) : (
-                        // No game ID set yet
                         <Typography variant="body2" sx={{ color: "#aaa", fontStyle: "italic" }}>
                             Waiting for host to select a game...
                         </Typography>
@@ -128,7 +118,6 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
         );
     }
 
-    // --- HOST VIEW --- (Remains the same)
     return (
         <>
             <Box
@@ -189,7 +178,6 @@ export function GameSelector({ currentGameId, isHost, onSelectGame, isSelecting 
                 </Stack>
             </Box>
 
-            {/* Game Selection Dialog */}
             <Dialog
                 open={dialogOpen}
                 onClose={handleCloseDialog}

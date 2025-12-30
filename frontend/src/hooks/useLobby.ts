@@ -145,7 +145,6 @@ export function useLobbyById(lobbyId: string | null) {
     });
 }
 
-// low-level: fetches the lobby for the authenticated player (server reads JWT)
 export function useLobbyByPlayerId() {
     const { isAuthenticated } = useContext(SecurityContext);
 
@@ -158,7 +157,6 @@ export function useLobbyByPlayerId() {
     });
 }
 
-// Convenience wrapper matching example pattern (returns lobby + helpers)
 export function useLobby() {
     const query = useLobbyByPlayerId();
 
@@ -178,9 +176,9 @@ export function useOpenLobbies() {
     const query = useQuery<LobbyDto[]>({
         queryKey: ["open-lobbies"],
         queryFn: fetchOpenLobbies,
-        enabled: isAuthenticated(), // Only run when authenticated
-        refetchInterval: 3000, // Refresh every 3 seconds for real-time updates
-        retry: false, // Don't retry on 401 errors
+        enabled: isAuthenticated(),
+        refetchInterval: 3000,
+        retry: false,
     });
 
     return {

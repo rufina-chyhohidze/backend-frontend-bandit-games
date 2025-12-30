@@ -56,12 +56,12 @@ export function FavoriteGamesPage() {
         <Box
             sx={{
                 width: "100%",
-                minHeight: "100vh", // allow page to grow & scroll
+                minHeight: "100vh",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-start",
                 background: "linear-gradient(135deg, #182736 0%, #351c2c 100%)",
-                pt: { xs: 9, sm: 10 }, // space for fixed navbar
+                pt: { xs: 9, sm: 10 },
                 pb: 4,
             }}
         >

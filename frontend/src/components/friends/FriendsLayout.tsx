@@ -156,7 +156,6 @@ export function FriendsLayout(props: Props) {
                     spacing={2.5}
                     alignItems="stretch"
                 >
-                    {/* Friends list */}
                     <Grid item xs={12} md={6}>
                         <FriendsPanel
                             friends={props.friends}
