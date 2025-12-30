@@ -260,8 +260,6 @@ services:
       - "5173:5173"
     networks:
       - kdg-backend
-    depends_on:
-      - java_backend
 
 networks:
   kdg-kc:
