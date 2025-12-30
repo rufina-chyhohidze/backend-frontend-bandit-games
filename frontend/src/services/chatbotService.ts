@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:7001/ask';
+const API_URL = import.meta.env.VITE_RAG_URL ||'http://localhost:7001/ask';
 
 export interface ChatbotResponse {
     answer: string;

@@ -4,8 +4,10 @@ import be.kdg.banditgames.platform.domain.Game;
 import be.kdg.banditgames.platform.port.in.lobby.CreateGameCommand;
 import be.kdg.banditgames.platform.port.out.game.LoadPlayableGamesPort;
 import be.kdg.banditgames.platform.port.out.lobby.CreateGameService;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,14 +21,20 @@ public class LobbyCreateGameAdapter implements CreateGameService {
     private final LoadPlayableGamesPort loadPlayableGamesPort;
     private final WebClient webClient;
     private final Logger logger = LoggerFactory.getLogger(LobbyCreateGameAdapter.class);
+    private final String connect4Url;
+    private Map<String, String> BACKEND_API_ENDPOINTS ;
 
     // Only backend APIs for games that require a POST (Connect4)
-    private static final Map<String, String> BACKEND_API_ENDPOINTS = Map.of(
-            "Connect Four", "http://localhost:8000/game/create"
-    );
+    @PostConstruct
+    void init() {
+        BACKEND_API_ENDPOINTS  = Map.of(
+                "Connect Four", connect4Url
+        );
+    }
 
-    public LobbyCreateGameAdapter(LoadPlayableGamesPort loadPlayableGamesPort) {
+    public LobbyCreateGameAdapter(LoadPlayableGamesPort loadPlayableGamesPort, @Value("${connect4.api.url}") String connect4Url) {
         this.loadPlayableGamesPort = loadPlayableGamesPort;
+        this.connect4Url = connect4Url;
         this.webClient = WebClient.builder().build();
     }
 

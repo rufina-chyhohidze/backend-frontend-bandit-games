@@ -5,6 +5,7 @@ import be.kdg.banditgames.gameplay.port.in.MLRecommendedMove.GetRecommendedMoveC
 import be.kdg.banditgames.gameplay.port.out.MLRecommendedMove.MLRecommendedMoveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,15 +14,19 @@ public class MLRecommenderMoveAdaptor implements MLRecommendedMoveService {
 
     private static final Logger logger = LoggerFactory.getLogger(MLRecommenderMoveAdaptor.class);
     private final RestTemplate restTemplate = new RestTemplate();
+    private final String mlApiUrl;
+
+    public MLRecommenderMoveAdaptor(@Value("${ml.connect4.api.url}") String mlApiUrl) {
+        this.mlApiUrl = mlApiUrl;
+    }
 
     @Override
     public RecommendedMove getRecommendedMove(GetRecommendedMoveCommand getRecommendedMoveCommand) {
-        String url = "http://localhost:8082/predict-best-move";
 
-        logger.info("Sending request to ML Service [{}]: {}", url, getRecommendedMoveCommand);
+        logger.info("Sending request to ML Service [{}]: {}", MLRecommenderMoveAdaptor.this.mlApiUrl, getRecommendedMoveCommand);
 
         RecommendedMove recommendedMove = restTemplate.postForObject(
-                url,
+                MLRecommenderMoveAdaptor.this.mlApiUrl,
                 getRecommendedMoveCommand,
                 RecommendedMove.class
         );

@@ -6,6 +6,7 @@ import be.kdg.banditgames.gameplay.port.out.aiAgentMove.AiAgentMoveService;
 import be.kdg.banditgames.gameplay.port.out.aiMetadataPending.SaveAiMetadataPendingPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,13 +15,15 @@ public class AiAgentMoveAdaptor implements AiAgentMoveService {
     private static final Logger logger = LoggerFactory.getLogger(AiAgentMoveAdaptor.class);
     private final RestTemplate restTemplate = new RestTemplate();
     private final SaveAiMetadataPendingPort savePendingPort;
+    private final String aiApiUrl;
 
-    public AiAgentMoveAdaptor(SaveAiMetadataPendingPort savePendingPort) {
+    public AiAgentMoveAdaptor(SaveAiMetadataPendingPort savePendingPort,
+                              @Value("${ai.connect4.api.url}") String aiApiUrl) {
         this.savePendingPort = savePendingPort;
+        this.aiApiUrl = aiApiUrl;
     }
     @Override
     public AiMoveMetadata getAiAgentMove(AiRequestCommand aiRequest) {
-        String aiApiUrl = "http://localhost:8081/ai";
         String url = aiApiUrl + "/aiMove";
 
         logger.info("Calling AI service: sessionId={}, moveNumber={}, difficulty={}",
