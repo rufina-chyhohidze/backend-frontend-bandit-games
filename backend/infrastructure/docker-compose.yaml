@@ -135,6 +135,131 @@ services:
     volumes:
       - ./realm-export:/opt/keycloak/data/import
 
+  ml_ai_connect4:
+    image: registry.gitlab.com/kdg-ti/inf-curriculum/domain-integration/integration-5/2025-2026/team4/dataandai/ml-ai-connect4:latest
+    container_name: ml_ai_connect4
+    ports:
+      - "8082:8082"
+    networks:
+      - kdg-backend
+
+  mcts_connect4:
+    image: registry.gitlab.com/kdg-ti/inf-curriculum/domain-integration/integration-5/2025-2026/team4/dataandai/mcts:latest
+    container_name: mcts_connect4
+    ports:
+      - "8081:8081"
+    networks:
+      - kdg-backend
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_rag_backend
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11435
+    ports:
+      - "11435:11435"
+    volumes:
+      - ollama_storage:/root/.ollama
+    networks:
+      - kdg-backend
+    restart: always
+    healthcheck:
+      test: [ "CMD", "ollama", "list" ]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama_puller
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=ollama:11435
+    entrypoint: [ "/bin/sh", "-c", "ollama pull gemma3:1b" ]
+
+  rag-api:
+    image: registry.gitlab.com/kdg-ti/inf-curriculum/domain-integration/integration-5/2025-2026/team4/dataandai:dev
+    container_name: rag_fastapi_app
+    ports:
+      - "7001:7000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11435
+    networks:
+      - kdg-backend
+    restart: always
+
+  connect4_backend:
+    image: registry.gitlab.com/kdg-ti/inf-curriculum/domain-integration/integration-5/2025-2026/team4/games/connect4
+    container_name: connect4_backend
+    ports:
+      - "8000:8000"
+    networks:
+      - kdg-backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # Java backend URLs
+      AI_SERVICE_URL: http://host.docker.internal:8083/api/gameplay/ai-move
+      ML_SERVICE_URL: http://host.docker.internal:8083/api/gameplay/ml-move
+      JAVA_BACKEND_URL: http://host.docker.internal:8083
+      RABBITMQ_HOST: app_rabbitmq
+
+#  java_backend:
+#    build:
+#      context: ..
+#      dockerfile: Dockerfile
+#    container_name: java_backend
+#    ports:
+#      - "8083:8083"
+#    networks:
+#      - kdg-backend
+#      - kdg-kc
+#    depends_on:
+#      - gameplay_mongodb
+#      - platform_postgres
+#      - app_rabbitmq
+#      - idp_keycloak
+#    environment:
+#      # MongoDB
+#      SPRING_DATA_MONGODB_URI: mongodb://user_mongodb:password_mongodb@gameplay_mongodb:27017/gameplay?authSource=admin
+#
+#      # PostgreSQL
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://platform_postgres:5432/banditgames
+#      SPRING_DATASOURCE_USERNAME: bandit
+#      SPRING_DATASOURCE_PASSWORD: bandit
+#
+#      # RabbitMQ
+#      SPRING_RABBITMQ_HOST: app_rabbitmq
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_USERNAME: user
+#      SPRING_RABBITMQ_PASSWORD: password
+#
+#      # Keycloak
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8180/realms/banditgames
+#      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://idp_keycloak:8080/realms/banditgames/protocol/openid-connect/certs
+#
+#      # CORS (keep localhost for browser access)
+#      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000
+#
+#      # Connect4 Python backend
+#      CONNECT4_API_URL: http://connect4_backend:8000/game/create
+#
+#      # ML AI
+#      AI_CONNECT4_API_URL: http://mcts_connect4:8081/ai
+#      ML_CONNECT4_API_URL: http://ml_ai_connect4:8082/predict-best-move
+#      WINPROB_CONNECT4_API_URL: http://ml_ai_connect4:8082/win-probability
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: frontend/Dockerfile
+    container_name: banditgames_frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - kdg-backend
 
 networks:
   kdg-kc:
@@ -151,3 +276,4 @@ volumes:
   rabbitmq_logs:
   mysql_data:
   platform_postgres_data:
+  ollama_storage:
